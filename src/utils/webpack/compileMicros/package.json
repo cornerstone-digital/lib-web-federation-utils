@@ -1,0 +1,11 @@
+{
+  "name": "@vfuk/shop-federation-webpack-compile-micro",
+  "version": "1.0.0",
+  "description": "compiles MFE in specified file path",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "vodafone",
+  "license": "ISC"
+}
