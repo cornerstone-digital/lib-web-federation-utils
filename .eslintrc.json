@@ -1,0 +1,120 @@
+{
+  "extends": [
+    "plugin:sonarjs/recommended",
+    "plugin:react/recommended",
+    "prettier",
+    "plugin:prettier/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:react-prefer-function-component/recommended",
+    "eslint:recommended",
+    "plugin:cypress/recommended"
+  ],
+  "env": {
+    "es6": true,
+    "jest": true,
+    "browser": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "rules": {
+    "no-unused-expressions": 2,
+    "semi": "off",
+    "jsx-quotes": ["error", "prefer-double"],
+    "react-prefer-function-component/react-prefer-function-component": 2,
+    "react/react-in-jsx-scope": 2,
+    "react/no-unescaped-entities": 2,
+    "sonarjs/no-nested-template-literals": 0,
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "react/prop-types": 0,
+    "react/jsx-no-undef": [
+      "error",
+      {
+        "allowGlobals": true
+      }
+    ],
+    "sonarjs/cognitive-complexity": 0,
+    "sonarjs/no-duplicate-string": 0,
+    "max-depth": ["error", 3],
+    "max-len": [
+      "error",
+      {
+        "code": 140,
+        "ignoreTemplateLiterals": true,
+        "ignoreStrings": true,
+        "ignoreRegExpLiterals": false
+      }
+    ],
+    "@typescript-eslint/member-delimiter-style": [
+      "error",
+      {
+        "multiline": {
+          "delimiter": "none",
+          "requireLast": true
+        }
+      }
+    ],
+    "sort-keys-fix/sort-keys-fix": [
+      "error",
+      "asc",
+      {
+        "caseSensitive": true,
+        "natural": true
+      }
+    ]
+  },
+  "plugins": [
+    "react",
+    "@typescript-eslint",
+    "sonarjs",
+    "prettier",
+    "react-prefer-function-component",
+    "better-styled-components",
+    "sort-keys-fix",
+    "cypress"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true,
+      "jsx": true
+    }
+  },
+  "globals": {
+    "__public_path_assets_": true,
+    "preval": true,
+    "snapshot": true,
+    "shallow": true,
+    "mount": true,
+    "Feature": true,
+    "Scenario": true,
+    "VITE_ASSET_PREFIX": true,
+    "Application": true,
+    "NodeJS": true,
+    "OmitOptionals": true,
+    "qs": true,
+    "JSX": true,
+    "React": true,
+    "BasketV2": true,
+    "Authorization": true,
+    "BasketPageContent": true,
+    "Given": true,
+    "When": true,
+    "Then": true,
+    "And": true,
+    "System": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "overrides": [
+    {
+      "files": ["src/shared/types/*.ts"], // Or *.test.js
+      "rules": {
+        "max-len": 0
+      }
+    }
+  ]
+}
