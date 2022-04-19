@@ -12,10 +12,10 @@
     "postinstall": "lerna bootstrap",
     "lerna:build": "lerna run build",
     "lerna:bootstrap": "lerna bootstrap",
-    "lerna:version": "lerna version --conventional-commits --yes",
-    "lerna:publish": "lerna publish from-git --yes",
-    "publish:alpha": "lerna version --conventional-commits --conventional-prerelease --preid alpha --yes",
-    "publish:beta": "lerna version --conventional-commits --conventional-prerelease --preid beta --yes"
+    "lerna:version": "lerna version --no-push --conventional-commits --yes",
+    "lerna:version:alpha": "lerna version --no-push --conventional-commits --conventional-prerelease --preid alpha --yes",
+    "lerna:version:beta": "lerna version --no-push --conventional-commits --conventional-prerelease --preid beta --yes",
+    "lerna:publish": "lerna publish from-git --yes"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.1",

@@ -1,0 +1,46 @@
+resources:
+  repositories:
+    - repository: yaml-pipeline-templates
+      type: git
+      name: dx-yaml-pipeline-templates
+      ref: master
+    - repository: tools
+      type: git
+      name: CICD-new-world-tools
+      ref: refs/heads/master
+parameters:
+  - name: versionScript
+    displayName: Version Script
+    type: string
+    default: lerna:version
+steps:
+  - template: init-workspace.yaml
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Bootstrap'
+    inputs:
+      Arguments: 'lerna:bootstrap'
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Build'
+    inputs:
+      Arguments: 'lerna:build'
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Version'
+    inputs:
+      Arguments: ${{parameters.versionScript}}
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Docsite'
+    inputs:
+      ArtifactName: docsite
+      PathtoPublish: src/docsite/build
+
+  - script: git push origin/master --no-verify
+    displayName: Push version commit
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Publish'
+    inputs:
+      Arguments: lerna:publish
