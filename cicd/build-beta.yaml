@@ -1,5 +1,4 @@
 steps:
-  - template: templates/init-workspace.yaml
   - template: templates/build-template.yaml
     parameters:
       versionScript: lerna:version:beta
