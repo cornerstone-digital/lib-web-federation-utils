@@ -1,27 +1,28 @@
 import { SetStateAction, useEffect, useState } from 'react'
-import { FederatedModuleType } from '../../components/FederatedModule'
-import loadModuleManifest from '../../helpers/loadModuleManifest'
+import { FederatedModuleType } from '@vf/federated-web-frontend-react/components'
+import loadModuleManifest from '@vf/federated-web-frontend-react/helpers/loadModuleManifest'
+import hasStylesheetLoaded from '@vf/federated-web-frontend-react/helpers/hasStylesheetLoaded'
 
 const useFederatedModule = (module: FederatedModuleType) => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
   const [mfeModule, setMfeModule] = useState<System.Module | null>(null)
-  const { name, scope } = module
+  const { name, scope, version } = module
 
   useEffect(() => {
-    async function runLoad() {
+    async function runLoad(): Promise<void> {
       try {
-        const manifest = await loadModuleManifest(scope, name)
+        const manifest = await loadModuleManifest(scope, name, version)
         const fileKeys = Object.keys(manifest)
 
-        // Load stylesheets onto head
+        // Load stylesheets onto head (if any
         fileKeys
           .filter(key => key.includes('.css'))
           .forEach((fileKey: string) => {
-            const styleId = `${name}-styles-${fileKey}`
-            if (!document.getElementById(styleId)) {
+            const href = manifest[fileKey]
+            if (!hasStylesheetLoaded(href)) {
               const link = document.createElement('link')
-              link.setAttribute('id', styleId)
+              link.setAttribute('id', `${name}-styles-${fileKey}`)
               link.setAttribute('rel', 'stylesheet')
               link.setAttribute('href', manifest[fileKey])
               document.head.appendChild(link)
@@ -33,10 +34,11 @@ const useFederatedModule = (module: FederatedModuleType) => {
       } catch (error) {
         setError(error as SetStateAction<any>)
         setIsLoading(false)
-        console.warn('MFE error:', error)
+        console.warn(`Error loading Federated Module: ${name}`, error)
       }
     }
-    runLoad()
+
+    runLoad().then(() => {})
   }, [scope, name])
   return [mfeModule, isLoading, error]
 }

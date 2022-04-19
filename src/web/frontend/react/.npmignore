@@ -1,0 +1,8 @@
+./components
+./helpers
+./hooks
+./index.ts
+vite.config.ts
+tsconfig.json
+node_modules
+.npmrc

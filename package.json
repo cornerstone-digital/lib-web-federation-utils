@@ -1,5 +1,5 @@
 {
-  "name": "setup-monorepo",
+  "name": "lib-web-federation-utils",
   "version": "1.0.0",
   "repository": "vfuk-digital@vs-ssh.visualstudio.com:v3/vfuk-digital/Digital/lib-web-federation-utils",
   "author": "Martin Egan <martingegan@gmail.com>",
@@ -8,7 +8,19 @@
   "workspaces": [
     "src/**/**"
   ],
+  "scripts": {
+    "postinstall": "lerna bootstrap",
+    "build": "lerna run build",
+    "bootstrap": "lerna bootstrap",
+    "alpha": "lerna version --conventional-commits --conventional-prerelease --preid alpha --yes",
+    "beta": "lerna version --conventional-commits --conventional-prerelease --preid beta --yes",
+    "version": "lerna version --conventional-commits --yes",
+    "publish": "lerna publish --from-git --yes"
+  },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/commit-analyzer": "^9.0.2",
+    "@semantic-release/git": "^10.0.1",
     "@types/node": "14.x",
     "@typescript-eslint/eslint-plugin": "5.19.0",
     "@typescript-eslint/parser": "5.19.0",

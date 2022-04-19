@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx",
     "target": "es6",
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
@@ -19,8 +18,8 @@
     "skipLibCheck": true,
     "module": "CommonJS",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "types": ["vite/client", "jest", "@types/testing-library__jest-dom", "@types/react", "node", "systemjs"],
-    "typeRoots": ["./node_modules/@types"]
+    "types": ["node", "systemjs"],
+    "typeRoots": ["./node_modules/@types", "@vf/federated-web-build-types"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

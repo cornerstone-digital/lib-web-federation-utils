@@ -1,12 +1,12 @@
 import { ComponentType, lazy, LazyExoticComponent, ReactElement, useEffect, useState } from 'react'
+import useFederatedModule from '@vf/federated-web-frontend-react/hooks/useFederatedModule/useFederatedModule'
 import { FederatedModuleProps } from './FederatedModule.types'
-import useFederatedModule from '../../hooks/useFederatedModule/useFederatedModule'
 
 function FederatedModule<Props>({ module, props, stateComponents }: FederatedModuleProps<Props>): ReactElement | null {
   const [Component, setComponent] = useState<LazyExoticComponent<ComponentType<Props>> | null>(null)
 
   const [mfeModule, isLoading, error] = useFederatedModule(module)
-  const { loading: LoadingComponent, error: ErrorComponent } = stateComponents
+  const { error: ErrorComponent } = stateComponents
 
   useEffect(() => {
     if (!isLoading) {
@@ -14,10 +14,6 @@ function FederatedModule<Props>({ module, props, stateComponents }: FederatedMod
       setComponent(Comp)
     }
   }, [mfeModule, isLoading, error])
-
-  if (isLoading) {
-    return LoadingComponent ? <LoadingComponent /> : <div>Loading...</div>
-  }
 
   if (error) {
     return ErrorComponent ? <ErrorComponent /> : <div>Error</div>
