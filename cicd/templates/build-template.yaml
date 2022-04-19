@@ -31,7 +31,10 @@ steps:
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Version'
     inputs:
-      Arguments: ${{parameters.versionScript}} --message ***NO_CI*** Verions updated
+      Arguments: ${{parameters.versionScript}}
+
+  - script: git commit --amend --m "***NO_CI*** Verions updated"
+    displayName: Commit message update
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Build'
@@ -44,7 +47,7 @@ steps:
       ArtifactName: docsite
       PathtoPublish: src/docsite/build
 
-  - script: git push --no-verify --tags
+  - script: git push origin HEAD:$(Build.SourceBranchName) --force --tags --porcelain
     displayName: Push version commit
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
