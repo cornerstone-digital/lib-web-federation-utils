@@ -1,0 +1,31 @@
+steps:
+  - template: init-workspace.yaml
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Bootstrap'
+    inputs:
+      Arguments: 'bootstrap'
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Version'
+    inputs:
+      Arguments: 'version'
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Build'
+    inputs:
+      Arguments: 'build'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Docsite'
+    inputs:
+      ArtifactName: docsite
+      PathtoPublish: src/docsite/build
+
+  - script: git add . && git commit -m '***NO_CI*** Versions bumped" && git push --no-verify
+    displayName: Commit change logs
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Publish'
+    inputs:
+      Arguments: 'publish'

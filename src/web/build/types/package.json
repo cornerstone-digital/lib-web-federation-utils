@@ -1,0 +1,12 @@
+{
+  "name": "@vf/federated-web-build-types",
+  "version": "1.0.0",
+  "license": "MIT",
+  "types": "index.d.ts",
+  "devDependencies": {
+    "webpack": "5.x"
+  },
+  "peerDependencies": {
+    "webpack": "5.x"
+  }
+}

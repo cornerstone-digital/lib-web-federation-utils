@@ -1,6 +1,27 @@
 {
-  "name": "@vfuk/federated-web-build-webpack",
+  "name": "@vf/federated-web-build-webpack",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@vf/federated-web-build-types": "^1.0.0",
+    "@types/compression-webpack-plugin": "^9.1.1",
+    "@types/html-webpack-plugin": "^3.2.6",
+    "@types/mini-css-extract-plugin": "^2.5.1",
+    "@types/terser-webpack-plugin": "^5.2.0",
+    "@types/webpack-manifest-plugin": "^3.0.5",
+    "compression-webpack-plugin": "^9.2.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.0",
+    "terser-webpack-plugin": "^5.3.1",
+    "webpack": "5.x",
+    "webpack-assets-manifest": "5.1.0",
+    "webpack-manifest-plugin": "^5.0.0",
+    "webpackbar": "^5.0.2"
+  }
 }

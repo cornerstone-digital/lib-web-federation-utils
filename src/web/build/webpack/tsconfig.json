@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es6",
+    "rootDir": "./",
+    "types": ["node", "webpack", "html-webpack-plugin", "@vf/federated-web-build-types"],
+    "typeRoots": ["node_modules/@types"],
+    "moduleResolution": "Node",
+    "declaration": true,
+    "outDir": "./dist",
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

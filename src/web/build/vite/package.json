@@ -1,5 +1,5 @@
 {
-  "name": "@vfuk/federated-web-build-vite",
+  "name": "@vf/federated-web-build-vite",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT"
