@@ -3,8 +3,23 @@ parameters:
     displayName: Version Script
     type: string
     default: lerna:version
+  - name: releaseBranch
+    displayName: Release branch
+    type: string
+    default: master
 steps:
   - template: init-workspace.yaml
+
+  - script: git switch -c ${{parameters.releaseBranch}}
+    displayName: Switch branch
+
+  - script: git update-index --skip-worktree -- .npmrc
+    displayName: Ignore .npmrc
+
+  - script: |
+      git config --global user.email "azure.devops@vodafone.co.uk"
+      git config --global user.name "Azure Devops"
+    displayName: Set git config
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Bootstrap'
@@ -12,14 +27,14 @@ steps:
       Arguments: 'lerna:bootstrap'
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Version'
+    inputs:
+      Arguments: ${{parameters.versionScript}} --message ***NO_CI*** Verions updated
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Build'
     inputs:
       Arguments: 'lerna:build'
-
-  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
-    displayName: 'Lerna Version'
-    inputs:
-      Arguments: ${{parameters.versionScript}}
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: Docsite'
@@ -27,8 +42,8 @@ steps:
       ArtifactName: docsite
       PathtoPublish: src/docsite/build
 
-  - script: git push origin/main --no-verify --tags
-    displayName: Push version commit
+    # - script: git push --no-verify --tags
+    #   displayName: Push version commit
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Publish'

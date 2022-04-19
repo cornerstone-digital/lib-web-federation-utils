@@ -8,8 +8,9 @@ resources:
       type: git
       name: CICD-new-world-tools
       ref: refs/heads/master
-triggers:
-  - branches:
-      - master
+trigger:
+  branches:
+    include:
+    - main
 steps:
   - template: templates/build-template.yaml
