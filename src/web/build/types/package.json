@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "license": "MIT",
   "types": "index.d.ts",
+  "scripts": {
+    "publish:alpha": "npm publish"
+  },
   "devDependencies": {
     "webpack": "5.x"
   },
