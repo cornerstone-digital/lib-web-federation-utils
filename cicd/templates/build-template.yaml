@@ -37,7 +37,7 @@ steps:
       ArtifactName: docsite
       PathtoPublish: src/docsite/build
 
-  - script: git push origin/master --no-verify
+  - script: git push origin/main --no-verify --tags
     displayName: Push version commit
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
