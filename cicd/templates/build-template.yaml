@@ -1,13 +1,3 @@
-resources:
-  repositories:
-    - repository: yaml-pipeline-templates
-      type: git
-      name: dx-yaml-pipeline-templates
-      ref: master
-    - repository: tools
-      type: git
-      name: CICD-new-world-tools
-      ref: refs/heads/master
 parameters:
   - name: versionScript
     displayName: Version Script
