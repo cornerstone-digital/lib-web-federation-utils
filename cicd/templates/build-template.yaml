@@ -33,9 +33,6 @@ steps:
     inputs:
       Arguments: ${{parameters.versionScript}}
 
-  - script: git commit --amend --m "***NO_CI*** Versions updated"
-    displayName: Commit message update
-
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Build'
     inputs:
