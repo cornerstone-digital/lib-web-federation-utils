@@ -41,16 +41,16 @@ steps:
     inputs:
       Arguments: 'lerna:build'
 
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Publish'
+    inputs:
+      Arguments: lerna:publish
+
+  - script: git push origin HEAD:$(Build.SourceBranchName) --force --tags --porcelain
+    displayName: Push version commit
+
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: Docsite'
     inputs:
       ArtifactName: docsite
       PathtoPublish: src/docsite/build
-
-  - script: git push origin HEAD:$(Build.SourceBranchName) --force --tags --porcelain
-    displayName: Push version commit
-
-  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
-    displayName: 'Lerna Publish'
-    inputs:
-      Arguments: lerna:publish
