@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.17](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-webpack@1.1.0-alpha.16...@vf/federated-web-build-webpack@1.1.0-alpha.17) (2022-04-20)
+
+
+### Features
+
+* **webpack:** added new comment ([623b13b](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/623b13bc035e3002a921fe82afc8264a2733073b))
+
+
+
+
+
 # [1.1.0-alpha.16](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-webpack@1.1.0-alpha.15...@vf/federated-web-build-webpack@1.1.0-alpha.16) (2022-04-20)
 
 
