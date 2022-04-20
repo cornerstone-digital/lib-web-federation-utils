@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.13](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-webpack@1.1.0-alpha.10...@vf/federated-web-build-webpack@1.1.0-alpha.13) (2022-04-20)
+
+
+### Features
+
+* **build:** updated exports - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([80b7712](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/80b77128e5ae8a65784e472a05253b887ba72fb7))
+* **build:** updated exports - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([4ec9c6f](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/4ec9c6fea5bf2edc6b9ce1dad2ccf5098dc9e0f8))
+* **build:** updated exports - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([eff4038](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/eff4038e6f65ceff148ecdac68c2d37ab1d7fd9d))
+* **build:** updated exports - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([a36c2f7](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/a36c2f7cc7093236fcd78bbfe5a890a2899d9cdc))
+* **build:** updated exports - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([e5f6d36](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/e5f6d3696fbd1231e833f1d48d3f814372261009))
+* **build:** updated target type in tsconfig.json - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([3826576](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/38265766c11236338effb04ccd8f3f313e355550))
+
+
+
+
+
 # [1.1.0-alpha.10](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-webpack@1.1.0-alpha.9...@vf/federated-web-build-webpack@1.1.0-alpha.10) (2022-04-20)
 
 
