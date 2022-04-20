@@ -1,1 +1,1 @@
-export * from './getDirectories'
+export { default as getDirectories } from './getDirectories'

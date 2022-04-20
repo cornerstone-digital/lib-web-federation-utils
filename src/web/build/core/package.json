@@ -3,6 +3,7 @@
   "version": "1.1.0-alpha.14",
   "main": "index.js",
   "license": "MIT",
+  "files": ["dist/*"],
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.json"
