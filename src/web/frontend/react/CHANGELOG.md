@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.15](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.14...@vf/federated-web-frontend-react@1.1.0-alpha.15) (2022-04-20)
+
+
+### Features
+
+* **webpack:** added package.json to dist ([b29a449](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/b29a4495012c2a4ebf15375e559896926d7056b9))
+* **webpack:** edited tsconfig ([4f1d8c5](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/4f1d8c5b5b3f6d1cfacc4abcd32fe6bc2e31c234))
+* **webpack:** edited tsconfig all packages ([af9ebe2](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/af9ebe2f432cc57bb461bc7548d8935771633dd8))
+
+
+
+
+
 # [1.1.0-alpha.14](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.12...@vf/federated-web-frontend-react@1.1.0-alpha.14) (2022-04-20)
 
 

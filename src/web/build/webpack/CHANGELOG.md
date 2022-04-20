@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.20](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-webpack@1.1.0-alpha.19...@vf/federated-web-build-webpack@1.1.0-alpha.20) (2022-04-20)
+
+
+### Features
+
+* **webpack:** added package.json to dist ([b29a449](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/b29a4495012c2a4ebf15375e559896926d7056b9))
+* **webpack:** edited tsconfig ([4f1d8c5](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/4f1d8c5b5b3f6d1cfacc4abcd32fe6bc2e31c234))
+* **webpack:** edited tsconfig ([b039c84](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/b039c84a4825027ccf3a786babc1d48756cf7968))
+* **webpack:** updated publish code ([ae7aee4](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/ae7aee4780563c7633600160cd54546c5a05599a))
+* **webpack:** updated publish config ([1ad5980](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/1ad598034932e7ee87cc89079e67a10493f478e5))
+
+
+
+
+
 # [1.1.0-alpha.19](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-webpack@1.1.0-alpha.18...@vf/federated-web-build-webpack@1.1.0-alpha.19) (2022-04-20)
 
 
