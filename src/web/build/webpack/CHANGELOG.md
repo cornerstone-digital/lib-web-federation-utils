@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.25](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-webpack@1.1.0-alpha.24...@vf/federated-web-build-webpack@1.1.0-alpha.25) (2022-04-20)
+
+
+### Features
+
+* **webpack:** fix import-map export location  - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([1a0bee6](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/1a0bee6f98c33fd1eed084df721cc486ecc5befa))
+
+
+
+
+
 # [1.1.0-alpha.24](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-webpack@1.1.0-alpha.23...@vf/federated-web-build-webpack@1.1.0-alpha.24) (2022-04-20)
 
 
