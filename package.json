@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "postinstall": "lerna bootstrap",
-    "lerna:build": "lerna run build --since",
+    "lerna:build": "lerna run build",
     "lerna:bootstrap": "lerna bootstrap",
     "lerna:version": "lerna version --no-push --conventional-commits --yes",
     "lerna:version:alpha": "lerna version --no-push --conventional-commits --conventional-prerelease --preid alpha --yes",

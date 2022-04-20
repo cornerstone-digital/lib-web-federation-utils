@@ -8,6 +8,7 @@ export type FederatedModuleType<PropsType> = {
   scope: string
   name: string
   version: string
+  state: Record<string, string>
   props: PropsType
 }
 
