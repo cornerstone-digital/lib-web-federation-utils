@@ -1,1 +1,1 @@
-export { default } from './getFederatedWebpack'
+export { default as getFederatedWebpack } from './getFederatedWebpack'

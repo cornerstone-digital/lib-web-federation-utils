@@ -1,1 +1,1 @@
-export { default } from './compileFederatedModules'
+export { default as compileFederatedModules } from './compileFederatedModules'
