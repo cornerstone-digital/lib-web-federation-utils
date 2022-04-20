@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "esnext",
-    "target": "es6",
+    "target": "es5",
     "rootDir": "./",
     "types": ["node", "webpack", "html-webpack-plugin", "@vf/federated-web-build-types"],
     "typeRoots": ["node_modules/@types"],
