@@ -84,7 +84,6 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
         title: `Vodafone: ${componentName}`,
       }),
       new WebpackManifestPlugin({ publicPath: `${options.basePath}/${componentName}/` }),
-      ...(options.webpackConfig.plugins ?? []),
     ],
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.scss'],
