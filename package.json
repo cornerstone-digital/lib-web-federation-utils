@@ -16,8 +16,8 @@
     "lerna:version:alpha": "lerna version --no-push --conventional-commits --conventional-prerelease --preid alpha --yes",
     "lerna:version:beta": "lerna version --no-push --conventional-commits --conventional-prerelease --preid beta --yes",
     "lerna:publish": "lerna publish from-git --yes",
-    "lerna:publish:alpha": "lerna publish from-package --dist-tag alpha --yes",
-    "lerna:publish:beta": "lerna publish from-package  --dist-tag beta --yes"
+    "lerna:publish:alpha": "lerna publish from-package --contents dist --dist-tag alpha --yes",
+    "lerna:publish:beta": "lerna publish from-package  --contents dist --dist-tag beta --yes"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.1",
