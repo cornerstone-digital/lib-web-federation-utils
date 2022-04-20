@@ -1,6 +1,6 @@
 {
   "name": "@vf/federated-web-build-webpack",
-  "version": "1.1.0-alpha.7",
+  "version": "1.1.0-alpha.8",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,8 +26,8 @@
     "@types/mini-css-extract-plugin": "^2.5.1",
     "@types/terser-webpack-plugin": "^5.2.0",
     "@types/webpack-manifest-plugin": "^3.0.5",
-    "@vf/federated-web-build-core": "^1.1.0-alpha.7",
-    "@vf/federated-web-build-types": "^1.1.0-alpha.7",
+    "@vf/federated-web-build-core": "^1.1.0-alpha.8",
+    "@vf/federated-web-build-types": "^1.1.0-alpha.8",
     "compression-webpack-plugin": "^9.2.0",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.6.0",

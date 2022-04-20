@@ -1,6 +1,6 @@
 {
   "name": "@vf/federated-web-frontend-react",
-  "version": "1.1.0-alpha.7",
+  "version": "1.1.0-alpha.8",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
