@@ -9,7 +9,9 @@
     "declaration": true,
     "outDir": "./dist",
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables `allowSyntheticDefaultImports` for type compatibility. */
   },
+  "include": ["./package.json"],
   "exclude": ["node_modules", "dist"]
 }

@@ -4,6 +4,8 @@
     "target": "es6",
     "jsx": "react-jsx",
     "types": ["vite/client", "@types/react", "systemjs"],
-    "noEmit": false
-  }
+    "noEmit": false,
+    "resolveJsonModule": true
+  },
+  "include": ["./package.json"]
 }
