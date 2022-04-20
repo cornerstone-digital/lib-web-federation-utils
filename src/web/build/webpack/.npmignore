@@ -1,5 +1,5 @@
-./helpers
-./index.ts
+helpers
+index.ts
 tsconfig.json
 node_modules
 .npmrc

@@ -12,6 +12,5 @@
     "resolveJsonModule": true,
     "esModuleInterop": true 
   },
-  "include": ["package.json","./"],
   "exclude": ["node_modules", "dist"]
 }

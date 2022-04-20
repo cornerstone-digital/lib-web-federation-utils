@@ -4,6 +4,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist/*"],
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.json",
