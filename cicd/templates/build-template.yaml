@@ -44,7 +44,7 @@ steps:
       Arguments: lerna:publish
 
   - script: git push origin HEAD:$(Build.SourceBranchName) --force --tags --porcelain
-    displayName: Push version commit
+    displayName: Push version tags
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: Docsite'
