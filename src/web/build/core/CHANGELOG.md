@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.10](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-core@1.1.0-alpha.9...@vf/federated-web-build-core@1.1.0-alpha.10) (2022-04-20)
+
+
+### Features
+
+* **build:** updated target type in tsconfig.json - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([9a2f34e](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/9a2f34e056ea1d25cc514e9c05fa433323fa0933))
+
+
+
+
+
 # 1.1.0-alpha.9 (2022-04-20)
 
 
