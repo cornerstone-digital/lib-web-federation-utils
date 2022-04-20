@@ -8,7 +8,6 @@ const compileFederatedModules = async (options: FederatedWebpackOptions) => {
   const componentArray = getDirectories(options.federatedModuleDir)
   const imports: Record<string, string> = {}
   const buildPromises: Promise<void>[] = []
-  //compile-module
 
   componentArray.forEach((componentName: string) => {
     const compiler = webpack(getFederatedWebpack(componentName, options))
