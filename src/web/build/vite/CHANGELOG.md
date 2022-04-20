@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.10](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-vite@1.1.0-alpha.9...@vf/federated-web-build-vite@1.1.0-alpha.10) (2022-04-20)
+
+
+### Features
+
+* **webpack:** added main to package.json ([801c8ff](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/801c8ff064c9879da37c17fd647b24e6a6c0226a))
+
+
+
+
+
 # 1.1.0-alpha.9 (2022-04-20)
 
 
