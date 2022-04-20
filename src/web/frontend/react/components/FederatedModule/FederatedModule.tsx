@@ -1,8 +1,11 @@
 import { ComponentType, lazy, LazyExoticComponent, ReactElement, useEffect, useState } from 'react'
 import useFederatedModule from '@vf/federated-web-frontend-react/hooks/useFederatedModule/useFederatedModule'
-import { FederatedModuleProps } from './FederatedModule.types'
+import { FederatedModuleProps, FederatedModuleType } from './FederatedModule.types'
 
-function FederatedModule<Props>({ module, props, stateComponents }: FederatedModuleProps<Props>): ReactElement | null {
+function FederatedModule<Props extends FederatedModuleType<unknown>>({
+  module,
+  stateComponents,
+}: FederatedModuleProps<Props>): ReactElement | null {
   const [Component, setComponent] = useState<LazyExoticComponent<ComponentType<Props>> | null>(null)
 
   const [mfeModule, isLoading, error] = useFederatedModule(module)
@@ -20,7 +23,7 @@ function FederatedModule<Props>({ module, props, stateComponents }: FederatedMod
   }
 
   // @ts-ignore
-  return Component && <Component {...props} />
+  return Component && <Component {...module.props} />
 }
 
 export default FederatedModule
