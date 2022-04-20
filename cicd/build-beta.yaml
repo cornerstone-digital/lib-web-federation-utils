@@ -16,4 +16,5 @@ steps:
   - template: templates/build-template.yaml
     parameters:
       versionScript: lerna:version:beta
+      publishScript: lerna:publish:beta
       releaseBranch: beta

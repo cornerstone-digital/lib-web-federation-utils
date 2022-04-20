@@ -3,6 +3,10 @@ parameters:
     displayName: Version Script
     type: string
     default: lerna:version
+  - name: publishScript
+    displayName: Publish Script
+    type: string
+    default: lerna:publish
   - name: releaseBranch
     displayName: Release branch
     type: string
@@ -41,7 +45,7 @@ steps:
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Publish'
     inputs:
-      Arguments: lerna:publish
+      Arguments: ${{parameters.publishScript}}
 
   - script: git push origin HEAD:$(Build.SourceBranchName) --force --tags --porcelain
     displayName: Push version tags
