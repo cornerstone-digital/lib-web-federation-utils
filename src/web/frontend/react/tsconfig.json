@@ -7,5 +7,6 @@
     "noEmit": false,
     "resolveJsonModule": true
   },
-  "include": ["./package.json"]
+  "include": ["package.json","./"],
+
 }
