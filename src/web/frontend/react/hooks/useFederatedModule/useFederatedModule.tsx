@@ -1,9 +1,9 @@
 import { SetStateAction, useEffect, useState } from 'react'
-import { FederatedModuleType } from '@vf/federated-web-frontend-react/components'
 import loadModuleManifest from '@vf/federated-web-frontend-react/helpers/loadModuleManifest'
 import hasStylesheetLoaded from '@vf/federated-web-frontend-react/helpers/hasStylesheetLoaded'
+import { FederatedMetaData } from '../../components/FederatedModule/FederatedModule.types'
 
-const useFederatedModule = (module: FederatedModuleType) => {
+function useFederatedModule(module: FederatedMetaData) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
   const [mfeModule, setMfeModule] = useState<System.Module | null>(null)

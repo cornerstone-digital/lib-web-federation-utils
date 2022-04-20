@@ -4,10 +4,13 @@ export type FederatedModulePropMap = Record<string, unknown>
 
 export type FederatedModules<T extends FederatedModulePropMap> = T
 
-export type FederatedModuleType<PropsType> = {
+export type FederatedMetaData = {
   scope: string
   name: string
   version: string
+}
+
+export type FederatedModuleType<PropsType> = FederatedMetaData & {
   props: PropsType
 }
 
