@@ -35,7 +35,7 @@ steps:
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Version'
     inputs:
-      Arguments: ${{parameters.versionScript}}
+      Arguments: ${{parameters.versionScript}} --message="***NO_CI*** Versions updated"
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Build'
