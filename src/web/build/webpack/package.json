@@ -13,7 +13,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "peerDependencies": {
-    "@vf/federated-web-build-core": "^1.1.0-alpha.13",
+    "@vf/federated-web-build-core": "^1.1.0-alpha.15",
     "@vf/federated-web-build-types": "^1.1.0-alpha.9",
     "compression-webpack-plugin": "^9.2.0",
     "html-webpack-plugin": "^5.5.0",
@@ -30,7 +30,7 @@
     "@types/mini-css-extract-plugin": "^2.5.1",
     "@types/terser-webpack-plugin": "^5.2.0",
     "@types/webpack-manifest-plugin": "^3.0.5",
-    "@vf/federated-web-build-core": "^1.1.0-alpha.13",
+    "@vf/federated-web-build-core": "^1.1.0-alpha.15",
     "@vf/federated-web-build-types": "^1.1.0-alpha.9",
     "compression-webpack-plugin": "^9.2.0",
     "html-webpack-plugin": "^5.5.0",

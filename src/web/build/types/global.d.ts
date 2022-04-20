@@ -1,3 +1,4 @@
+// filename: global.d.ts
 export type FederatedGlobalEnvironment = {
   appBasePaths: Record<string, string>
 }
