@@ -2,7 +2,7 @@ import webpack from 'webpack'
 import getFederatedWebpack from '@vf/federated-web-build-webpack/helpers/getFederatedWebpack/getFederatedWebpack'
 import { FederatedWebpackOptions } from '@vf/federated-web-build-types'
 import { writeFileSync } from 'fs'
-import getDirectories from '@vf/federated-web-build-core/helpers/getDirectories'
+import { getDirectories } from '@vf/federated-web-build-core/helpers'
 
 const compileFederatedModules = async (options: FederatedWebpackOptions) => {
   const componentArray = getDirectories(options.federatedModuleDir)
