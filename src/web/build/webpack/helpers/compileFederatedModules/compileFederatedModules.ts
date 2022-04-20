@@ -37,7 +37,7 @@ const compileFederatedModules = async (options: FederatedWebpackOptions) => {
   })
 
   await Promise.all(buildPromises)
-  writeFileSync(`${options.buildDir}/import-map.json`, JSON.stringify({ imports }, null, 2))
+  writeFileSync(`${options.buildDir}/federated/import-map.json`, JSON.stringify({ imports }, null, 2))
 }
 
 export default compileFederatedModules
