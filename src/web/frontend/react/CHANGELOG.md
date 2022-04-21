@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.21](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.20...@vf/federated-web-frontend-react@1.1.0-alpha.21) (2022-04-21)
+
+
+### Bug Fixes
+
+* **react:** changed FederatedModule implementation - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([abd27c6](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/abd27c6742dd73498152a527ea203c142b78ff1d))
+
+
+
+
+
 # [1.1.0-alpha.20](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.19...@vf/federated-web-frontend-react@1.1.0-alpha.20) (2022-04-21)
 
 
