@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.18](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.17...@vf/federated-web-frontend-react@1.1.0-alpha.18) (2022-04-21)
+
+
+### Bug Fixes
+
+* **react:** move deps from dependencies into dev and peer deps - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([1880e08](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/1880e081a7e17e9edde8c6e9c312daded8e2ed52))
+
+
+
+
+
 # [1.1.0-alpha.17](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.16...@vf/federated-web-frontend-react@1.1.0-alpha.17) (2022-04-20)
 
 
