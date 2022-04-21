@@ -4,6 +4,7 @@ import { FederatedModuleProps, FederatedModuleType } from './FederatedModule.typ
 
 function FederatedModule<Props extends FederatedModuleType<unknown>>({
   module,
+  props,
   stateComponents,
 }: FederatedModuleProps<Props>): ReactElement | null {
   const [Component, setComponent] = useState<LazyExoticComponent<ComponentType<Props>> | null>(null)
@@ -23,7 +24,7 @@ function FederatedModule<Props extends FederatedModuleType<unknown>>({
   }
 
   // @ts-ignore
-  return Component && <Component {...module.props} />
+  return Component && <Component {...props} />
 }
 
 export default FederatedModule
