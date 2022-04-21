@@ -1,8 +1,11 @@
 import Axios from 'axios'
 
-const loadModuleManifest = async (scope: string, moduleName: string, version: string) => {
+const loadModuleManifest = async (scope: string, moduleName: string, version?: string) => {
   const getAppBasePath = (scope: string) => window.Federated['appBasePaths'][scope]
-  const manifestUrl = `${getAppBasePath(scope)}/${moduleName}/${version}/manifest.json`
+  let manifestBaseUrl = `${getAppBasePath(scope)}/${moduleName}`
+  if (version) manifestBaseUrl += `/${version}`
+
+  const manifestUrl = `${manifestBaseUrl}/manifest.json`
   try {
     const { data } = await Axios.get(manifestUrl)
     return data

@@ -7,7 +7,7 @@ export type FederatedModules<T extends FederatedModulePropMap> = T
 export type FederatedMetaData = {
   scope: string
   name: string
-  version: string
+  version?: string
 }
 
 export type FederatedModuleType<PropsType> = FederatedMetaData & {
