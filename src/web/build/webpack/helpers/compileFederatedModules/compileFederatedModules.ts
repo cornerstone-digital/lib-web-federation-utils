@@ -25,7 +25,8 @@ const compileFederatedModules = async (options: FederatedWebpackOptions) => {
           stats?.compilation.chunks.forEach(chunk => {
             chunk.files.forEach(file => {
               if (file.includes('.js')) {
-                imports[file] = `${options.basePath}/${componentName}/${file}`
+                const fileName = file.split('.')[0]
+                imports[fileName] = `${options.basePath}/${componentName}/${file}`
               }
             })
           })
