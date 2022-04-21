@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.20](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.19...@vf/federated-web-frontend-react@1.1.0-alpha.20) (2022-04-21)
+
+
+### Bug Fixes
+
+* **react:** make react and react-dom externals - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([9103ad8](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/9103ad8b5b252ccea633848a9e6fe8d27ee671e2))
+
+
+
+
+
 # [1.1.0-alpha.19](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.18...@vf/federated-web-frontend-react@1.1.0-alpha.19) (2022-04-21)
 
 
