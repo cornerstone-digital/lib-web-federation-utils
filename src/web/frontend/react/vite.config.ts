@@ -11,6 +11,9 @@ const config: UserConfig = {
       formats: ['es'],
       name: 'federated-web-frontend-react',
     },
+    rollupOptions: {
+      external: ['react', 'react-dom'],
+    },
   },
   plugins: [dts({ entryRoot: './' }), react()],
 }
