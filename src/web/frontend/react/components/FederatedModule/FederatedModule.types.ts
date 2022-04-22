@@ -17,6 +17,7 @@ export type FederatedModuleType<PropsType> = FederatedMetaData & {
 export type FederatedModuleProps<ModuleType extends FederatedModuleType<unknown>> = {
   module: Pick<ModuleType, 'scope' | 'name' | 'version'>
   props: ModuleType['props']
+  fallback?: ReactElement
   stateComponents: {
     error?: () => ReactElement
   }

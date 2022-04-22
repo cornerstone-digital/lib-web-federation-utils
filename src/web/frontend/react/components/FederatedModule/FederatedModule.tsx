@@ -1,10 +1,11 @@
-import { ComponentType, lazy, LazyExoticComponent, ReactElement, useEffect, useState } from 'react'
+import { ComponentType, lazy, LazyExoticComponent, ReactElement, useEffect, useState, Suspense } from 'react'
 import useFederatedModule from '@vf/federated-web-frontend-react/hooks/useFederatedModule/useFederatedModule'
 import { FederatedModuleProps, FederatedModuleType } from './FederatedModule.types'
 
 function FederatedModule<Props extends FederatedModuleType<unknown>>({
   module,
   props,
+  fallback,
   stateComponents = {},
 }: FederatedModuleProps<Props>): ReactElement | null {
   const [Component, setComponent] = useState<LazyExoticComponent<ComponentType<Props>> | null>(null)
@@ -21,6 +22,18 @@ function FederatedModule<Props extends FederatedModuleType<unknown>>({
 
   if (error) {
     return ErrorComponent ? <ErrorComponent /> : <div>Error</div>
+  }
+
+  if (fallback) {
+    const FallbackComp = fallback
+    return (
+      Component && (
+        <Suspense fallback={FallbackComp}>
+          {/** @ts-ignore */}
+          <Component {...props} />
+        </Suspense>
+      )
+    )
   }
 
   // @ts-ignore
