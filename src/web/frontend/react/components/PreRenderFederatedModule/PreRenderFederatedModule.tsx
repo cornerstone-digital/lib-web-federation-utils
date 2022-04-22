@@ -9,7 +9,7 @@ function PreRenderFederatedModule<Props extends FederatedModuleType<unknown>>({
   fallback,
   stateComponents = {},
 }: FederatedModuleProps<Props>): ReactElement | null {
-  const FallbackComp = fallback
+  const FallbackComp: ReactElement = fallback
   const { name, scope } = module
   const compId = `${scope}-${name}`
 
@@ -18,11 +18,11 @@ function PreRenderFederatedModule<Props extends FederatedModuleType<unknown>>({
   const Fallback = staticComponent ? <div dangerouslySetInnerHTML={{ __html: staticComponent.innerHTML }} /> : <FallbackComp />
 
   return (
-    <div id={compId}>
-      <Suspense fallback={Fallback}>
+    <Suspense fallback={Fallback}>
+      <div id={compId}>
         <FederatedModule module={module} stateComponents={stateComponents} props={props} />
-      </Suspense>
-    </div>
+      </div>
+    </Suspense>
   )
 }
 
