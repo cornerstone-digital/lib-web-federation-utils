@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.28](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.27...@vf/federated-web-frontend-react@1.1.0-alpha.28) (2022-04-24)
+
+
+### Features
+
+* **updating Prerender component to grab fallback html first time :** description ([e62fd97](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/e62fd9764d1126e4ba47c7750071edd74709e17f))
+
+
+
+
+
 # [1.1.0-alpha.27](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.26...@vf/federated-web-frontend-react@1.1.0-alpha.27) (2022-04-22)
 
 
