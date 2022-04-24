@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.27](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.26...@vf/federated-web-frontend-react@1.1.0-alpha.27) (2022-04-22)
+
+
+### Features
+
+* **react:** slight tweak to component ([5dd454a](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/5dd454a8f076a55fac37459002020e04af98f3b8))
+
+
+
+
+
 # [1.1.0-alpha.26](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.25...@vf/federated-web-frontend-react@1.1.0-alpha.26) (2022-04-22)
 
 
