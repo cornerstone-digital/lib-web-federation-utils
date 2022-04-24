@@ -1,4 +1,4 @@
-import { ReactElement, Suspense } from 'react'
+import { ReactElement, Suspense, useEffect } from 'react'
 
 import FederatedModule from '../FederatedModule'
 import { FederatedModuleProps, FederatedModuleType } from '../FederatedModule/FederatedModule.types'
@@ -9,13 +9,23 @@ function PreRenderFederatedModule<Props extends FederatedModuleType<unknown>>({
   fallback,
   stateComponents = {},
 }: FederatedModuleProps<Props>): ReactElement | null {
+  // @ts-ignore
   const FallbackComp: ReactElement = fallback
   const { name, scope } = module
   const compId = `${scope}-${name}`
 
-  const staticComponent = document.getElementById(compId)
+  let renderCount = 0
+  let staticComponent
 
-  const Fallback = staticComponent ? <div dangerouslySetInnerHTML={{ __html: staticComponent.innerHTML }} /> : <FallbackComp />
+  if (renderCount === 0) {
+    staticComponent = document.getElementById(compId)
+  }
+
+  const Fallback = staticComponent ? <div dangerouslySetInnerHTML={{ __html: staticComponent.innerHTML }} /> : FallbackComp
+
+  useEffect(() => {
+    ++renderCount
+  })
 
   return (
     <Suspense fallback={Fallback}>
