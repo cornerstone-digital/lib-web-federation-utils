@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.29](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.28...@vf/federated-web-frontend-react@1.1.0-alpha.29) (2022-04-25)
+
+
+### Bug Fixes
+
+* **react:** add useFallback boolean - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([dc4a8b6](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/dc4a8b623b796ede43eedf491d2e19c203a0818e))
+
+
+
+
+
 # [1.1.0-alpha.28](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.27...@vf/federated-web-frontend-react@1.1.0-alpha.28) (2022-04-24)
 
 
