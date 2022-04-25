@@ -6,6 +6,7 @@ function FederatedModule<Props extends FederatedModuleType<unknown>>({
   module,
   props,
   fallback,
+  useFallback = true,
   stateComponents = {},
 }: FederatedModuleProps<Props>): ReactElement | null {
   const [Component, setComponent] = useState<LazyExoticComponent<ComponentType<Props>> | null>(null)
@@ -24,7 +25,7 @@ function FederatedModule<Props extends FederatedModuleType<unknown>>({
     return ErrorComponent ? <ErrorComponent /> : <div>Error</div>
   }
 
-  if (fallback) {
+  if (fallback && useFallback) {
     const FallbackComp = fallback
     return (
       Component && (

@@ -18,6 +18,7 @@ export type FederatedModuleProps<ModuleType extends FederatedModuleType<unknown>
   module: Pick<ModuleType, 'scope' | 'name' | 'version'>
   props: ModuleType['props']
   fallback?: ReactElement
+  useFallback?: boolean
   stateComponents: {
     error?: () => ReactElement
   }
