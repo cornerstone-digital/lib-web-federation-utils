@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.30](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.29...@vf/federated-web-frontend-react@1.1.0-alpha.30) (2022-04-26)
+
+
+### Bug Fixes
+
+* **@vf/federated-web-frontend-react:** Fixed PreRenderFederatedModule ([0502b1b](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/0502b1b848084be008d8fddb30358c5a962d7431))
+
+
+
+
+
 # [1.1.0-alpha.29](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-frontend-react@1.1.0-alpha.28...@vf/federated-web-frontend-react@1.1.0-alpha.29) (2022-04-25)
 
 
