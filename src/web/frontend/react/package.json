@@ -28,5 +28,8 @@
     "vite": "^2.9.5",
     "vite-dts": "^1.0.4",
     "vite-plugin-dts": "^1.1.0"
+  },
+  "dependencies": {
+    "@vfuk/lib-web-prerender": "^0.23.0"
   }
 }

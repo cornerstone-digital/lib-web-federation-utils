@@ -1,44 +1,47 @@
-import { ComponentType, lazy, LazyExoticComponent, ReactElement, useEffect, useState, Suspense } from 'react'
-import useFederatedModule from '@vf/federated-web-frontend-react/hooks/useFederatedModule/useFederatedModule'
-import { FederatedModuleProps, FederatedModuleType } from './FederatedModule.types'
+import { ReactElement, useRef, useState, useEffect } from 'react'
+import { useFederatedModule } from '../../hooks'
+
+import { FederatedModuleProps, FederatedModuleType } from '../FederatedModule/FederatedModule.types'
 
 function FederatedModule<Props extends FederatedModuleType<unknown>>({
   module,
   props,
   fallback,
-  useFallback = true,
   stateComponents = {},
 }: FederatedModuleProps<Props>): ReactElement | null {
-  const [Component, setComponent] = useState<LazyExoticComponent<ComponentType<Props>> | null>(null)
+  const FallbackComp: ReactElement | undefined = fallback
+  const { name, scope } = module
+  const compId = `${scope}-${name}`
 
-  const [mfeModule, isLoading, error] = useFederatedModule(module)
+  const staticComponent = useRef(document.getElementById(compId))
+  const [Component, setComponent] = useState<System.Module | null>(null)
+
+  const { mfeModule, isLoading, error } = useFederatedModule(module)
   const { error: ErrorComponent } = stateComponents
-
   useEffect(() => {
     if (!isLoading) {
-      const Comp = lazy(() => mfeModule as Promise<{ default: ComponentType<Props> }>)
-      setComponent(Comp)
+      setComponent(mfeModule)
     }
-  }, [mfeModule, isLoading, error])
+  }, [isLoading])
+
+  const Fallback = staticComponent.current // @ts-ignore
+    ? () => <div id={compId} dangerouslySetInnerHTML={{ __html: staticComponent.current.innerHTML }} />
+    : FallbackComp
+
+  if (Fallback && !Component) {
+    // @ts-ignore
+    return <Fallback />
+  }
 
   if (error) {
     return ErrorComponent ? <ErrorComponent /> : <div>Error</div>
   }
-
-  if (fallback && useFallback) {
-    const FallbackComp = fallback
-    return (
-      Component && (
-        <Suspense fallback={FallbackComp}>
-          {/** @ts-ignore */}
-          <Component {...props} />
-        </Suspense>
-      )
-    )
-  }
-
-  // @ts-ignore
-  return Component && <Component {...props} />
+  return (
+    <div id={compId}>
+      {/** @ts-ignore */}
+      <Component {...props} />
+    </div>
+  )
 }
 
 export default FederatedModule

@@ -944,7 +944,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.16.7"
 
-"@babel/plugin-transform-runtime@^7.17.0":
+"@babel/plugin-transform-runtime@^7.10.3", "@babel/plugin-transform-runtime@^7.17.0":
   version "7.17.0"
   resolved "https://registry.npmjs.org/@babel/plugin-transform-runtime/-/plugin-transform-runtime-7.17.0.tgz#0a2e08b5e2b2d95c4b1d3b3371a2180617455b70"
   integrity sha512-fr7zPWnKXNc1xoHfrIU9mN/4XKX4VLZ45Q+oMhfsYIaHvg7mHgmhfOy/ckRWqDK7XF3QDigRpkh5DKq6+clE8A==
@@ -3012,10 +3012,20 @@
   resolved "https://registry.npmjs.org/@types/minimist/-/minimist-1.2.2.tgz#ee771e2ba4b3dc5b372935d549fd9617bf345b8c"
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
-"@types/node@*", "@types/node@12.20.24", "@types/node@14.x", "@types/node@^17.0.5":
+"@types/node@*", "@types/node@14.x":
   version "14.18.13"
   resolved "https://registry.npmjs.org/@types/node/-/node-14.18.13.tgz#6ad4d9db59e6b3faf98dcfe4ca9d2aec84443277"
   integrity sha512-Z6/KzgyWOga3pJNS42A+zayjhPbf2zM3hegRQaOPnLOzEi86VV++6FLDWgR1LGrVCRufP/ph2daa3tEa5br1zA==
+
+"@types/node@12.20.24":
+  version "12.20.24"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.24.tgz#c37ac69cb2948afb4cef95f424fa0037971a9a5c"
+  integrity sha512-yxDeaQIAJlMav7fH5AQqPH1u8YIuhYJXYBzxaQ4PifsU0GDO38MSdmEDeRlIxrKbC6NbEaaEHDanWb+y30U8SQ==
+
+"@types/node@^17.0.5":
+  version "17.0.27"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.27.tgz#f4df3981ae8268c066e8f49995639f855469081e"
+  integrity sha512-4/Ke7bbWOasuT3kceBZFGakP1dYN2XFd8v2l9bqF2LNWrmeU07JLpp56aEeG6+Q3olqO5TvXpW0yaiYnZJ5CXg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -3291,6 +3301,15 @@
   dependencies:
     "@typescript-eslint/types" "5.19.0"
     eslint-visitor-keys "^3.0.0"
+
+"@vfuk/lib-web-prerender@^0.23.0":
+  version "0.23.0"
+  resolved "https://vfuk-digital.pkgs.visualstudio.com/_packaging/Web/npm/registry/@vfuk/lib-web-prerender/-/lib-web-prerender-0.23.0.tgz#973979af6e5412b1448ea2cd992e5617d7331f4b"
+  integrity sha1-lzl5r25UErFEjqLNmS5WF9czH0s=
+  dependencies:
+    "@babel/plugin-transform-runtime" "^7.10.3"
+    agentkeepalive "^4.1.3"
+    uuid "^8.2.0"
 
 "@vitejs/plugin-react@^1.3.1":
   version "1.3.1"
@@ -11715,7 +11734,7 @@ uuid@^3.3.2:
   resolved "https://registry.npmjs.org/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
-uuid@^8.3.2:
+uuid@^8.2.0, uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==

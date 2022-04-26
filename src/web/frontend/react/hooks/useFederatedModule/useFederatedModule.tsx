@@ -1,13 +1,13 @@
-import { SetStateAction, useEffect, useState } from 'react'
+import {SetStateAction, useEffect, useState} from 'react'
 import loadModuleManifest from '@vf/federated-web-frontend-react/helpers/loadModuleManifest'
 import hasStylesheetLoaded from '@vf/federated-web-frontend-react/helpers/hasStylesheetLoaded'
-import { FederatedMetaData } from '../../components/FederatedModule/FederatedModule.types'
+import {FederatedMetaData} from '../../components/FederatedModule/FederatedModule.types'
 
 function useFederatedModule(module: FederatedMetaData) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
   const [mfeModule, setMfeModule] = useState<System.Module | null>(null)
-  const { name, scope, version } = module
+  const {name, scope, version} = module
 
   useEffect(() => {
     async function runLoad(): Promise<void> {
@@ -28,9 +28,10 @@ function useFederatedModule(module: FederatedMetaData) {
               document.head.appendChild(link)
             }
           })
-
-        setMfeModule(System.import(name))
-        setIsLoading(false)
+        System.import(name).then((module) => {
+          setMfeModule(module.default)
+          setIsLoading(false)
+        })
       } catch (error) {
         setError(error as SetStateAction<any>)
         setIsLoading(false)
@@ -38,9 +39,10 @@ function useFederatedModule(module: FederatedMetaData) {
       }
     }
 
-    runLoad().then(() => {})
+    runLoad().then(() => {
+    })
   }, [scope, name])
-  return [mfeModule, isLoading, error]
+  return {mfeModule, isLoading, error}
 }
 
 export default useFederatedModule

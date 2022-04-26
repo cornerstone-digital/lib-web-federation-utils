@@ -1,4 +1,6 @@
 import Axios from 'axios'
+// @ts-ignore
+import hydrate from '@vfuk/lib-web-prerender/helpers/hydrate'
 
 const loadModuleManifest = async (scope: string, moduleName: string, version?: string) => {
   const getAppBasePath = (scope: string) => window.Federated['appBasePaths'][scope]
@@ -7,7 +9,13 @@ const loadModuleManifest = async (scope: string, moduleName: string, version?: s
 
   const manifestUrl = `${manifestBaseUrl}/manifest.json`
   try {
-    const { data } = await Axios.get(manifestUrl)
+    const { data } = await hydrate(
+      manifestUrl,
+      () => {
+        return Axios.get(manifestUrl)
+      },
+      true,
+    )
     return data
   } catch (error) {
     console.log(error)
