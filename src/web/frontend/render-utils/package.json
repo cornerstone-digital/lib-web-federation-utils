@@ -1,0 +1,24 @@
+{
+  "name": "@vf/federated-web-frontend-render-utils",
+  "version": "1.0.0",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "license": "MIT",
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "yalc:publish": "yalc publish --push"
+  },
+  "peerDependencies": {
+    "systemjs": "^6.12.1"
+  },
+  "devDependencies": {
+    "@types/systemjs": "^6.1.1",
+    "systemjs": "^6.12.1",
+    "vite": "^2.9.5",
+    "vite-dts": "^1.0.4",
+    "vite-plugin-dts": "^1.1.0"
+  }
+}

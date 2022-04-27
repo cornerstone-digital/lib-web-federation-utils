@@ -7,6 +7,10 @@ parameters:
     displayName: Publish Script
     type: string
     default: lerna:publish
+  - name: buildScript
+      displayName: Build Script
+      type: string
+      default: lerna:build
   - name: releaseBranch
     displayName: Release branch
     type: string
@@ -40,7 +44,7 @@ steps:
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Build'
     inputs:
-      Arguments: 'lerna:build'
+      Arguments: ${{parameters.buildScript}}
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Publish'

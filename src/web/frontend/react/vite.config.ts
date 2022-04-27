@@ -6,7 +6,7 @@ const config: UserConfig = {
   base: './',
   build: {
     lib: {
-      entry: 'index.ts',
+      entry: 'src/index.ts',
       fileName: () => 'index.js',
       formats: ['es'],
       name: 'federated-web-frontend-react',

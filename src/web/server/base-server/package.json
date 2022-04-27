@@ -1,0 +1,17 @@
+{
+  "name": "@vf/federated-web-server-base",
+  "version": "1.0.0",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "yalc:publish": "yalc publish --push"
+  },
+  "dependencies": {
+
+  }
+}

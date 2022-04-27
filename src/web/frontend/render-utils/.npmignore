@@ -1,0 +1,6 @@
+./src/helpers
+./src/index.ts
+vite.config.ts
+tsconfig.json
+node_modules
+.npmrc

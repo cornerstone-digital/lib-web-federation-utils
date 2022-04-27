@@ -1,5 +1,6 @@
 export type FederatedWebpackOptions = {
-  federatedModuleDir: string
+  entryFile: string
+  htmlFile: string
   buildDir: string
   basePath: string
   isDev: boolean
