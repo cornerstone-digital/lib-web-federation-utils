@@ -22,6 +22,7 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
     externals: {
       react: 'react',
       'react-dom': 'react-dom',
+      'styled-components': 'styled-components',
     },
     mode: options.isDev ? 'development' : 'production',
     module: {
