@@ -1,9 +1,11 @@
+#!/usr/bin/env ts-node
+
 import { Command } from 'commander'
 
-import federatedCommand from './commands/federated'
+import appCommand from './commands/app'
 
-import { version } from '../package.json'
+import { version } from './version'
 
 const program = new Command()
 
-program.version(version).description('Federation Utils CLI').addCommand(federatedCommand).parse(process.argv)
+program.version(version).description('Federation Utils CLI').addCommand(appCommand).parse(process.argv)

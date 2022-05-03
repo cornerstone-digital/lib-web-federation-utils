@@ -4,8 +4,7 @@
   "license": "MIT",
   "types": "index.d.ts",
   "scripts": {
-    "publish:alpha": "npm publish",
-    "yalc:publish": "yalc publish --push"
+    "yalc:publish": "yalc publish --push --yarn"
   },
   "devDependencies": {
     "webpack": "5.x"

@@ -1,11 +1,11 @@
 import type { FederatedApp, FederatedCliConfig } from '@vf/federated-web-cli/src/types'
 const { resolve } = require('path')
 
-type TestFederatedApps = {
+type FederatedApps = {
   TestComponent: FederatedApp<'webpack'>
 }
 
-const federatedApps: TestFederatedApps = {
+const federatedApps: FederatedApps = {
   TestComponent: {
     name: 'Availability Checker',
     description: 'Check if a broadband deal is available in your area',
@@ -14,13 +14,16 @@ const federatedApps: TestFederatedApps = {
     buildTool: 'webpack',
     htmlFile: resolve(process.cwd(), './src/federated-components/TestComponent/index.html'),
     defineEnv: {},
-    compilerConfig: {},
+    enableTypescript: true,
+    enableCssModules: true,
+    enableProgressBar: true,
   },
 }
 
 const config: FederatedCliConfig = {
   publicPath: '/test/public/path',
   buildFolder: resolve(process.cwd(), 'build'),
+  tsconfigPath: resolve(process.cwd(), './tsconfig.json'),
   federatedApps,
 }
 

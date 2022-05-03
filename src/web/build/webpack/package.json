@@ -10,26 +10,9 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.json",
-    "yalc:publish": "yalc publish --push"
+    "yalc:publish": "yalc publish --push --yarn"
   },
   "peerDependencies": {
-    "@vf/federated-web-build-core": "^1.1.0-alpha.15",
-    "@vf/federated-web-build-types": "^1.1.0-alpha.9",
-    "compression-webpack-plugin": "^9.2.0",
-    "html-webpack-plugin": "^5.5.0",
-    "mini-css-extract-plugin": "^2.6.0",
-    "terser-webpack-plugin": "^5.3.1",
-    "webpack": "5.x",
-    "webpack-assets-manifest": "5.1.0",
-    "webpack-manifest-plugin": "^5.0.0",
-    "webpackbar": "^5.0.2"
-  },
-  "devDependencies": {
-    "@types/compression-webpack-plugin": "^9.1.1",
-    "@types/html-webpack-plugin": "^3.2.6",
-    "@types/mini-css-extract-plugin": "^2.5.1",
-    "@types/terser-webpack-plugin": "^5.2.0",
-    "@types/webpack-manifest-plugin": "^3.0.5",
     "@vf/federated-web-build-core": "^1.1.0-alpha.15",
     "@vf/federated-web-build-types": "^1.1.0-alpha.10",
     "compression-webpack-plugin": "^9.2.0",
@@ -39,9 +22,26 @@
     "webpack": "5.x",
     "webpack-assets-manifest": "5.1.0",
     "webpack-manifest-plugin": "^5.0.0",
-    "webpackbar": "^5.0.2"
+    "webpackbar": "^5.0.2",
+    "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@types/compression-webpack-plugin": "^9.1.1",
+    "@types/html-webpack-plugin": "^3.2.6",
+    "@types/mini-css-extract-plugin": "^2.5.1",
+    "@types/terser-webpack-plugin": "^5.2.0",
+    "@types/webpack-manifest-plugin": "^3.0.5",
+    "compression-webpack-plugin": "^9.2.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.0",
+    "terser-webpack-plugin": "^5.3.1",
+    "webpack": "5.x",
+    "webpack-assets-manifest": "5.1.0",
+    "webpack-manifest-plugin": "^5.0.0",
+    "webpackbar": "^5.0.2",
+    "webpack-merge": "^5.8.0",
     "@vf/federated-web-build-core": "^1.1.0-alpha.16"
+  },
+  "devDependencies": {
   }
 }

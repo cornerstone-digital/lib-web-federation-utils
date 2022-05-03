@@ -1,17 +1,18 @@
 {
   "compilerOptions": {
-    "module": "esnext",
+    "module": "commonjs",
     "target": "es6",
     "jsx": "react-jsx",
     "rootDir": "./",
     "typeRoots": ["node_modules/@types"],
+    "types": ["node"],
     "moduleResolution": "node",
     "declaration": true,
-    "outDir": "./dist",
+    "outDir": "./bin",
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "scripts/genVersion.ts"],
   "exclude": ["node_modules"]
 }

@@ -14,7 +14,7 @@
     "lerna:build": "lerna run build --stream --since=main",
     "lerna:build:alpha": "lerna run build:alpha --since=alpha",
     "lerna:build:beta": "lerna run build:alpha --since=beta",
-    "lerna:bootstrap": "lerna bootstrap",
+    "lerna:bootstrap": "lerna bootstrap --nohoist=*",
     "lerna:version": "lerna version --no-push --conventional-commits --yes",
     "lerna:version:alpha": "lerna version --no-push --conventional-commits --conventional-prerelease --preid alpha --yes",
     "lerna:version:beta": "lerna version --no-push --conventional-commits --conventional-prerelease --preid beta --yes",

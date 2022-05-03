@@ -1,5 +1,6 @@
 import path from 'path'
 import webpack, { Configuration } from 'webpack'
+import merge from 'webpack-merge'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CompressionPlugin from 'compression-webpack-plugin'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
@@ -15,9 +16,9 @@ import { FederatedWebpackOptions } from '@vf/federated-web-build-types'
 type GetFederatedWebpackFunc = (componentName: string, options: FederatedWebpackOptions) => Configuration
 
 const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) => {
-  return {
+  const defaultConfig: Configuration = {
     entry: {
-      [`${componentName}`]: path.resolve(options.entryFile),
+      [`${componentName}`]: path.resolve(process.cwd(), `src/federated/components/${componentName}/index.ts`),
     },
     externals: {
       react: 'react',
@@ -27,13 +28,7 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
     },
     mode: options.isDev ? 'development' : 'production',
     module: {
-      rules: [
-        ...(options.webpackConfig.module?.rules ?? []),
-        {
-          test: /\.css$/,
-          use: [options.isDev ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader'],
-        },
-      ],
+      rules: [],
     },
     output: {
       chunkFilename: options.isDev ? '[name].js' : '[name].[contenthash].js',
@@ -43,14 +38,6 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
       publicPath: `${options.basePath}/${componentName}/`,
     },
     plugins: [
-      new WebpackBar({
-        color: 'blue',
-        name: componentName,
-      }),
-      new MiniCssExtractPlugin({
-        chunkFilename: options.isDev ? '[id].css' : `[id].[contenthash].css`,
-        filename: options.isDev ? '[name].css' : `[name].[contenthash].css`,
-      }),
       new webpack.optimize.AggressiveMergingPlugin(),
       new CompressionPlugin({
         algorithm: 'gzip',
@@ -82,13 +69,13 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
       new HtmlWebpackPlugin({
         buildTime: new Date().toISOString(),
         mountElementId: `mf-${componentName.toLowerCase()}`,
-        template: options.htmlFile,
+        template: path.resolve(process.cwd(), `src/federated/components/${componentName}/index.html`),
         title: `Vodafone: ${componentName}`,
       }),
       new WebpackManifestPlugin({ publicPath: `${options.basePath}/${componentName}/` }),
     ],
     resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.scss'],
+      extensions: ['.js', '.jsx', '.json', '.scss'],
       fallback: {
         fs: false,
         http: require.resolve('stream-http'),
@@ -97,6 +84,39 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
     },
     target: 'web',
   }
+
+  if (options.enableTypeScript) {
+    defaultConfig.resolve.extensions.push('.ts')
+    defaultConfig.resolve.extensions.push('.tsx')
+    defaultConfig.module.rules.push({
+      test: /\.tsx?$/,
+      use: [],
+    })
+  }
+
+  if (options.enableCssModules) {
+    defaultConfig.plugins.push(
+      new MiniCssExtractPlugin({
+        chunkFilename: options.isDev ? '[id].css' : '[id].[contenthash].css',
+        filename: options.isDev ? '[name].css' : '[name].[contenthash].css',
+      }),
+    )
+    defaultConfig.module.rules.push({
+      test: /\.css$/,
+      use: [options.isDev ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader'],
+    })
+  }
+
+  if (options.enableProgressBar) {
+    defaultConfig.plugins.push(
+      new WebpackBar({
+        color: 'blue',
+        name: componentName,
+      }),
+    )
+  }
+
+  return merge(defaultConfig, options.webpackConfig)
 }
 
 export default getFederatedWebpack

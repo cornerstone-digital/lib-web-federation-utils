@@ -8,9 +8,9 @@ parameters:
     type: string
     default: lerna:publish
   - name: buildScript
-      displayName: Build Script
-      type: string
-      default: lerna:build
+    displayName: Build Script
+    type: string
+    default: lerna:build
   - name: releaseBranch
     displayName: Release branch
     type: string

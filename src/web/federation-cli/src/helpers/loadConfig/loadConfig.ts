@@ -3,18 +3,28 @@ import { existsSync } from 'fs'
 // import { FederatedCliConfig } from '../../types'
 
 const loadConfig = async () => {
-  const configPath = resolve(process.cwd(), '.federated.config.ts')
-  const outputPath = resolve(process.cwd(), '.federated/federated.config.js')
-  if (existsSync(configPath)) {
+  const configName = '.federated.config'
+  const tsFederatedConfigPath = resolve(process.cwd(), `${configName}.ts`)
+  const jsFederatedConfigPath = resolve(process.cwd(), `${configName}.js`)
+  const isTs = existsSync(tsFederatedConfigPath)
+  const configFile = isTs ? tsFederatedConfigPath : jsFederatedConfigPath
+  const noConfigFound = !existsSync(configFile)
+  const compilePath = resolve(process.cwd(), `.federated/${configName}.js`)
+  const configPath = isTs ? compilePath : jsFederatedConfigPath
+
+  if (noConfigFound) {
+    throw new Error(`No federated config found. Please run 'vf-federated init' to create a config file.`)
+  }
+
+  if (isTs) {
     require('esbuild').buildSync({
-      entryPoints: [configPath],
-      outfile: outputPath,
+      entryPoints: [tsFederatedConfigPath],
+      outfile: compilePath,
       target: 'es6',
     })
-
-    return require(outputPath)
   }
-  throw new Error(`No federated config found at ${configPath}. Please run 'federated init' to create a config file.`)
+
+  return require(configPath)
 }
 
 export default loadConfig

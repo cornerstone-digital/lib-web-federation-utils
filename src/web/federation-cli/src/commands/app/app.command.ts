@@ -1,16 +1,16 @@
 import { Command } from 'commander'
 import actions from './actions'
 
-const federatedCommand = new Command('federated')
+const appCommand = new Command('app')
 
 /*
  * Compile federated
  */
-federatedCommand.command('compile').description('Compiles one or more federated components').action(actions.compileApps)
+appCommand.command('compile').description('Compiles one or more federated components').action(actions.compileApps)
 
 /*
  * Start federated
  */
 // federatedCommand.command('start').description('Starts one or more federated components').action(actions.startApps)
 
-export default federatedCommand
+export default appCommand

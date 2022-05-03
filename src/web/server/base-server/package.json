@@ -9,7 +9,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.json",
-    "yalc:publish": "yalc publish --push"
+    "yalc:publish": "yalc publish --push --yarn"
   },
   "dependencies": {
 
