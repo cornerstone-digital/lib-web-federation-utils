@@ -1,6 +1,5 @@
 import path from 'path'
 import webpack, { Configuration } from 'webpack'
-import merge from 'webpack-merge'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CompressionPlugin from 'compression-webpack-plugin'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
@@ -18,7 +17,7 @@ type GetFederatedWebpackFunc = (componentName: string, options: FederatedWebpack
 const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) => {
   const defaultConfig: Configuration = {
     entry: {
-      [`${componentName}`]: path.resolve(process.cwd(), `src/federated/components/${componentName}/index.ts`),
+      [`${componentName}`]: path.resolve(process.cwd(), `src/federated/components/${componentName}/src/index.ts`),
     },
     externals: {
       react: 'react',
@@ -69,7 +68,7 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
       new HtmlWebpackPlugin({
         buildTime: new Date().toISOString(),
         mountElementId: `mf-${componentName.toLowerCase()}`,
-        template: path.resolve(process.cwd(), `src/federated/components/${componentName}/index.html`),
+        template: path.resolve(process.cwd(), `src/federated/components/${componentName}/src/index.html`),
         title: `Vodafone: ${componentName}`,
       }),
       new WebpackManifestPlugin({ publicPath: `${options.basePath}/${componentName}/` }),
@@ -116,7 +115,7 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
     )
   }
 
-  return merge(defaultConfig, options.webpackConfig)
+  return defaultConfig
 }
 
 export default getFederatedWebpack

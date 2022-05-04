@@ -12,6 +12,10 @@ export type FederatedApp<BuildType extends BuildTypes> = {
   enableCssModules: boolean
   enableTypescript: boolean
   enableProgressBar: boolean
+  copyThemeAssets?: {
+    ws2?: boolean
+    ws10?: boolean
+  }
 }
 
 export type FederatedCliConfig = {

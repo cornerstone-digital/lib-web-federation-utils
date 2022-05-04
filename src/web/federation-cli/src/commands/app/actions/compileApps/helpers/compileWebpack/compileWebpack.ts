@@ -7,12 +7,12 @@ const compileWebpack = (app: FederatedApp<unknown>, config: FederatedCliConfig) 
   const webpackConfig = getFederatedWebpack(app.name, {
     basePath: config.publicPath,
     buildDir: config.buildFolder,
+    copyThemeAssets: app.copyThemeAssets,
     defineEnv: app.defineEnv,
     enableCssModules: app.enableCssModules,
     enableProgressBar: app.enableProgressBar,
     enableTypeScript: app.enableTypescript,
-    isDev: false,
-    webpackConfig: (app.compilerConfig ?? {}) as Configuration,
+    isDev: process.env.NODE_ENV === 'development',
   })
   const compiler = webpack(webpackConfig)
   const imports: Record<string, string> = {}
@@ -21,9 +21,11 @@ const compileWebpack = (app: FederatedApp<unknown>, config: FederatedCliConfig) 
   compiler.run((err, stats) => {
     if (err) {
       console.error(err)
+      throw err
     }
     if (stats?.hasErrors()) {
       console.error(stats?.toString())
+      throw new Error('Webpack compilation failed')
     }
 
     stats?.compilation.chunks.forEach(chunk => {
@@ -35,7 +37,7 @@ const compileWebpack = (app: FederatedApp<unknown>, config: FederatedCliConfig) 
       })
     })
 
-    // Write imports to file
+    // // Write imports to file
     const importsFile = `${config.buildFolder}/federated/${nameWithoutSpaces}/imports.json`
     writeFileSync(importsFile, JSON.stringify({ imports }))
   })

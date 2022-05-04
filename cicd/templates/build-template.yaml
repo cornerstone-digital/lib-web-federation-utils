@@ -54,8 +54,8 @@ steps:
   - script: git push origin HEAD:$(Build.SourceBranchName) --force --tags --porcelain
     displayName: Push version tags
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact: Docsite'
-    inputs:
-      ArtifactName: docsite
-      PathtoPublish: src/docsite/build
+#  - task: PublishBuildArtifacts@1
+#    displayName: 'Publish Artifact: Docsite'
+#    inputs:
+#      ArtifactName: docsite
+#      PathtoPublish: src/docsite/build
