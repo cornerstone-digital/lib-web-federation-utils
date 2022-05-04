@@ -9,10 +9,8 @@ const federatedApps: FederatedApps = {
   TestComponent: {
     name: 'Availability Checker',
     description: 'Check if a broadband deal is available in your area',
-    entryFile: resolve(process.cwd(), './src/federated-components/TestComponent/index.tsx'),
     port: 8001,
     buildTool: 'webpack',
-    htmlFile: resolve(process.cwd(), './src/federated-components/TestComponent/index.html'),
     defineEnv: {},
     enableTypescript: true,
     enableCssModules: true,
