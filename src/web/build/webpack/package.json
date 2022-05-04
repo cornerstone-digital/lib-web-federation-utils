@@ -1,6 +1,6 @@
 {
   "name": "@vf/federated-web-build-webpack",
-  "version": "1.1.0-alpha.29",
+  "version": "1.1.0-alpha.30",
   "license": "MIT",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -22,8 +22,8 @@
     "webpack": "5.x",
     "webpack-assets-manifest": "5.1.0",
     "webpack-manifest-plugin": "^5.0.0",
-    "webpackbar": "^5.0.2",
-    "webpack-merge": "^5.8.0"
+    "webpack-merge": "^5.8.0",
+    "webpackbar": "^5.0.2"
   },
   "dependencies": {
     "@types/compression-webpack-plugin": "^9.1.1",
@@ -31,6 +31,7 @@
     "@types/mini-css-extract-plugin": "^2.5.1",
     "@types/terser-webpack-plugin": "^5.2.0",
     "@types/webpack-manifest-plugin": "^3.0.5",
+    "@vf/federated-web-build-core": "^1.1.0-alpha.17",
     "compression-webpack-plugin": "^9.2.0",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.6.0",
@@ -38,10 +39,7 @@
     "webpack": "5.x",
     "webpack-assets-manifest": "5.1.0",
     "webpack-manifest-plugin": "^5.0.0",
-    "webpackbar": "^5.0.2",
     "webpack-merge": "^5.8.0",
-    "@vf/federated-web-build-core": "^1.1.0-alpha.16"
-  },
-  "devDependencies": {
+    "webpackbar": "^5.0.2"
   }
 }

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.17](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-core@1.1.0-alpha.16...@vf/federated-web-build-core@1.1.0-alpha.17) (2022-05-04)
+
+
+### Features
+
+* **cli:** alpha build ([c78ee1b](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/c78ee1b780391d96ed7ad40e5b8749a72b3c4770))
+
+
+
+
+
 # [1.1.0-alpha.16](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-core@1.1.0-alpha.15...@vf/federated-web-build-core@1.1.0-alpha.16) (2022-04-20)
 
 

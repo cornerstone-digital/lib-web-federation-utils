@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.30](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-webpack@1.1.0-alpha.27...@vf/federated-web-build-webpack@1.1.0-alpha.30) (2022-05-04)
+
+
+### Bug Fixes
+
+* **webpack:** added react-is to webpack externals - [#176206](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/176206) ([ceb1170](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/ceb11700e1409be022ef4585173faeedb839d51d))
+* **webpack:** added styled-components to webpack externals - [#176206](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/176206) ([0bdaa34](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/0bdaa3484d08380ac773016c25a832c43d88f8a0))
+* **webpack:** aligned package.json version - [#176206](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/176206) ([38804bb](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/38804bbe5192cd5f8c5b8244caff35c711b26503))
+
+
+### Features
+
+* **cli:** alpha build ([c78ee1b](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/c78ee1b780391d96ed7ad40e5b8749a72b3c4770))
+
+
+
+
+
 # [1.1.0-alpha.29](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-webpack@1.1.0-alpha.27...@vf/federated-web-build-webpack@1.1.0-alpha.29) (2022-04-27)
 
 
