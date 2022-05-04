@@ -1,14 +1,11 @@
 {
   "name": "@vf/federated-web-cli",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "main": "./bin/src/index.js",
   "types": "./bin/src/index.d.ts",
   "bin": {
     "vf-federated": "./bin/src/index.js"
   },
-  "files": [
-    "bin"
-  ],
   "scripts": {
     "gen:version": "ts-node ./scripts/genVersion.ts",
     "prebuild": "rimraf bin && yarn gen:version",
@@ -20,7 +17,7 @@
     "cli": "ts-node src/index.ts"
   },
   "dependencies": {
-    "@vf/federated-web-build-webpack": "^1.1.0-alpha.30",
+    "@vf/federated-web-build-webpack": "^1.1.0-alpha.31",
     "commander": "^9.2.0",
     "esbuild": "^0.14.38",
     "inquirer": "^8.2.4",
