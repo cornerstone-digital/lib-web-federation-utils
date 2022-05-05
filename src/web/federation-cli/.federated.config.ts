@@ -5,6 +5,7 @@ type FederatedApps = {
   TestComponent: FederatedApp<'webpack'>
 }
 
+// Comment
 const federatedApps: FederatedApps = {
   TestComponent: {
     name: 'Availability Checker',
