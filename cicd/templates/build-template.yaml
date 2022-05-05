@@ -49,7 +49,7 @@ steps:
   - script: |
       git add .
       git commit -m "***NO_CI*** Versions updated"
-      displayName: Commit versions
+    displayName: Commit versions
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Publish'
