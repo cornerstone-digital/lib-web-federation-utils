@@ -1,6 +1,5 @@
 import { resolve } from 'path'
 import { existsSync } from 'fs'
-// import { FederatedCliConfig } from '../../types'
 
 const loadConfig = async () => {
   const configName = '.federated.config'

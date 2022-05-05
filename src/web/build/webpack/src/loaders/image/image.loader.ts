@@ -7,7 +7,7 @@ const imageLoader = (loaderOptions: FederatedWebpackOptions['loaderConfig']['ima
       use: {
         loader: 'url-loader',
         options: {
-          limit: loaderOptions.limit || 8192,
+          limit: loaderOptions || 8192,
           name: 'images/[name].[ext]?[hash]',
           publicPath: loaderOptions.publicPath,
         },

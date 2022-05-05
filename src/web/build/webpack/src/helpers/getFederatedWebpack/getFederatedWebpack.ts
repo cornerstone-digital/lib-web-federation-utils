@@ -1,8 +1,9 @@
-import path from 'path'
+import path, { resolve } from 'path'
 import webpack, { Configuration } from 'webpack'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CompressionPlugin from 'compression-webpack-plugin'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
 import WebpackBar from 'webpackbar'
 
 import loaders from '../../loaders'
@@ -11,12 +12,54 @@ import loaders from '../../loaders'
 import BrotliPlugin from 'brotli-webpack-plugin'
 
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import { FederatedWebpackOptions } from '@vf/federated-web-build-types'
+import { CopyPath, FederatedWebpackOptions } from '@vf/federated-web-build-types'
 import getBabelOptions from '../getBabelOptions'
 
 type GetFederatedWebpackFunc = (componentName: string, options: FederatedWebpackOptions) => Configuration
 
 const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) => {
+  const babelOptions = getBabelOptions({
+    aliases: options.loaderConfig.babel.aliases,
+    enableCssModules: options.enableCssModules,
+    enableJsxControlStatements: options.enableJsxControlStatements,
+  })
+
+  const copyFilesMap: CopyPath[] = []
+
+  if (options.copyThemeAssets.copyPaths) {
+    copyFilesMap.push(...options.copyThemeAssets.copyPaths)
+  }
+
+  if (options.copyThemeAssets.ws2) {
+    copyFilesMap.push(
+      ...[
+        {
+          from: resolve(process.cwd(), 'node_modules/@vfuk/core-theme-ws2/assets/fonts'),
+          to: './ws2/fonts',
+        },
+        {
+          from: resolve(process.cwd(), 'node_modules/@vfuk/core-theme-ws2/assets/icons'),
+          to: './ws2/icons',
+        },
+        {
+          from: resolve(process.cwd(), 'node_modules/@vfuk/core-theme-ws2/assets/logos'),
+          to: './ws2/logos',
+        },
+      ],
+    )
+  }
+
+  if (options.copyThemeAssets.ws10) {
+    copyFilesMap.push(
+      ...[
+        {
+          from: resolve(process.cwd(), 'node_modules/@vfuk/core-theme-ws10/assets/icons'),
+          to: './ws10/icons',
+        },
+      ],
+    )
+  }
+
   const defaultConfig: Configuration = {
     entry: {
       [`${componentName}`]: path.resolve(process.cwd(), `src/federated/components/${componentName}/src/index.ts`),
@@ -30,13 +73,7 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
     mode: options.isDev ? 'development' : 'production',
     module: {
       rules: [
-        loaders.javascriptLoader(
-          getBabelOptions({
-            aliases: options.loaderConfig.babel.aliases,
-            enableCssModules: options.enableCssModules,
-            enableJsxControllerStatements: options.enableJsxControllerStatements,
-          }),
-        ),
+        loaders.javascriptLoader(babelOptions),
         loaders.fontLoader(options.loaderConfig.font),
         loaders.jsonLoader,
         loaders.svgLoader,
@@ -83,6 +120,9 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
         title: `Vodafone: ${componentName}`,
       }),
       new WebpackManifestPlugin({ publicPath: `${options.basePath}/${componentName}/` }),
+      new CopyWebpackPlugin({
+        patterns: copyFilesMap,
+      }),
     ],
     resolve: {
       extensions: ['.js', '.jsx', '.json', '.scss'],
@@ -98,15 +138,7 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
   if (options.enableTypeScript) {
     defaultConfig.resolve.extensions.push('.ts')
     defaultConfig.resolve.extensions.push('.tsx')
-    defaultConfig.module.rules.push(
-      loaders.typescriptLoader(
-        getBabelOptions({
-          aliases: options.loaderConfig.babel.aliases,
-          enableCssModules: options.enableCssModules,
-          enableJsxControllerStatements: options.enableJsxControllerStatements,
-        }),
-      ),
-    )
+    defaultConfig.module.rules.push(loaders.typescriptLoader(babelOptions))
   }
 
   if (options.enableProgressBar) {

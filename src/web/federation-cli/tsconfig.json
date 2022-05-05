@@ -11,7 +11,12 @@
     "outDir": "./bin",
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "*": ["./src/*"],
+      "@typeDefs": ["./src/types"],
+      "@helpers/*": ["./src/helpers/*"]
+    }
   },
   "include": ["src/**/*", "scripts/genVersion.ts"],
   "exclude": ["node_modules"]

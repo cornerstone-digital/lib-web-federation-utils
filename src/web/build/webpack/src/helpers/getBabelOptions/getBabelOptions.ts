@@ -1,6 +1,6 @@
 export type LoaderOptions = {
   enableCssModules?: boolean
-  enableJsxControllerStatements?: boolean
+  enableJsxControlStatements?: boolean
   aliases?: Record<string, string>
 }
 
@@ -72,7 +72,7 @@ const getBabelOptions = (loaderOptions: LoaderOptions): BabelConfig => {
     ])
   }
 
-  if (loaderOptions.enableJsxControllerStatements) {
+  if (loaderOptions.enableJsxControlStatements) {
     plugins.push('jsx-control-statements')
   }
 

@@ -1,11 +1,14 @@
 import inquirer from 'inquirer'
-import loadConfig from '../../../../helpers/loadConfig'
-import tsConfigRegister from '../../../../helpers/tsConfigRegister'
-import { FederatedApp, FederatedCliConfig } from '../../../../types'
+import loadConfig from '@helpers/loadConfig'
+import tsConfigRegister from '@helpers/tsConfigRegister'
+import { FederatedApp } from '@vf/federated-web-build-types'
+import { FederatedCliConfig } from '@typeDefs'
+
 import compileWebpack from './helpers/compileWebpack'
 
 const buildAppsAction = async () => {
   // Load config
+
   const config: FederatedCliConfig = await loadConfig()
 
   tsConfigRegister(config.tsconfigPath)

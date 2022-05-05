@@ -1,7 +1,8 @@
 import { getFederatedWebpack } from '@vf/federated-web-build-webpack'
-import webpack, { Configuration } from 'webpack'
+import webpack from 'webpack'
 import { writeFileSync } from 'fs'
-import { FederatedApp, FederatedCliConfig } from '../../../../../../types'
+import { FederatedCliConfig } from '@typeDefs'
+import { FederatedApp } from '@vf/federated-web-build-types'
 
 const compileWebpack = (app: FederatedApp<unknown>, config: FederatedCliConfig) => {
   const webpackConfig = getFederatedWebpack(app.name, {
@@ -10,9 +11,12 @@ const compileWebpack = (app: FederatedApp<unknown>, config: FederatedCliConfig) 
     copyThemeAssets: app.copyThemeAssets,
     defineEnv: app.defineEnv,
     enableCssModules: app.enableCssModules,
+    enableJsxControlStatements: app.enableJsxControlStatements,
     enableProgressBar: app.enableProgressBar,
-    enableTypeScript: app.enableTypescript,
+    enableTypeScript: app.enableTypeScript,
     isDev: process.env.NODE_ENV === 'development',
+    loaderConfig: app.loaderConfig,
+    tsConfigPath: app.tsConfigPath,
   })
   const compiler = webpack(webpackConfig)
   const imports: Record<string, string> = {}
