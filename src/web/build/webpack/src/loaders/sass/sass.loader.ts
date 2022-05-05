@@ -38,13 +38,6 @@ const sassLoader = (sassResources: string[]): RuleSetRule => {
             sourceMap: true,
           },
         },
-        {
-          loader: 'esbuild-loader',
-          options: {
-            loader: 'css',
-            minify: true,
-          },
-        },
         ...baseLoaders,
       ],
     ],

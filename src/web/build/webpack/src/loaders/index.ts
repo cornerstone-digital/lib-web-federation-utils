@@ -2,7 +2,7 @@ import fontLoader from './font'
 import htmlLoader from './html'
 import imageLoader from './image'
 import javascriptLoader from './javascript'
-import jsonLoader from './json'
+// import jsonLoader from './json'
 import markdownLoader from './md'
 import sassLoader from './sass'
 import svgLoader from './svg'
@@ -13,7 +13,7 @@ export default {
   htmlLoader,
   imageLoader,
   javascriptLoader,
-  jsonLoader,
+  // jsonLoader,
   markdownLoader,
   sassLoader,
   svgLoader,

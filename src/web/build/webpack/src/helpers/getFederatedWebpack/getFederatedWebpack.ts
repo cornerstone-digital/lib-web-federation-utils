@@ -75,7 +75,7 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
       rules: [
         loaders.javascriptLoader(babelOptions),
         loaders.fontLoader(options.loaderConfig.font),
-        loaders.jsonLoader,
+        // loaders.jsonLoader,
         loaders.svgLoader,
         loaders.imageLoader(options.loaderConfig.image),
         loaders.sassLoader(options.loaderConfig.sass.resources),
