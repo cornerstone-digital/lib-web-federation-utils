@@ -1,12 +1,9 @@
 import { RuleSetRule } from 'webpack'
+import { BabelConfig } from '../../helpers/getBabelOptions'
 
-const typescriptLoader = (tsConfigPath: string): RuleSetRule => ({
-  loader: 'esbuild-loader',
-  options: {
-    loader: 'tsx',
-    target: 'es2015',
-    tsconfigRaw: require(tsConfigPath),
-  },
+const typescriptLoader = (babelConfig: BabelConfig): RuleSetRule => ({
+  loader: 'babel-loader',
+  options: babelConfig,
   test: /\.tsx?$/,
 })
 

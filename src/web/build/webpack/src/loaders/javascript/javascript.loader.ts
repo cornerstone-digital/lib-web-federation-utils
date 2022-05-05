@@ -1,12 +1,10 @@
 import { RuleSetRule } from 'webpack'
+import { BabelConfig } from '../../helpers/getBabelOptions'
 
-const javascriptLoader: RuleSetRule = {
-  loader: 'esbuild-loader',
-  options: {
-    loader: 'jsx',
-    target: 'es2015',
-  },
+const javascriptLoader = (babelConfig: BabelConfig): RuleSetRule => ({
+  loader: 'babel-loader',
+  options: babelConfig,
   test: /\.jsx?$/,
-}
+})
 
 export default javascriptLoader

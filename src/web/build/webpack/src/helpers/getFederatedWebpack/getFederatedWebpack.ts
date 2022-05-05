@@ -4,7 +4,6 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CompressionPlugin from 'compression-webpack-plugin'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 import WebpackBar from 'webpackbar'
-import { ESBuildMinifyPlugin } from 'esbuild-loader'
 
 import loaders from '../../loaders'
 
@@ -13,6 +12,7 @@ import BrotliPlugin from 'brotli-webpack-plugin'
 
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { FederatedWebpackOptions } from '@vf/federated-web-build-types'
+import getBabelOptions from '../getBabelOptions'
 
 type GetFederatedWebpackFunc = (componentName: string, options: FederatedWebpackOptions) => Configuration
 
@@ -30,7 +30,13 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
     mode: options.isDev ? 'development' : 'production',
     module: {
       rules: [
-        loaders.javascriptLoader,
+        loaders.javascriptLoader(
+          getBabelOptions({
+            aliases: options.loaderConfig.babel.aliases,
+            enableCssModules: options.enableCssModules,
+            enableJsxControllerStatements: options.enableJsxControllerStatements,
+          }),
+        ),
         loaders.fontLoader(options.loaderConfig.font),
         loaders.jsonLoader,
         loaders.svgLoader,
@@ -38,14 +44,6 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
         loaders.sassLoader(options.loaderConfig.sass.resources),
         loaders.markdownLoader,
         loaders.htmlLoader,
-      ],
-    },
-    optimization: {
-      minimizer: [
-        new ESBuildMinifyPlugin({
-          css: true,
-          target: 'es2015',
-        }),
       ],
     },
     output: {
@@ -100,7 +98,15 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
   if (options.enableTypeScript) {
     defaultConfig.resolve.extensions.push('.ts')
     defaultConfig.resolve.extensions.push('.tsx')
-    defaultConfig.module.rules.push(loaders.typescriptLoader(options.tsConfigPath))
+    defaultConfig.module.rules.push(
+      loaders.typescriptLoader(
+        getBabelOptions({
+          aliases: options.loaderConfig.babel.aliases,
+          enableCssModules: options.enableCssModules,
+          enableJsxControllerStatements: options.enableJsxControllerStatements,
+        }),
+      ),
+    )
   }
 
   if (options.enableProgressBar) {
