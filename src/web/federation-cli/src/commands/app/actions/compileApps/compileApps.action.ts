@@ -1,8 +1,8 @@
 import inquirer from 'inquirer'
-import loadConfig from '@helpers/loadConfig'
-import tsConfigRegister from '@helpers/tsConfigRegister'
+import loadConfig from '../../../../helpers/loadConfig'
+import tsConfigRegister from '../../../../helpers/tsConfigRegister'
 import { FederatedApp } from '@vf/federated-web-build-types'
-import { FederatedCliConfig } from '@typeDefs'
+import { FederatedCliConfig } from '../../../../types'
 
 import compileWebpack from './helpers/compileWebpack'
 
