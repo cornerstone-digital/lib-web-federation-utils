@@ -1,6 +1,6 @@
 {
   "name": "@vf/federated-web-cli",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "main": "./bin/src/index.js",
   "types": "./bin/src/index.d.ts",
   "bin": {
