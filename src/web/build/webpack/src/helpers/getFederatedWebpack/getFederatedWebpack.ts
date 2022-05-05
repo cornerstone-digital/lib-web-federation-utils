@@ -4,11 +4,13 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CompressionPlugin from 'compression-webpack-plugin'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 import WebpackBar from 'webpackbar'
+import { ESBuildMinifyPlugin } from 'esbuild-loader'
+
+import loaders from '../../loaders'
 
 // @ts-ignore
 import BrotliPlugin from 'brotli-webpack-plugin'
 
-import TerserPlugin from 'terser-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { FederatedWebpackOptions } from '@vf/federated-web-build-types'
 
@@ -27,7 +29,24 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
     },
     mode: options.isDev ? 'development' : 'production',
     module: {
-      rules: [],
+      rules: [
+        loaders.javascriptLoader,
+        loaders.fontLoader(options.loaderConfig.font),
+        loaders.jsonLoader,
+        loaders.svgLoader,
+        loaders.imageLoader(options.loaderConfig.image),
+        loaders.sassLoader(options.loaderConfig.sass.resources),
+        loaders.markdownLoader,
+        loaders.htmlLoader,
+      ],
+    },
+    optimization: {
+      minimizer: [
+        new ESBuildMinifyPlugin({
+          css: true,
+          target: 'es2015',
+        }),
+      ],
     },
     output: {
       chunkFilename: options.isDev ? '[name].js' : '[name].[contenthash].js',
@@ -37,6 +56,10 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
       publicPath: `${options.basePath}/${componentName}/`,
     },
     plugins: [
+      new MiniCssExtractPlugin({
+        chunkFilename: options.isDev ? '[id].css' : '[id].[contenthash].css',
+        filename: options.isDev ? '[name].css' : '[name].[contenthash].css',
+      }),
       new webpack.optimize.AggressiveMergingPlugin(),
       new CompressionPlugin({
         algorithm: 'gzip',
@@ -53,16 +76,6 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
       new webpack.LoaderOptionsPlugin({
         debug: false,
         minimize: true,
-      }),
-      new TerserPlugin({
-        terserOptions: {
-          compress: {},
-          ie8: false,
-          keep_fnames: true,
-          mangle: true,
-          parse: {},
-          toplevel: false,
-        },
       }),
       new webpack.DefinePlugin(options.defineEnv),
       new HtmlWebpackPlugin({
@@ -87,23 +100,7 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
   if (options.enableTypeScript) {
     defaultConfig.resolve.extensions.push('.ts')
     defaultConfig.resolve.extensions.push('.tsx')
-    defaultConfig.module.rules.push({
-      test: /\.tsx?$/,
-      use: [],
-    })
-  }
-
-  if (options.enableCssModules) {
-    defaultConfig.plugins.push(
-      new MiniCssExtractPlugin({
-        chunkFilename: options.isDev ? '[id].css' : '[id].[contenthash].css',
-        filename: options.isDev ? '[name].css' : '[name].[contenthash].css',
-      }),
-    )
-    defaultConfig.module.rules.push({
-      test: /\.css$/,
-      use: [options.isDev ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader'],
-    })
+    defaultConfig.module.rules.push(loaders.typescriptLoader(options.tsConfigPath))
   }
 
   if (options.enableProgressBar) {
