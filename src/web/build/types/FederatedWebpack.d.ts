@@ -7,11 +7,15 @@ export type FederatedWebpackOptions = {
   enableCssModules: boolean
   enableTypeScript: boolean
   enableProgressBar: boolean
+  enableJsxControllerStatements: boolean
   copyThemeAssets?: {
     ws2?: boolean
     ws10?: boolean
   }
   loaderConfig: {
+    babel: {
+      aliases: Record<string, string>
+    }
     font: {
       publicPath: string
     }
