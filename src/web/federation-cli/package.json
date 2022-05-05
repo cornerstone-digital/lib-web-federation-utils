@@ -1,6 +1,6 @@
 {
   "name": "@vf/federated-web-cli",
-  "version": "1.0.0-alpha.7",
+  "version": "1.0.0-alpha.8",
   "main": "./bin/src/index.js",
   "types": "./bin/src/index.d.ts",
   "bin": {
@@ -17,7 +17,7 @@
     "cli": "ts-node src/index.ts"
   },
   "dependencies": {
-    "@vf/federated-web-build-webpack": "^1.1.0-alpha.34",
+    "@vf/federated-web-build-webpack": "^1.1.0-alpha.35",
     "commander": "^9.2.0",
     "esbuild": "^0.14.38",
     "inquirer": "^8.2.4",
