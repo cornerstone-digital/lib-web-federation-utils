@@ -9,7 +9,6 @@
   "scripts": {
     "gen:version": "ts-node ./scripts/genVersion.ts",
     "prebuild": "rimraf bin && yarn gen:version",
-    "build": "tsc -p ./tsconfig.json",
     "compile:types": "tsc --project tsconfig.json --outDir dist --declaration --emitDeclarationOnly",
     "postbuild": "chmod u+x ./bin/src/index.js",
     "preyalc:publish": "yarn build",

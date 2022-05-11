@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "rootDir": "./",
+    "jsx": "react-jsx",
+    "types": ["node",  "@vf/federated-web-build-types"],
+    "typeRoots": ["node_modules/@types"],
+    "moduleResolution": "Node",
+    "declaration": true,
+    "outDir": "./dist",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "exclude": ["node_modules", "dist"]
+}

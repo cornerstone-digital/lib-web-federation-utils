@@ -103,7 +103,8 @@
     "Then": true,
     "And": true,
     "System": true,
-    "FederatedWebpack": true
+    "FederatedWebpack": true,
+    "FederatedCore": true
   },
   "settings": {
     "react": {

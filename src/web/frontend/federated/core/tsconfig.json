@@ -1,0 +1,15 @@
+{
+  "extends": "../../../../../tsconfig.json",
+  "compilerOptions": {
+    "target": "es6",
+    "jsx": "react-jsx",
+    "types": ["vite/client", "@types/react", "systemjs"],
+    "noEmit": false,
+    "rootDir": "./src",
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/@types"
+    ]
+  },
+}

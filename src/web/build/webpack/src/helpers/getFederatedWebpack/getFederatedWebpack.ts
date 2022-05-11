@@ -12,8 +12,9 @@ import loaders from '../../loaders'
 import BrotliPlugin from 'brotli-webpack-plugin'
 
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import { CopyPath, FederatedWebpackOptions } from '@vf/federated-web-build-types'
+import { FederatedWebpackOptions } from '../../types'
 import getBabelOptions from '../getBabelOptions'
+import { CopyPath } from '@vf/federated-web-build-types'
 
 type GetFederatedWebpackFunc = (componentName: string, options: FederatedWebpackOptions) => Configuration
 
@@ -35,15 +36,15 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
       ...[
         {
           from: resolve(process.cwd(), 'node_modules/@vfuk/core-theme-ws2/assets/fonts'),
-          to: './ws2/fonts',
+          to: './assets/ws2/fonts',
         },
         {
           from: resolve(process.cwd(), 'node_modules/@vfuk/core-theme-ws2/assets/icons'),
-          to: './ws2/icons',
+          to: './assets/ws2/icons',
         },
         {
           from: resolve(process.cwd(), 'node_modules/@vfuk/core-theme-ws2/assets/logos'),
-          to: './ws2/logos',
+          to: './assets/ws2/logos',
         },
       ],
     )
@@ -54,7 +55,7 @@ const getFederatedWebpack: GetFederatedWebpackFunc = (componentName, options) =>
       ...[
         {
           from: resolve(process.cwd(), 'node_modules/@vfuk/core-theme-ws10/assets/icons'),
-          to: './ws10/icons',
+          to: './assets/ws10/icons',
         },
       ],
     )
