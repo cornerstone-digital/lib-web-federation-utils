@@ -19,8 +19,8 @@
     "lerna:version:alpha": "lerna version --no-push --conventional-commits --conventional-prerelease --preid alpha --yes",
     "lerna:version:beta": "lerna version --no-push --conventional-commits --conventional-prerelease --preid beta --yes",
     "lerna:publish": "lerna publish from-git --yes",
-    "lerna:publish:alpha": "lerna publish from-package --dist-tag alpha --yes",
-    "lerna:publish:beta": "lerna publish from-package  --dist-tag beta --yes",
+    "lerna:publish:alpha": "lerna publish from-git --dist-tag alpha --yes",
+    "lerna:publish:beta": "lerna publish from-git  --dist-tag beta --yes",
     "// Yalc Commands": "==============================================================",
     "yalc:publish": "lerna run yalc:publish --stream"
   },
