@@ -19,7 +19,7 @@ export default createFederatedReact({
   React,
   ReactDOM,
   config: {
-    activeWhenPaths: ['/', '/main'],
+    activeWhenPaths: ['/', '/main*'],
     domElementId: 'root',
     name: 'MainApp',
     rootComponent: TodoApp,
