@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
 import { UserConfig } from 'vite'
 
+// @ts-ignore
 const config: UserConfig = {
   base: './',
   build: {
