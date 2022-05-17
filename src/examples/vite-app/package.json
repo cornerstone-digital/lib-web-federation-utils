@@ -1,12 +1,12 @@
 {
   "name": "@vf/federated-examples-vite-app",
-  "version": "1.0.0",
+  "version": "1.0.1-alpha.0",
   "scripts": {
     "start": "vite --port 3000 --config tools/vite/vite.config.ts"
   },
   "dependencies": {
-    "@vf/federated-web-core": "^1.0.0",
-    "@vf/federated-web-react": "^1.0.0",
+    "@vf/federated-web-core": "^1.0.1-alpha.0",
+    "@vf/federated-web-react": "^1.0.1-alpha.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-router": "6",

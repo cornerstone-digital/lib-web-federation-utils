@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0-alpha.17](/compare/@vf/federated-web-build-types@1.1.0-alpha.16...@vf/federated-web-build-types@1.1.0-alpha.17) (2022-05-17)
+
+**Note:** Version bump only for package @vf/federated-web-build-types
+
+
+
+
+
 # [1.1.0-alpha.16](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-web-build-types@1.1.0-alpha.14...@vf/federated-web-build-types@1.1.0-alpha.16) (2022-05-05)
 
 **Note:** Version bump only for package @vf/federated-web-build-types

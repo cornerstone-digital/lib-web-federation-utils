@@ -1,15 +1,13 @@
 {
   "name": "@vf/federated-web-build-webpack",
-  "version": "1.1.0-alpha.36",
+  "version": "1.1.0-alpha.37",
   "license": "MIT",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "files": [
     "dist/*"
   ],
-  "scripts": {
-
-  },
+  "scripts": {},
   "peerDependencies": {
     "@vf/federated-web-build-core": "^1.1.0-alpha.20",
     "@vf/federated-web-build-types": "^1.1.0-alpha.15",
@@ -39,7 +37,7 @@
     "@types/mini-css-extract-plugin": "^2.5.1",
     "@types/terser-webpack-plugin": "^5.2.0",
     "@types/webpack-manifest-plugin": "^3.0.5",
-    "@vf/federated-web-build-core": "^1.1.0-alpha.20",
+    "@vf/federated-web-build-core": "^1.1.0-alpha.21",
     "autoprefixer": "^10.4.7",
     "babel-loader": "^8.2.5",
     "babel-plugin-add-react-displayname": "^0.0.5",
