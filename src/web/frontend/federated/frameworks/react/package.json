@@ -1,6 +1,6 @@
 {
   "name": "@vf/federated-web-react",
-  "version": "1.0.1-alpha.0",
+  "version": "1.0.1-alpha.1",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
@@ -8,7 +8,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@vf/federated-web-core": "^1.0.1-alpha.0",
+    "@vf/federated-web-core": "^1.0.1-alpha.1",
     "ajv": "^8.11.0",
     "react": "17.0.2",
     "react-dom": "17.0.2"
