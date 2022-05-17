@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "// Nx Commands": "==============================================================",
-    "postinstall": "lerna bootstrap",
+    "postinstall": "yarn lerna:bootstrap",
     "build": "nx affected --target=build",
     "test": "nx affected --target=test",
     "lint": "nx affected --target=lint",
@@ -21,6 +21,7 @@
     "test:beta": "nx affected --target=test --base=beta",
     "lint:beta": "nx affected --target=lint --base=beta",
     "// Lerna Commands": "==============================================================",
+    "lerna:bootstrap": "lerna bootstrap",
     "lerna:version": "lerna version --no-push --conventional-commits --yes",
     "lerna:version:alpha": "lerna version --no-push --conventional-commits --conventional-prerelease --preid alpha --yes",
     "lerna:version:beta": "lerna version --no-push --conventional-commits --conventional-prerelease --preid beta --yes",
