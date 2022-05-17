@@ -9,12 +9,18 @@
     "src/**/**"
   ],
   "scripts": {
-    "// Lerna Commands": "==============================================================",
+    "// Nx Commands": "==============================================================",
     "postinstall": "lerna bootstrap",
-    "lerna:build": "lerna run build --stream",
-    "lerna:build:alpha": "lerna run build --stream",
-    "lerna:build:beta": "lerna run build --stream",
-    "lerna:bootstrap": "lerna bootstrap --nohoist=*",
+    "build": "nx affected --target=build",
+    "test": "nx affected --target=test",
+    "lint": "nx affected --target=lint",
+    "build:alpha": "nx affected --target=build --base=alpha",
+    "test:alpha": "nx affected --target=test --base=alpha",
+    "lint:alpha": "nx affected --target=lint --base=alpha",
+    "build:beta": "nx affected --target=build --base=beta",
+    "test:beta": "nx affected --target=test --base=beta",
+    "lint:beta": "nx affected --target=lint --base=beta",
+    "// Lerna Commands": "==============================================================",
     "lerna:version": "lerna version --no-push --conventional-commits --yes",
     "lerna:version:alpha": "lerna version --no-push --conventional-commits --conventional-prerelease --preid alpha --yes",
     "lerna:version:beta": "lerna version --no-push --conventional-commits --conventional-prerelease --preid beta --yes",
@@ -49,7 +55,11 @@
     "prettier": "2.6.2",
     "rimraf": "^3.0.2",
     "typescript": "4.6.3",
-    "yalc": "^1.0.0-pre.53"
+    "yalc": "^1.0.0-pre.53",
+    "@nrwl/workspace": "latest",
+    "nx": "latest",
+    "@nrwl/cli": "latest",
+    "@nrwl/nx-cloud": "latest"
   },
   "resolutions": {
     "@types/node": "14.x"

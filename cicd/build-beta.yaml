@@ -17,5 +17,5 @@ steps:
     parameters:
       versionScript: lerna:version:beta
       publishScript: lerna:publish:beta
-      buildScript: lerna:build:beta
+      buildScript: build:beta
       releaseBranch: beta
