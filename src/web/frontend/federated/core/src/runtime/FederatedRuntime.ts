@@ -1,8 +1,11 @@
+/* eslint-disable */
 import { FederatedEvent, FederatedModule, ImportMap, FederatedModuleStatuses, FederatedModuleStatusValues } from '../types'
 import { isBrowser } from '../utils/environment'
 
 class FederatedRuntime {
   useNativeModules = false
+  enableImportMapOverrides = false
+  sharedDependencyBaseUrl = ''
 
   debugEnabled = false
 
@@ -165,6 +168,68 @@ class FederatedRuntime {
     module.validateProps(props)
   }
 
+  addDynamicScriptTag(id: string, src: string, onload?: () => void) {
+    const script = document.createElement('script')
+    script.id = id
+    script.src = src
+    script.crossOrigin = 'anonymous'
+    if (onload) script.onload = onload
+    document.body.appendChild(script)
+  }
+
+  addMetaTag(id: string, content: string) {
+    const meta = document.createElement('meta')
+    meta.id = id
+    meta.content = content
+    document.head.appendChild(meta)
+  }
+
+  addStyleTag(id: string, css: string) {
+    const style = document.createElement('style')
+    style.id = id
+    style.innerHTML = css
+    document.head.appendChild(style)
+  }
+
+  addLinkTag(id: string, rel: string, href: string) {
+    const link = document.createElement('link')
+    link.id = id
+    link.rel = rel
+    link.href = href
+    document.head.appendChild(link)
+  }
+
+  addHtmlElementWithAttrs(tagName: string, attrs: { [key: string]: string }) {
+    const element = document.createElement(tagName)
+    Object.keys(attrs).forEach(key => {
+      element.setAttribute(key, attrs[key])
+    })
+
+    document.body.appendChild(element)
+  }
+
+  addImportMapOverridesUi() {
+    if (this.enableImportMapOverrides) {
+      this.addHtmlElementWithAttrs('import-map-overrides-full', {
+        'show-when-local-storage': 'import-map-overrides',
+      })
+
+      localStorage.setItem('import-map-overrides', 'true')
+
+      this.addDynamicScriptTag('import-map-overrides', 'https://cdn.jsdelivr.net/npm/import-map-overrides/dist/import-map-overrides.js')
+    }
+  }
+
+  ensureSystemJs() {
+    if (!this.useNativeModules) {
+      this.addMetaTag('importmap-type', 'systemjs-importmap')
+      this.addDynamicScriptTag('systemjs', `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/system.min.js`)
+      this.addDynamicScriptTag('systemjs-named-exports', `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/named-exports.min.js`)
+      this.addDynamicScriptTag('systemjs-amd', `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/amd.min.js`)
+      this.addDynamicScriptTag('systemjs-dynamic-import-maps', `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/dynamic-import-maps.min.js`)
+    }
+  }
+
   bootstrap(): void {
     this.emit({
       payload: {
@@ -172,15 +237,24 @@ class FederatedRuntime {
         modules: this.modules,
         modulesBaseUrls: window.__FEDERATED_CORE__.moduleBaseUrls,
         useNativeModules: this.useNativeModules,
+        enableImportMapOverrides: this.enableImportMapOverrides,
       },
       type: 'federated-core:bootstrapping',
     })
 
+    this.ensureSystemJs()
+    this.addImportMapOverridesUi()
     this.reroute()
   }
 
   setUseNativeModules(useNativeModules: boolean) {
     this.useNativeModules = useNativeModules
+
+    return this
+  }
+
+  setEnableImportMapOverrides(enableImportMapOverrides: boolean) {
+    this.enableImportMapOverrides = enableImportMapOverrides
 
     return this
   }

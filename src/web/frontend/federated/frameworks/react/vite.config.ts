@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
 import { UserConfig } from 'vite'
 
+// config for vite
 const config: UserConfig = {
   base: './',
   build: {
@@ -10,15 +11,6 @@ const config: UserConfig = {
       fileName: () => 'src/index.js',
       formats: ['es'],
       name: 'federated-web-frontend-react',
-    },
-    rollupOptions: {
-      external: ['react', 'react-dom'],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-        },
-      },
     },
   },
   plugins: [dts({ entryRoot: './' }), react()],

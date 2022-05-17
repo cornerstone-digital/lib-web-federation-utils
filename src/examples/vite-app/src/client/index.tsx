@@ -1,12 +1,12 @@
-import { FederatedModule, getFederatedRuntime } from '@vf/federated-web-core'
+import { getFederatedRuntime } from '@vf/federated-web-core'
 import MainApp from './MainApp'
 import MainApp2 from './MainApp2'
 
-const RemoteApp: FederatedModule = {
-  activeWhenPaths: ['/'],
-  name: 'AvailabilityChecker',
-  scope: 'broadband',
-}
+// const RemoteApp: FederatedModule = {
+//   activeWhenPaths: ['/'],
+//   name: 'AvailabilityChecker',
+//   scope: 'broadband',
+// }
 
 // Create self-executing function
 ;(async () => {
@@ -17,9 +17,10 @@ const RemoteApp: FederatedModule = {
       .addBaseUrl('broadband', '/broadband/deals/assets')
       .addBaseUrl('basket', '/basket/assets')
       .addBaseUrl('checkout', '/secure-checkout/assets')
-      .setUseNativeModules(true)
+      .setUseNativeModules(false)
+      .setEnableImportMapOverrides(true)
 
-    await federatedRuntime.preFetchModules([RemoteApp])
+    // await federatedRuntime.preFetchModules([RemoteApp])
     await federatedRuntime.registerModule(MainApp)
     await federatedRuntime.registerModule(MainApp2)
 
