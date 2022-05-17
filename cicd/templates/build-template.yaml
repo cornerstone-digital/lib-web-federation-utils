@@ -41,10 +41,9 @@ steps:
     inputs:
       Arguments: ${{parameters.versionScript}} --message="***NO_CI*** Versions updated"
 
-  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
-    displayName: 'Lerna Build'
-    inputs:
-      Arguments: ${{parameters.buildScript}}
+  - script: |
+      yarn ${{parameters.buildScript}}
+    displayName: 'Build Affected Packages'
 
   - script: |
       git add .
