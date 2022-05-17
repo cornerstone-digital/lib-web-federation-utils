@@ -1,7 +1,6 @@
 import dts from 'vite-plugin-dts'
 import { UserConfig } from 'vite'
 
-//
 const config: UserConfig = {
   base: './',
   build: {
