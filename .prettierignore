@@ -1,2 +1,4 @@
-# Ignore the version JSON file:
-*.version.json
+# Add files here to ignore them from prettier formatting
+
+/dist
+/coverage

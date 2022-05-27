@@ -1,8 +1,0 @@
-steps:
-  - checkout: self
-    clean: true
-    persistCredentials: true
-
-  - template: templates/node.yaml@tools
-    parameters:
-      nodeVersion: 14.19.1

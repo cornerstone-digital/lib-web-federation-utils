@@ -1,8 +1,0 @@
-./src/components
-./src/helpers
-./src/hooks
-./src/index.ts
-vite.config.ts
-tsconfig.json
-node_modules
-.npmrc

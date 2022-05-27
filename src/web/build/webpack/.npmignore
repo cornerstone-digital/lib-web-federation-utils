@@ -1,5 +1,0 @@
-./src/helpers
-./src/index.ts
-tsconfig.json
-node_modules
-.npmrc

@@ -1,0 +1,13 @@
+{
+  "name": "@vf/federated-core",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "dependencies": {
+    "@datadog/browser-logs": "^4.11.1",
+    "@swc/helpers": "~0.3.3",
+    "systemjs": "^6.12.1"
+  },
+  "devDependencies": {
+    "@types/systemjs": "^6.1.1"
+  }
+}
