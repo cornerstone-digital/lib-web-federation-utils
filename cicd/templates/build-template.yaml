@@ -10,7 +10,7 @@ parameters:
   - name: buildScript
     displayName: Build Script
     type: string
-    default: lerna:build
+    default: nx:all:build
   - name: releaseBranch
     displayName: Release branch
     type: string
@@ -40,16 +40,11 @@ steps:
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Version'
     inputs:
-      Arguments: '${{parameters.versionScript}} --message="chore(ci): Versions updated ***NO_CI***"'
+      Arguments: '${{parameters.versionScript}} --message="chore(ci): versions updated ***NO_CI***"'
 
   - script: |
       yarn ${{parameters.buildScript}}
     displayName: 'Build Affected Packages'
-
-  - script: |
-      git add .
-      git commit -m "***NO_CI*** Versions updated"
-    displayName: Commit versions
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Publish'

@@ -1,1 +1,1 @@
-export { default as useFederatedRuntime } from './useFederatedRuntime';
+export { default as useFederatedRuntime } from './useFederatedRuntime'

@@ -6,6 +6,7 @@
     "scripts": {
         "prebuild": "rimraf dist",
         "build": "tsc",
+        "postbuild": "rimraf dist/jest*",
         "lint": "eslint . --ext .js,.ts,.tsx --fix",
         "test": "jest",
         "test:watch": "yarn test --watchAll",

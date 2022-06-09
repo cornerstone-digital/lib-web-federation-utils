@@ -1,1 +1,1 @@
-export { default } from './FederatedModuleLoader';
+export { default } from './FederatedModuleLoader'

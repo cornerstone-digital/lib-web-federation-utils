@@ -84,6 +84,11 @@ export enum FederatedEvents {
   MODULE_UNMOUNT_ERROR = 'federated-core:module:%moduleKey%:unmount:error',
   MODULE_NOT_MOUNTED = 'federated-core:module:%moduleKey%:not-mounted',
 
+  // Module Update Events
+  MODULE_BEFORE_UPDATE = 'federated-core:module:%moduleKey%:before-update',
+  MODULE_UPDATED = 'federated-core:module:%moduleKey%:updated',
+  MODULE_UPDATE_ERROR = 'federated-core:module:%moduleKey%:update:error',
+
   // Module Events
   MODULE_STATE_CHANGED = 'federated-core:module:%moduleKey%:state-changed',
 }
@@ -289,6 +294,20 @@ export type FederatedEventPayloadMap = {
     module: FederatedModuleParams
   }
   [FederatedEvents.MODULE_UNMOUNT_ERROR]: {
+    module: FederatedModuleParams
+    error: Error
+  }
+
+  // Module Update Events
+  [FederatedEvents.MODULE_BEFORE_UPDATE]: {
+    module: FederatedModuleParams
+  }
+
+  [FederatedEvents.MODULE_UPDATED]: {
+    module: FederatedModuleParams
+  }
+
+  [FederatedEvents.MODULE_UPDATE_ERROR]: {
     module: FederatedModuleParams
     error: Error
   }

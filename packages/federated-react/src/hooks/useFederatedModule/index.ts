@@ -1,1 +1,1 @@
-export { default as useFederatedModule } from './useFederatedModule';
+export { default as useFederatedModule } from './useFederatedModule'

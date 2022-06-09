@@ -1,1 +1,1 @@
-export { default as createFederatedReact } from './createFederatedReact';
+export { default as createFederatedReact } from './createFederatedReact'

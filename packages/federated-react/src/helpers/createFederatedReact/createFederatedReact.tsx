@@ -8,6 +8,7 @@ import {
   FederatedModuleLifecycles,
   FederatedModuleStatuses,
   getModuleKey,
+  FederatedEvents,
 } from '@vf/federated-core'
 
 function reactDomRender<PropsType>(
@@ -55,13 +56,16 @@ function createFederatedReact<PropsType>(
     throw new Error(`Federated runtime not found.`)
   }
 
-  const moduleKey = getModuleKey(scope, name)
+  const moduleData = { scope, name }
   const lifecycles: FederatedModuleLifecycles<PropsType> = {
     bootstrap: async () => {
-      eventService.emit({
-        payload: { name, scope },
-        type: `federated-core:${moduleKey}:module-bootstrapping`,
-      })
+      eventService.emit(
+        FederatedEvents.MODULE_BEFORE_BOOTSTRAP,
+        {
+          module: moduleData,
+        },
+        moduleData
+      )
       federatedRuntime.setModuleState(
         { scope, name },
         FederatedModuleStatuses.BOOTSTRAPPING
@@ -102,29 +106,40 @@ function createFederatedReact<PropsType>(
             propsToUse
           )
 
+          eventService.emit(
+            FederatedEvents.MODULE_BEFORE_MOUNT,
+            {
+              module: moduleData,
+            },
+            moduleData
+          )
+
           if (domContainer) {
             reactDomRender(options, rootComponentElement, domContainer)
           }
 
-          eventService.emit({
-            payload: {
-              name,
+          eventService.emit(
+            FederatedEvents.MODULE_MOUNTED,
+            {
+              module: moduleData,
             },
-            type: `federated-core:${moduleKey}:module-mounted`,
-          })
+            moduleData
+          )
+
           federatedRuntime.setModuleState(
             { scope, name },
             FederatedModuleStatuses.MOUNTED
           )
         }
       } catch (error) {
-        eventService.emit({
-          payload: {
-            error,
-            name,
+        eventService.emit(
+          FederatedEvents.MODULE_MOUNT_ERROR,
+          {
+            module: moduleData,
           },
-          type: `federated-core:${moduleKey}:module-mount-error`,
-        })
+          moduleData
+        )
+
         federatedRuntime.setModuleState(
           { scope, name },
           FederatedModuleStatuses.LOAD_ERROR
@@ -140,25 +155,27 @@ function createFederatedReact<PropsType>(
         if (domContainer) {
           ReactDOM.unmountComponentAtNode(domContainer)
 
-          eventService.emit({
-            payload: {
-              name,
+          eventService.emit(
+            FederatedEvents.MODULE_UNMOUNTED,
+            {
+              module: moduleData,
             },
-            type: `federated-core:${moduleKey}:module-unmounted`,
-          })
+            moduleData
+          )
+
           federatedRuntime.setModuleState(
             { scope, name },
             FederatedModuleStatuses.UNMOUNTED
           )
         }
       } catch (error) {
-        eventService.emit({
-          payload: {
-            error,
-            name,
+        eventService.emit(
+          FederatedEvents.MODULE_UNMOUNT_ERROR,
+          {
+            module: moduleData,
           },
-          type: `federated-core:${moduleKey}:module-unmount-error`,
-        })
+          moduleData
+        )
         federatedRuntime.setModuleState(
           { scope, name },
           FederatedModuleStatuses.UNMOUNT_ERROR
@@ -172,22 +189,32 @@ function createFederatedReact<PropsType>(
           FederatedModuleStatuses.UPDATING
         )
         const propsToUse = props || defaultProps
+        eventService.emit(
+          FederatedEvents.MODULE_BEFORE_UPDATE,
+          {
+            module: moduleData,
+          },
+          moduleData
+        )
+
         if (lifecycles.unmount) lifecycles.unmount()
         if (lifecycles.mount) lifecycles.mount(propsToUse)
-        eventService.emit({
-          payload: {
-            name,
+
+        eventService.emit(
+          FederatedEvents.MODULE_UPDATED,
+          {
+            module: moduleData,
           },
-          type: `federated-core:${moduleKey}:module-updated`,
-        })
+          moduleData
+        )
       } catch (error) {
-        eventService.emit({
-          payload: {
-            error,
-            name,
+        eventService.emit(
+          FederatedEvents.MODULE_UPDATE_ERROR,
+          {
+            module: moduleData,
           },
-          type: `federated-core:${moduleKey}:module-update-error`,
-        })
+          moduleData
+        )
         federatedRuntime.setModuleState(
           { scope, name },
           FederatedModuleStatuses.UPDATE_ERROR

@@ -1,2 +1,2 @@
-export * from './useFederatedModule';
-export * from './useFederatedRuntime';
+export * from './useFederatedModule'
+export * from './useFederatedRuntime'
