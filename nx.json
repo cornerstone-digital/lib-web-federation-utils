@@ -1,24 +1,35 @@
 {
-  "extends": "nx/presets/core.json",
-  "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "@vf",
-  "affected": {
-    "defaultBase": "main"
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/workspace"
-  },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "@nrwl/nx-cloud",
-      "options": {
-        "cacheableOperations": [
-          "lint",
-          "test",
-          "e2e"
-        ],
-        "accessToken": "YWQ2NzQxZDMtMDQ5MS00NDhiLWEzYTQtMDc1NjMzOGI0ZGNhfHJlYWQtd3JpdGU="
-      }
+    "extends": "@nrwl/workspace/presets/npm.json",
+    "npmScope": "lib-web-federation-utils",
+    "tasksRunnerOptions": {
+        "default": {
+            "runner": "@nrwl/nx-cloud",
+            "options": {
+                "cacheableOperations": ["build", "test", "lint", "package", "prepare"],
+                "accessToken": "MWMwZWNkYzktMWUzMC00NzZiLTljMmEtZGI2ZWVmZTlmZTUxfHJlYWQtd3JpdGU="
+            }
+        }
+    },
+    "targetDependencies": {
+        "build": [{
+            "target": "build",
+            "projects": "dependencies"
+        }],
+        "prepare": [{
+            "target": "prepare",
+            "projects": "dependencies"
+        }],
+        "package": [{
+            "target": "package",
+            "projects": "dependencies"
+        }]
+    },
+    "affected": {
+        "defaultBase": "main"
+    },
+    "pluginsConfig": {
+        "@nrwl/js": {
+            "analyzeSourceFiles": false
+        }
     }
-  }
 }

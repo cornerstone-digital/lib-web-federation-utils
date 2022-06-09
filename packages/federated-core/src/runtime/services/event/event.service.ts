@@ -1,30 +1,75 @@
-import { FederatedEvent } from '../../../types'
+import { getModuleKey } from '../../helpers'
+import { FederatedModule, FederatedModuleParams } from '../../../types'
+import { EventServiceType, EventStoreMap } from './event.service.types'
+import {
+  FederatedEventPayloadMap,
+  FederatedEventKeys,
+} from 'src/runtime/FederatedRuntime.types'
 
-const eventStore: Map<string, any> = new Map()
+export const eventStore: EventStoreMap = new Map()
 
-export const unregister = (id: string) => {
-  if (eventStore.has(id)) {
-    const { type, fn } = eventStore.get(id);
-    window.removeEventListener(type, fn);
-    eventStore.delete(id);
+const unregister = (id: string) => {
+  const event = eventStore.has(id) ? eventStore.get(id) : null
+
+  if (event) {
+    const { type, fn } = event
+    window.removeEventListener(type, fn)
+    eventStore.delete(id)
   }
-};
+}
 
-export const register = (type: string, fn: (event: Event) => void) => {
-  const id = `${type}__${Date.now()}__${Math.floor(Math.random() * 1000)}`;
+const register = (
+  type: FederatedEventKeys,
+  fn: EventListener,
+  module?: FederatedModuleParams
+) => {
+  const id = `${type}__${Date.now()}__${Math.floor(Math.random() * 1000)}`
+  let eventType: string = type
+  if (module) {
+    eventType = replaceModuleKey(eventType, module)
+  }
 
-  eventStore.set(id, fn);
-  window.addEventListener(type, fn);
+  eventStore.set(id, { type, fn })
+  window.addEventListener(eventType, fn)
 
-  return unregister(id);
-};
+  return () => unregister(id)
+}
 
-export const emit = <EventType extends FederatedEvent<string, unknown>>({ type, payload = {} }: EventType): void => {
-  window.dispatchEvent(new CustomEvent<EventType>(type, payload as object));
-};
+const replaceModuleKey = (type: string, module: FederatedModuleParams) => {
+  return type.replace(`%moduleKey%`, getModuleKey(module.scope, module.name))
+}
 
-export const unregisterAll = () => {
-    eventStore.forEach((value, key) => {
-        unregister(key);
-    });
-};
+const emit = (
+  type: FederatedEventKeys,
+  payload: FederatedEventPayloadMap[typeof type],
+  module?: FederatedModule
+): void => {
+  let eventType: string = type
+  if (module?.name) {
+    eventType = replaceModuleKey(eventType, module)
+  }
+
+  window.dispatchEvent(new CustomEvent(eventType, payload as object))
+}
+
+const unregisterAll = () => {
+  eventStore.forEach((_value, key) => {
+    unregister(key)
+  })
+}
+
+const clear = () => {
+  eventStore.clear()
+}
+
+const eventService: EventServiceType = {
+  register,
+  unregister,
+  unregisterAll,
+  emit,
+  clear,
+  replaceModuleKey,
+  eventStore,
+}
+
+export default eventService

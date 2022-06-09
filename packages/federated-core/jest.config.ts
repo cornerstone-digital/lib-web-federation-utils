@@ -1,15 +1,9 @@
 /* eslint-disable */
+/* @ts-ignore */
+import defaultConfig from '../../jest.config'
+
 export default {
-  displayName: 'federated-core',
-  preset: '../../jest.preset.js',
-  globals: {
-    'ts-jest': {
-      tsconfig: '<rootDir>/tsconfig.spec.json',
-    },
-  },
-  transform: {
-    '^.+\\.[tj]s$': 'ts-jest',
-  },
-  moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/packages/federated-core',
-};
+  ...defaultConfig,
+  coverageDirectory: '../../.testresults/federated-core/coverage',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+}

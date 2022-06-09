@@ -1,0 +1,5 @@
+export { default as addHtmlElementWithAttrs } from './addHtmlElementWithAttrs'
+export { default as addLinkTag } from './addLinkTag'
+export { default as addMetaTag } from './addMetaTag'
+export { default as addScriptTag } from './addScriptTag'
+export { default as addStyleTag } from './addStyleTag'

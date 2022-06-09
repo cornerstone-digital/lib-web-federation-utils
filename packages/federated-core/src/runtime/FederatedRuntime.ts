@@ -1,43 +1,157 @@
-import * as eventService from './services/event'
-import * as loggerService from './services/logger'
-
 import {
   FederatedModule,
   ImportMap,
   FederatedModuleStatuses,
-  FederatedRuntimeType, ExposedServicesType,
+  ExposedServicesType,
+  FederatedModuleParams,
 } from '../types'
 
-import { isBrowser } from '../utils/environment'
+import { FederatedRuntimeType, FederatedEvents } from './FederatedRuntime.types'
+import { isBrowser } from '../utils'
+import { eventService, loggerService } from './services'
+import {
+  addScriptTag,
+  addMetaTag,
+  addLinkTag,
+  getModuleKey,
+  addHtmlElementWithAttrs,
+  shouldModuleBeMounted,
+} from './helpers'
 
 const ExposedServices: ExposedServicesType = {
-    eventService,
-    loggerService,
+  event: eventService,
+  logger: loggerService,
 }
 
 class FederatedRuntime implements FederatedRuntimeType {
-  useNativeModules = false
+  _bootstrapped = false
+  _started = false
+  _useNativeModules = false
+  _importMapOverridesEnabled = false
+  _debugEnabled = false
+  _sharedDependencyBaseUrl = ''
+  _cdnUrl = ''
+  _modules: Map<string, FederatedModule> = new Map()
+  _services: ExposedServicesType = ExposedServices
 
-  enableImportMapOverrides = false
-
-  sharedDependencyBaseUrl = ''
-
-  cdnUrl = ''
-
-  debugEnabled = false
-
-  modules = new Map<string, FederatedModule>()
-
-  services = ExposedServices
-
-  isDebugEnabled(): boolean {
-    return this.debugEnabled
+  // Setters and Getters
+  set bootstrapped(bootstrapped: boolean) {
+    this._bootstrapped = bootstrapped
   }
 
-  setDebugEnabled(value: boolean): FederatedRuntimeType {
-    this.debugEnabled = value
+  get bootstrapped(): boolean {
+    return this._bootstrapped
+  }
 
-    return this
+  set started(started: boolean) {
+    this._started = started
+  }
+
+  get started(): boolean {
+    return this._started
+  }
+
+  set debugEnabled(value: boolean) {
+    this._debugEnabled = value
+  }
+
+  get debugEnabled(): boolean {
+    return this._debugEnabled
+  }
+
+  set sharedDependencyBaseUrl(baseUrl: string) {
+    this._sharedDependencyBaseUrl = baseUrl
+  }
+
+  get sharedDependencyBaseUrl(): string {
+    return this._sharedDependencyBaseUrl
+  }
+
+  set useNativeModules(useNativeModules: boolean) {
+    this._useNativeModules = useNativeModules
+  }
+
+  get useNativeModules(): boolean {
+    return this._useNativeModules
+  }
+
+  set importMapOverridesEnabled(importMapOverridesEnabled: boolean) {
+    this._importMapOverridesEnabled = importMapOverridesEnabled
+  }
+
+  get importMapOverridesEnabled(): boolean {
+    return this._importMapOverridesEnabled
+  }
+
+  set cdnUrl(cdnUrl: string) {
+    this._cdnUrl = cdnUrl
+  }
+
+  get cdnUrl(): string {
+    return this._cdnUrl
+  }
+
+  set modules(modules: Map<string, FederatedModule>) {
+    this._modules = modules
+  }
+
+  get modules(): Map<string, FederatedModule> {
+    return this._modules
+  }
+
+  get services(): ExposedServicesType {
+    return this._services
+  }
+
+  // Helper Methods
+  addImportMapOverridesUi(): void {
+    const importMapOverridesKey = 'import-map-overrides'
+    if (this.importMapOverridesEnabled) {
+      addHtmlElementWithAttrs(
+        'import-map-overrides-ui',
+        'import-map-overrides-full',
+        {
+          'show-when-local-storage': importMapOverridesKey,
+        }
+      )
+
+      localStorage.setItem(importMapOverridesKey, 'true')
+
+      addScriptTag(
+        importMapOverridesKey,
+        'https://cdn.jsdelivr.net/npm/import-map-overrides/dist/import-map-overrides.js'
+      )
+
+      this.services.event.emit(FederatedEvents.IMPORT_MAP_OVERRIDES_LOADED, {
+        loadedTime: Date.now(),
+      })
+    }
+  }
+
+  ensureSystemJs(): void {
+    if (!this.useNativeModules) {
+      addMetaTag('importmap-type', 'importmap-type', 'systemjs-importmap')
+      addScriptTag(
+        'systemjs',
+        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/system.min.js`
+      )
+      addScriptTag(
+        'systemjs-named-exports',
+        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/named-exports.min.js`
+      )
+      addScriptTag(
+        'systemjs-amd',
+        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/amd.min.js`
+      )
+      addScriptTag(
+        'systemjs-dynamic-import-maps',
+        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/dynamic-import-maps.min.js`
+      )
+
+      this.services.event.emit(FederatedEvents.SYSTEMJS_LOADED, {
+        loadedTime: Date.now(),
+      })
+    }
   }
 
   async fetchImportMapContent(modulePath: string): Promise<ImportMap> {
@@ -47,179 +161,105 @@ class FederatedRuntime implements FederatedRuntimeType {
     return importMap.json()
   }
 
-  getModuleKey(scope: string, moduleName: string): string {
-    return `${scope}/${moduleName}`
-  }
-
-  async getModuleUrl(scope: string, moduleName: string): Promise<string> {
-    const moduleBaseUrl = window.__FEDERATED_CORE__.moduleBaseUrls[scope]
-    const importMap = await this.fetchImportMapContent(moduleBaseUrl)
-    const moduleKey = this.getModuleKey(scope, moduleName)
-
-    return importMap.imports[moduleKey]
-  }
-
-  public setModuleState(scope: string, moduleName: string, state: FederatedModuleStatuses) {
-    const moduleKey = this.getModuleKey(scope, moduleName)
-
-    Array.from(this.modules.entries()).forEach(([key, module]) => {
-      if (key === moduleKey) {
-        module.status = state as FederatedModuleStatuses
-      }
-    })
-  }
-
-  addBaseUrl(scope: string, baseUrl: string) {
+  addBaseUrl(scope: string, baseUrl: string): FederatedRuntimeType {
     window.__FEDERATED_CORE__.moduleBaseUrls[scope] = baseUrl
 
     return this
   }
 
-  public async registerModule(module: FederatedModule) {
-    const moduleKey = this.getModuleKey(module.scope, module.name)
+  // Module Methods
+  setModuleState(
+    module: FederatedModuleParams,
+    state: FederatedModuleStatuses
+  ) {
+    const { scope, name } = module
+    const moduleKey = getModuleKey(scope, name)
 
-    if (this.modules.has(moduleKey) && this.modules.get(moduleKey)?.status === FederatedModuleStatuses.LOADED) {
-      eventService.emit({ payload: { module }, type: `federated-core:${moduleKey}:module-already-registered` })
-    } else if (module.status === FederatedModuleStatuses.MOUNTED) {
-        eventService.emit({ payload: { module }, type: `federated-core:${moduleKey}:module-already-mounted` })
-      } else {
-        eventService.emit({
-          payload: { module },
-          type: `federated-core:${moduleKey}:before-register-module`,
-        })
+    Array.from(this.modules.entries()).forEach(([key, moduleEntry]) => {
+      if (key === moduleKey) {
+        moduleEntry.status = state as FederatedModuleStatuses
+        this.modules.set(moduleKey, moduleEntry)
 
-        this.setModuleState(module.scope, module.name, FederatedModuleStatuses.NOT_LOADED)
-        this.modules.set(moduleKey, module)
-        eventService.emit({ payload: { module }, type: `federated-core:${moduleKey}:module-registered` })
+        this.services.event.emit(
+          FederatedEvents.MODULE_STATE_CHANGED,
+          {
+            module: moduleEntry,
+          },
+          module
+        )
       }
+    })
+  }
+
+  async registerModule(module: FederatedModule): Promise<FederatedRuntimeType> {
+    const { scope, name } = module
+    const moduleKey = getModuleKey(scope, name)
+
+    if (
+      this.modules.has(moduleKey) &&
+      this.modules.get(moduleKey)?.status === FederatedModuleStatuses.LOADED
+    ) {
+      this.services.event.emit(
+        FederatedEvents.MODULE_ALREADY_REGISTERED,
+        {
+          moduleKey,
+          module,
+        },
+        module
+      )
+    } else if (
+      this.modules.has(moduleKey) &&
+      this.modules.get(moduleKey)?.status === FederatedModuleStatuses.MOUNTED
+    ) {
+      this.services.event.emit(
+        FederatedEvents.MODULE_ALREADY_MOUNTED,
+        {
+          moduleKey,
+          module,
+        },
+        module
+      )
+    } else {
+      this.services.event.emit(
+        FederatedEvents.MODULE_BEFORE_REGISTER,
+        {
+          moduleKey,
+          module,
+        },
+        module
+      )
+
+      this.setModuleState(
+        { scope: module.scope, name: module.name },
+        FederatedModuleStatuses.NOT_LOADED
+      )
+      this.modules.set(moduleKey, module)
+      this.services.event.emit(
+        FederatedEvents.MODULE_REGISTERED,
+        {
+          moduleKey,
+          module,
+        },
+        module
+      )
+    }
 
     return this
   }
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity,complexity
-  public async loadModule(scope: string, moduleName: string): Promise<FederatedModule | undefined> {
-    try {
-      const moduleKey = this.getModuleKey(scope, moduleName)
-      if (this.modules.has(moduleKey)) {
-        const module = this.modules.get(moduleKey)
-        if (
-          module &&
-          ['app-module', 'component'].includes(module.type) &&
-          this.modules.get(moduleKey)?.status === FederatedModuleStatuses.MOUNTED
-        ) {
-          eventService.emit({
-            payload: { module },
-            type: `federated-core:${moduleKey}:app-module-already-mounted`,
-          })
+  async getModuleUrl(module: FederatedModuleParams): Promise<string> {
+    const { scope, name } = module
+    const moduleBaseUrl = window.__FEDERATED_CORE__.moduleBaseUrls[scope]
+    const importMap = await this.fetchImportMapContent(moduleBaseUrl)
+    const moduleKey = getModuleKey(scope, name)
 
-          return this.modules.get(moduleKey)
-        }
-
-        if (
-          this.modules.get(moduleKey)?.type === 'shared-module' &&
-          this.modules.get(moduleKey)?.status === FederatedModuleStatuses.LOADED
-        ) {
-          eventService.emit({
-            payload: { module},
-            type: `federated-core:${moduleKey}:shared-module-already-loaded`,
-          })
-
-          return this.modules.get(moduleKey)
-        }
-      }
-
-      eventService.emit({
-        payload: { scope, moduleName },
-        type: `federated-core:${moduleKey}:before-load-module`,
-      })
-
-      let resolvedModule: FederatedModule
-
-      // Load stylesheet from manifest
-      if (isBrowser) {
-        const moduleBaseUrl = window.__FEDERATED_CORE__.moduleBaseUrls[scope]
-        const importMap = await this.fetchImportMapContent(moduleBaseUrl)
-        const moduleUrl = importMap.imports[`${moduleName}.css`]
-
-        if (moduleUrl) {
-          this.addLinkTag(`${moduleName}.css`, 'stylesheet', moduleUrl)
-        }
-      }
-
-      if (this.useNativeModules) {
-        eventService.emit({ payload: { moduleName, scope }, type: `federated-core:${moduleKey}:loading-native-module` })
-        const moduleUrl = await this.getModuleUrl(scope, moduleName)
-        resolvedModule = await import(/* webpackIgnore: true */ /* @vite-ignore */ moduleUrl)
-        eventService.emit({
-          payload: { moduleName, scope },
-          type: `federated-core:${moduleKey}:native-module-loaded`,
-        })
-      } else {
-        eventService.emit({ payload: { moduleName, scope }, type: `federated-core:${moduleKey}:loading-systemjs-module` })
-        resolvedModule = await System.import(moduleName)
-        eventService.emit({
-          payload: { moduleName, scope },
-          type: `federated-core:${moduleKey}:systemjs-module-loaded`,
-        })
-      }
-
-      if (!this.modules.has(moduleKey) && !resolvedModule.status) {
-        await this.registerModule(resolvedModule)
-      }
-
-      if (!resolvedModule.status || resolvedModule.status === FederatedModuleStatuses.NOT_LOADED) {
-        this.setModuleState(scope, moduleName, FederatedModuleStatuses.LOADED)
-      }
-
-      return resolvedModule
-    } catch (error) {
-      const moduleKey = this.getModuleKey(scope, moduleName)
-      console.log('federated-core:error-loading-module', error)
-      eventService.emit({ payload: { moduleName, scope }, type: `federated-core:${moduleKey}:module-load-error`, error })
-
-      return undefined
-    }
-  }
-
-  async mountModule(scope: string, name: string, props: any, mountId: string): Promise<void> {
-    const module = await this.loadModule(scope, name)
-
-    if (module?.mount) {
-      module.mount(props, mountId)
-    }
-  }
-
-  async unmountModule(scope: string, name: string, mountId: string): Promise<void> {
-    const module = await this.modules.get(this.getModuleKey(scope, name))
-
-    if (module?.unmount) {
-      module.unmount()
-    }
-  }
-
-  pathToWildcard(path: string): string {
-    return `^${path.replace(/\*/g, '.*')}$`
-  }
-
-  matchPathToUrlPaths(path: string, urlPaths: string[] = []): boolean {
-    const matchFound = urlPaths.find((activePath) => {
-      const wildcardRegex = new RegExp(this.pathToWildcard(activePath))
-      return wildcardRegex.test(path)
-    })
-
-    return !!matchFound
-  }
-
-  shouldModuleBeMounted(path: string, module: FederatedModule): boolean {
-    return (
-      this.matchPathToUrlPaths(path, module.activeWhenPaths) && !this.matchPathToUrlPaths(path, module.exceptWhenPaths)
-    )
+    return importMap.imports[moduleKey]
   }
 
   getModulesByPath(path: string): FederatedModule[] {
     const modules: FederatedModule[] = []
     this.modules.forEach((module) => {
-      if (this.shouldModuleBeMounted(path, module)) {
+      if (shouldModuleBeMounted(path, module)) {
         modules.push(module)
       }
     })
@@ -227,33 +267,237 @@ class FederatedRuntime implements FederatedRuntimeType {
     return modules
   }
 
-  navigateTo(path: string) {
+  async loadModule(
+    module: FederatedModuleParams
+  ): Promise<FederatedModule | undefined> {
+    const { scope, name } = module
+
+    try {
+      const moduleKey = getModuleKey(scope, name)
+
+      if (this.modules.has(moduleKey)) {
+        const storeModule = this.modules.get(moduleKey)
+        if (
+          storeModule &&
+          ['app-module', 'component'].includes(storeModule.type) &&
+          this.modules.get(moduleKey)?.status ===
+            FederatedModuleStatuses.MOUNTED
+        ) {
+          this.services.event.emit(
+            FederatedEvents.MODULE_ALREADY_MOUNTED,
+            {
+              moduleKey,
+              module,
+            },
+            module
+          )
+
+          return this.modules.get(moduleKey)
+        }
+
+        if (
+          storeModule &&
+          this.modules.get(moduleKey)?.status === FederatedModuleStatuses.LOADED
+        ) {
+          this.services.event.emit(
+            FederatedEvents.MODULE_ALREADY_LOADED,
+            {
+              moduleKey,
+              module,
+            },
+            module
+          )
+
+          return this.modules.get(moduleKey)
+        }
+      }
+
+      this.services.event.emit(
+        FederatedEvents.MODULE_BEFORE_LOAD,
+        {
+          moduleKey,
+          module,
+        },
+        module
+      )
+
+      let resolvedModule: FederatedModule
+
+      // Load stylesheet from manifest
+      if (isBrowser) {
+        const moduleBaseUrl = window.__FEDERATED_CORE__.moduleBaseUrls[scope]
+        const importMap = await this.fetchImportMapContent(moduleBaseUrl)
+        const moduleUrl = importMap.imports[`${name}.css`]
+
+        if (moduleUrl) {
+          addLinkTag(`${name}.css`, 'stylesheet', moduleUrl)
+        }
+      }
+
+      if (this.useNativeModules) {
+        this.services.event.emit(
+          FederatedEvents.NATIVE_MODULE_LOADING,
+          {
+            module,
+          },
+          module
+        )
+        const moduleUrl = await this.getModuleUrl({ scope, name })
+        resolvedModule = await import(
+          /* webpackIgnore: true */ /* @vite-ignore */ moduleUrl
+        )
+
+        this.services.event.emit(
+          FederatedEvents.NATIVE_MODULE_LOADED,
+          {
+            module: resolvedModule,
+          },
+          module
+        )
+      } else {
+        this.services.event.emit(
+          FederatedEvents.SYSTEMJS_MODULE_LOADING,
+          {
+            module,
+          },
+          module
+        )
+        resolvedModule = await System.import(name)
+
+        this.services.event.emit(
+          FederatedEvents.SYSTEMJS_MODULE_LOADED,
+          {
+            module: resolvedModule,
+          },
+          module
+        )
+      }
+
+      if (!this.modules.has(moduleKey) && !resolvedModule.status) {
+        await this.registerModule(resolvedModule)
+      }
+
+      if (
+        !resolvedModule.status ||
+        resolvedModule.status === FederatedModuleStatuses.NOT_LOADED
+      ) {
+        this.setModuleState({ scope, name }, FederatedModuleStatuses.LOADED)
+      }
+
+      return resolvedModule
+    } catch (error) {
+      this.services.event.emit(
+        FederatedEvents.MODULE_LOAD_ERROR,
+        {
+          module,
+          error: error as Error,
+        },
+        module
+      )
+
+      return undefined
+    }
+  }
+
+  async mountModule(
+    module: FederatedModuleParams,
+    props: unknown,
+    mountId: string
+  ): Promise<void> {
+    const { scope, name } = module
+    const loadedModule = await this.loadModule({ scope, name })
+
+    if (loadedModule?.mount) {
+      loadedModule.mount(props, mountId)
+    }
+  }
+
+  async unmountModule(module: FederatedModuleParams): Promise<void> {
+    const { scope, name } = module
+    const loadedModule = await this.modules.get(getModuleKey(scope, name))
+
+    if (loadedModule?.unmount) {
+      loadedModule.unmount()
+    }
+  }
+
+  validateProps(module: FederatedModuleParams, props: unknown): boolean {
+    const { scope, name } = module
+    const moduleKey = getModuleKey(scope, name)
+    this.services.event.emit(FederatedEvents.MODULE_VALIDATE_PROPS, {
+      module,
+      props,
+    })
+    const loadedModule = this.modules.get(moduleKey)
+
+    if (!loadedModule?.validateProps) {
+      return true
+    }
+
+    return loadedModule.validateProps(props)
+  }
+
+  async preFetchModules(
+    modules: FederatedModule[]
+  ): Promise<FederatedRuntimeType> {
+    this.services.event.emit(FederatedEvents.RUNTIME_MODULES_PREFETCH_START, {
+      modules,
+    })
+
+    for (const module of modules) {
+      const { name, scope } = module
+      const moduleKey = getModuleKey(scope, name)
+      if (!this.modules.has(moduleKey)) {
+        this.services.event.emit(
+          FederatedEvents.RUNTIME_BEFORE_MODULE_PREFETCH,
+          {
+            module,
+          }
+        )
+        await this.loadModule({ scope, name })
+        this.services.event.emit(FederatedEvents.RUNTIME_MODULE_PREFETCHED, {
+          module,
+        })
+      }
+    }
+
+    this.services.event.emit(FederatedEvents.RUNTIME_MODULES_PREFETCHED, {
+      modules,
+    })
+
+    return this
+  }
+
+  // Navigation Methods
+  navigateTo(path: string): void {
     if (window.location.pathname === path) {
-      eventService.emit({ payload: { path }, type: 'federated-core:route-already-active' })
+      this.services.event.emit(FederatedEvents.ROUTE_ALREADY_ACTIVE, {
+        path,
+      })
 
       return
     }
 
-    eventService.emit({ payload: { path }, type: 'federated-core:navigate-to' })
+    this.services.event.emit(FederatedEvents.ROUTE_NAVIGATE_TO, {
+      previousPath: window.location.pathname,
+      path,
+    })
+
     window.history.pushState(null, '', path)
 
     // Trigger popstate event
     window.dispatchEvent(new PopStateEvent('popstate'))
   }
 
-  reroute() {
-    eventService.emit({
-      payload: {
-        location: window.location,
-        activeModules: this.getModulesByPath(window.location.pathname),
-      },
-      type: 'federated-core:route-triggered',
+  async reroute(): Promise<void> {
+    this.services.event.emit(FederatedEvents.ROUTE_CHANGED, {
+      path: window.location.pathname,
     })
     const modulesToMount: FederatedModule[] = []
     const modulesToUnmount: FederatedModule[] = []
 
     this.modules.forEach((module) => {
-      if (this.shouldModuleBeMounted(window.location.pathname, module)) {
+      if (shouldModuleBeMounted(window.location.pathname, module)) {
         modulesToMount.push(module)
       } else {
         modulesToUnmount.push(module)
@@ -261,203 +505,194 @@ class FederatedRuntime implements FederatedRuntimeType {
     })
 
     modulesToUnmount.forEach(async (module) => {
-      const moduleKey = this.getModuleKey(module.scope, module.name)
+      const moduleKey = getModuleKey(module.scope, module.name)
       const moduleInstance = this.modules.get(moduleKey)
 
       if (moduleInstance?.unmount) {
-        eventService.emit({ payload: { module }, type: `federated-core:${moduleKey}:before-module-unmount` })
+        this.services.event.emit(
+          FederatedEvents.MODULE_BEFORE_UNMOUNT,
+          {
+            module,
+          },
+          module
+        )
         moduleInstance.unmount()
-      } else if (moduleInstance?.type === 'app-module' || moduleInstance?.type === 'component') {
-          this.setModuleState(module.scope, module.name, FederatedModuleStatuses.NOT_LOADED)
-        }
+
+        this.services.event.emit(
+          FederatedEvents.MODULE_UNMOUNTED,
+          {
+            module: moduleInstance,
+          },
+          module
+        )
+      } else if (
+        moduleInstance?.type === 'app-module' ||
+        moduleInstance?.type === 'component'
+      ) {
+        this.setModuleState(
+          { scope: module.scope, name: module.name },
+          FederatedModuleStatuses.NOT_LOADED
+        )
+      }
     })
 
     modulesToMount.forEach(async (module) => {
-      const moduleKey = this.getModuleKey(module.scope, module.name)
-      const loadedModule = await this.loadModule(module.scope, module.name)
-      if (loadedModule?.mount) {
-        eventService.emit({ payload: { module }, type: `federated-core:${moduleKey}:before-module-mount` })
-        loadedModule.mount()
+      try {
+        const { scope, name } = module
+        const loadedModule = await this.loadModule({ scope, name })
+
+        if (loadedModule?.mount) {
+          this.services.event.emit(
+            FederatedEvents.MODULE_BEFORE_MOUNT,
+            {
+              module: loadedModule,
+            },
+            module
+          )
+          loadedModule.mount()
+          this.services.event.emit(
+            FederatedEvents.MODULE_MOUNTED,
+            {
+              module: loadedModule,
+            },
+            module
+          )
+        }
+      } catch (error) {
+        this.services.event.emit(
+          FederatedEvents.MODULE_MOUNT_ERROR,
+          {
+            module,
+          },
+          module
+        )
       }
     })
   }
 
-  validateProps(scope: string, moduleName: string, props: unknown): boolean {
-    const moduleKey = this.getModuleKey(scope, moduleName)
-    eventService.emit({ payload: { moduleName, props, scope }, type: `federated-core:${moduleKey}:validating-props` })
-    const module = this.modules.get(moduleKey)
-
-    if (!module) {
-      throw Error(`Module ${moduleKey} not registered`)
-    }
-
-    if (!module.validateProps) {
-      return true
-    }
-
-    return module.validateProps(props)
-  }
-
-  addDynamicScriptTag(id: string, src: string, onload?: () => void): void {
-    const script = document.createElement('script')
-    script.id = id
-    script.src = src
-    script.crossOrigin = 'anonymous'
-    if (onload) script.onload = onload
-    document.body.appendChild(script)
-  }
-
-  addMetaTag(id: string, content: string): void {
-    const meta = document.createElement('meta')
-    meta.id = id
-    meta.content = content
-    document.head.appendChild(meta)
-  }
-
-  addStyleTag(id: string, css: string): void {
-    const style = document.createElement('style')
-    style.id = id
-    style.innerHTML = css
-    document.head.appendChild(style)
-  }
-
-  addLinkTag(id: string, rel: string, href: string): void {
-    const link = document.createElement('link')
-    link.id = id
-    link.rel = rel
-    link.href = href
-    document.head.appendChild(link)
-  }
-
-  addHtmlElementWithAttrs(tagName: string, attrs: { [key: string]: string }): void {
-    const element = document.createElement(tagName)
-    Object.keys(attrs).forEach((key) => {
-      element.setAttribute(key, attrs[key])
-    })
-
-    document.body.appendChild(element)
-  }
-
-  addImportMapOverridesUi(): void {
-    const importMapOverridesKey = 'import-map-overrides'
-    if (this.enableImportMapOverrides) {
-      this.addHtmlElementWithAttrs('import-map-overrides-full', {
-        'show-when-local-storage': importMapOverridesKey,
+  async preFetchRoutes(routePaths: string[]): Promise<FederatedRuntimeType> {
+    try {
+      this.services.event.emit(FederatedEvents.RUNTIME_ROUTES_PREFETCH_START, {
+        routes: routePaths,
       })
 
-      localStorage.setItem(importMapOverridesKey, 'true')
+      const routePromises = routePaths.map(async (path) => {
+        this.services.event.emit(
+          FederatedEvents.RUNTIME_BEFORE_ROUTE_PREFETCH,
+          {
+            path,
+          }
+        )
 
-      this.addDynamicScriptTag(
-        importMapOverridesKey,
-        'https://cdn.jsdelivr.net/npm/import-map-overrides/dist/import-map-overrides.js',
-        () => {
-          eventService.emit({ type: 'federated-core:import-map-overrides-loaded', payload: {} })
-        },
-      )
+        const modules = this.getModulesByPath(path)
+
+        modules.forEach(async (module) => {
+          const { name, scope } = module
+          if (module?.status !== FederatedModuleStatuses.LOADED) {
+            await this.loadModule({ scope, name })
+          }
+        })
+        this.services.event.emit(FederatedEvents.RUNTIME_ROUTE_PREFETCHED, {
+          path,
+        })
+      })
+
+      await Promise.all(routePromises)
+
+      this.services.event.emit(FederatedEvents.RUNTIME_ROUTES_PREFETCHED, {
+        routes: routePaths,
+      })
+    } catch (error) {
+      console.error(error)
+      this.services.event.emit(FederatedEvents.RUNTIME_ROUTES_PREFETCH_ERROR, {
+        routes: routePaths,
+      })
     }
-  }
-
-  setSharedDependencyBaseUrl(baseUrl: string) {
-    this.sharedDependencyBaseUrl = baseUrl
 
     return this
   }
 
-  ensureSystemJs(): void {
-    if (!this.useNativeModules && !(typeof System.import === 'function')) {
-      this.addMetaTag('importmap-type', 'systemjs-importmap')
-      this.addDynamicScriptTag('systemjs', `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/system.min.js`)
-      this.addDynamicScriptTag(
-        'systemjs-named-exports',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/named-exports.min.js`,
-      )
-      this.addDynamicScriptTag('systemjs-amd', `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/amd.min.js`)
-      this.addDynamicScriptTag(
-        'systemjs-dynamic-import-maps',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/dynamic-import-maps.min.js`,
-      )
-
-      eventService.emit({ type: 'federated-core:systemjs-loaded', payload: {} })
-    }
-  }
-
+  // Lifecycle Methods
   bootstrap(): void {
-    eventService.emit({
-      payload: {
-        bootstrapTime: new Date().getDate().toString(),
-        modules: this.modules,
-        modulesBaseUrls: window.__FEDERATED_CORE__.moduleBaseUrls,
-        useNativeModules: this.useNativeModules,
-        enableImportMapOverrides: this.enableImportMapOverrides,
-      },
-      type: 'federated-core:bootstrapping',
+    this.bootstrapped = false
+    const boostrapStartTime = Date.now()
+    this.services.event.emit(FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP, {
+      bootstrapTime: new Date().toDateString(),
+      modules: this.modules,
+      modulesBaseUrls: window.__FEDERATED_CORE__.moduleBaseUrls,
+      useNativeModules: this.useNativeModules,
+      importMapOverridesEnabled: this.importMapOverridesEnabled,
     })
 
-    window.addEventListener('popstate', (event) => {
-      eventService.emit({ payload: { event }, type: 'federated-core:popstate-event-fired' })
+    window.addEventListener('popstate', (popstateEvent) => {
+      this.services.event.emit(FederatedEvents.POPSTATE_EVENT_FIRED, {
+        popstateEvent,
+      })
+
       this.reroute()
     })
 
     this.ensureSystemJs()
     this.addImportMapOverridesUi()
-  }
 
-  setUseNativeModules(useNativeModules: boolean) {
-    this.useNativeModules = useNativeModules
-
-    return this
-  }
-
-  setEnableImportMapOverrides(enableImportMapOverrides: boolean) {
-    this.enableImportMapOverrides = enableImportMapOverrides
-
-    return this
-  }
-
-  start(): void {
-    this.bootstrap()
-    eventService.emit({ payload: {}, type: 'federated-core:started' })
-    this.reroute()
-  }
-
-  async preFetchRoutes(routePaths: string[]): Promise<FederatedRuntimeType> {
-    eventService.emit({ payload: { routePaths }, type: 'federated-core:prefetching-routes' })
-
-    routePaths.forEach((routePath) => {
-      const modules = this.getModulesByPath(routePath)
-      modules.forEach(async (module) => {
-        const moduleKey = this.getModuleKey(module.scope, module.name)
-        if (!this.modules.has(moduleKey)) {
-          await this.loadModule(module.scope, module.name)
-        }
-      })
+    this.modules.forEach((module) => {
+      if (module.bootstrap) {
+        this.services.event.emit(
+          FederatedEvents.MODULE_BEFORE_BOOTSTRAP,
+          {
+            module,
+          },
+          module
+        )
+        module.bootstrap()
+        this.services.event.emit(
+          FederatedEvents.MODULE_BOOTSTRAPPED,
+          {
+            module,
+          },
+          module
+        )
+      }
     })
 
-    eventService.emit({ payload: { routePaths }, type: 'federated-core:prefetched-routes' })
-
-    return this
+    const bootstrapEndTime = Date.now()
+    const bootstrapDuration = bootstrapEndTime - boostrapStartTime
+    this.bootstrapped = true
+    this.services.event.emit(FederatedEvents.RUNTIME_BOOTSTRAPPED, {
+      bootstrapEndTime,
+      bootstrapDuration,
+    })
   }
 
-  async preFetchModules(modules: FederatedModule[]): Promise<FederatedRuntimeType> {
-    eventService.emit({ payload: { modules }, type: 'federated-core:prefetching-modules' })
-
-    for (const module of modules) {
-      const moduleKey = this.getModuleKey(module.scope, module.name)
-      if (!this.modules.has(moduleKey)) {
-        await this.loadModule(module.scope, module.name)
-      }
+  async start(): Promise<void> {
+    try {
+      this.started = false
+      const startTime = Date.now()
+      this.services.event.emit(FederatedEvents.RUNTIME_BEFORE_START, {
+        startTime,
+        modules: this.modules,
+      })
+      this.bootstrap()
+      await this.reroute()
+      const startEndTime = Date.now()
+      const startDuration = startEndTime - startTime
+      this.services.event.emit(FederatedEvents.RUNTIME_STARTED, {
+        startTime,
+        startEndTime,
+        startDuration,
+      })
+      this.started = true
+    } catch (error) {
+      this.services.event.emit(FederatedEvents.RUNTIME_START_ERROR, {
+        error: error as Error,
+      })
     }
-
-    eventService.emit({ payload: { modules }, type: 'federated-core:prefetched-modules' })
-
-    return this
   }
 }
 
 export const getFederatedRuntime = (): FederatedRuntimeType | void => {
   if (isBrowser) {
     if (!window.__FEDERATED_CORE__.federatedRuntime) {
-      // eslint-disable-next-line @vfuk/rules/js-prefer-static
       window.__FEDERATED_CORE__.federatedRuntime = new FederatedRuntime()
     }
 

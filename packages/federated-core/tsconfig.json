@@ -1,23 +1,25 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "target": "ESNext",
+    "module": "ESNext",
     "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./",
+    "declarationDir": "dist",
+    "rootDir": "./",
+    "outDir": "dist",
     "strict": true,
+    "declaration": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["node", "jest", "@types/systemjs"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types",
+      "../../node_modules/@types"
+    ]
   },
-  "files": [],
-  "include": [],
-  "references": [
-    {
-      "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
-  ]
+  "exclude": ["node_modules", "dist"]
 }

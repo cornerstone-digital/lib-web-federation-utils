@@ -1,1 +1,2 @@
-export * as environment from './environment'
+export * from './browser-logger'
+export * from './environment'

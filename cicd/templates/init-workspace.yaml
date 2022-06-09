@@ -1,0 +1,12 @@
+steps:
+  - checkout: self
+    clean: false
+    persistCredentials: true
+
+  - script: git clean -ffdx -e node_modules && git reset --hard
+      displayName: Clean git repo
+
+  - template: templates/node.yaml@tools
+    displayName: Use Node.js 16.15.0
+    parameters:
+      nodeVersion: 16.15.0

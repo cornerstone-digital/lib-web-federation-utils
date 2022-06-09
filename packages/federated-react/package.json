@@ -1,0 +1,26 @@
+{
+    "name": "@vf/federated-react",
+    "version": "0.0.1",
+    "main": "dist/src/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "prebuild": "rimraf dist",
+        "build": "tsc",
+        "lint": "eslint . --ext .js,.ts,.tsx --fix",
+        "test": "jest",
+        "test:watch": "yarn test --watchAll",
+        "test:cc": "yarn test --coverage",
+        "test:cc:watch": "yarn test:cc --watchAll"
+    },
+    "dependencies": {
+        "@vf/federated-core": "^0.0.1",
+        "systemjs": "^6.12.1",
+        "uuid": "^8.3.2"
+    },
+    "devDependencies": {
+        "@types/systemjs": "^6.1.1",
+        "@types/uuid": "^8.3.4",
+        "ts-node": "^10.8.0",
+        "typescript": "^4.7.2"
+    }
+}

@@ -15,8 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@vf/federated-react": ["packages/federated-react/src/index.ts"],
       "@vf/federated-core": ["packages/federated-core/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "types": ["jest"],
+  "exclude": ["node_modules"]
 }
