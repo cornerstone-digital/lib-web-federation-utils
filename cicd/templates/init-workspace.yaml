@@ -4,7 +4,7 @@ steps:
     persistCredentials: true
 
   - script: git clean -ffdx -e node_modules && git reset --hard
-      displayName: Clean git repo
+    displayName: Clean git repo
 
   - template: templates/node.yaml@tools
     displayName: Use Node.js 16.15.0
