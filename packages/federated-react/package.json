@@ -1,6 +1,6 @@
 {
     "name": "@vf/federated-react",
-    "version": "0.0.1",
+    "version": "0.0.2-alpha.0",
     "main": "dist/src/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
@@ -14,7 +14,7 @@
         "test:cc:watch": "yarn test:cc --watchAll"
     },
     "dependencies": {
-        "@vf/federated-core": "^0.0.1",
+        "@vf/federated-core": "^0.0.2-alpha.0",
         "systemjs": "^6.12.1",
         "uuid": "^8.3.2"
     },
