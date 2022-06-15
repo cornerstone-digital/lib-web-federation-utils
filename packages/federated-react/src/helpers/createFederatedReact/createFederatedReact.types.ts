@@ -5,6 +5,8 @@ import {
   RuntimeEventHandler,
   FederatedModuleTypes,
   FederatedRuntimeType,
+  FederatedModuleBaseOptions,
+  FederatedModuleLifecycles,
 } from '@vf/federated-core'
 
 export type RenderTypes =
@@ -22,13 +24,16 @@ export type CreateFederatedReactOptions<RootComponentProps> = {
     type: FederatedModuleTypes
     description?: string
     domElementId?: string
-    rootComponent?:
-      | React.ComponentClass<RootComponentProps, unknown>
-      | React.FunctionComponent<RootComponentProps>
-    loadRootComponent?: () => Promise<
-      | React.ComponentClass<RootComponentProps, unknown>
-      | React.FunctionComponent<RootComponentProps>
-    >
+    rootComponent?: React.ComponentType<RootComponentProps>
+    loadRootComponent?: () => Promise<{
+      default: React.ComponentType<RootComponentProps>
+    }>
+    errorBoundary?: (
+      error: Error
+    ) => React.ReactElement<
+      unknown,
+      string | React.FunctionComponent | typeof React.Component
+    > | null
     defaultProps?: RootComponentProps
     propValidationFunction?: (props: RootComponentProps) => boolean
     activeWhenPaths?: string[]
@@ -38,5 +43,15 @@ export type CreateFederatedReactOptions<RootComponentProps> = {
   renderType?: RenderTypes | (() => RenderTypes)
   React: typeof React
   ReactDOM: typeof ReactDOM
-  federatedRuntime: FederatedRuntimeType | void
+  federatedRuntime: FederatedRuntimeType
+  enableSystemJs?: boolean
 }
+
+export type FederatedReactApp<PropsType> = FederatedModuleBaseOptions<
+  PropsType,
+  'react'
+> &
+  FederatedModuleLifecycles<PropsType> & {
+    domElementId: CreateFederatedReactOptions<PropsType>['config']['domElementId']
+    loadRootComponent: CreateFederatedReactOptions<PropsType>['config']['loadRootComponent']
+  }

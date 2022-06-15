@@ -4,7 +4,10 @@ import {
   FederatedModuleParams,
   ExposedServicesType,
   FederatedModuleStatuses,
+  RootComponentType,
+  RootComponentTypes,
 } from '../types'
+import { ComponentType } from 'react'
 
 export enum FederatedEvents {
   // Bootstrap Events
@@ -96,7 +99,7 @@ export enum FederatedEvents {
 export type FederatedEventKeys = `${FederatedEvents}`
 
 export type FederatedEventPayloadMap = {
-  // Runtimme Bootstrap Events
+  // Runtime Bootstrap Events
   [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: {
     bootstrapTime: string
     modules: Map<string, FederatedModuleParams>
@@ -220,7 +223,7 @@ export type FederatedEventPayloadMap = {
     error: Error
   }
 
-  // Module Registation Events
+  // Module Registration Events
   [FederatedEvents.MODULE_ALREADY_REGISTERED]: {
     moduleKey: string
     module: FederatedModuleParams
@@ -353,6 +356,19 @@ export type FederatedRuntimeType = {
     module: FederatedModuleParams,
     state: FederatedModuleStatuses
   ): void
+  setModuleRootComponent<
+    ModuleComponentType extends RootComponentTypes,
+    PropsType
+  >(
+    module: FederatedModuleParams,
+    component: RootComponentType<ModuleComponentType, PropsType>
+  ): void
+  getModuleRootComponent<
+    ModuleComponentType extends RootComponentTypes,
+    PropsType
+  >(
+    module: FederatedModuleParams
+  ): RootComponentType<ModuleComponentType, PropsType> | undefined | void
   registerModule(module: FederatedModule): Promise<FederatedRuntimeType>
   getModuleUrl(module: FederatedModuleParams): Promise<string>
   getModulesByPath(path: string): FederatedModule[]

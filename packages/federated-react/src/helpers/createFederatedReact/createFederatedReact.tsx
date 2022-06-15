@@ -1,40 +1,58 @@
-import { ReactElement } from 'react'
-
-import { CreateFederatedReactOptions } from './createFederatedReact.types'
+import {
+  CreateFederatedReactOptions,
+  FederatedReactApp,
+} from './createFederatedReact.types'
 
 import {
   eventService,
-  FederatedModule,
+  FederatedEvents,
   FederatedModuleLifecycles,
   FederatedModuleStatuses,
-  getModuleKey,
-  FederatedEvents,
 } from '@vf/federated-core'
 
-function reactDomRender<PropsType>(
-  opts: CreateFederatedReactOptions<PropsType>,
-  elementToRender: ReactElement,
-  domElement: HTMLElement
-) {
-  const renderType =
-    typeof opts.renderType === 'function'
-      ? opts.renderType()
-      : opts.renderType || 'render'
+import bootstrapLifecycle from './lifecycles/bootstrap/bootstrap.lifecycle'
+import mountLifecycle from './lifecycles/mount/mount.lifecycle'
+import unmountLifecycle from './lifecycles/unmount'
+import updateLifecycle from './lifecycles/update'
 
-  if (renderType === 'hydrate') {
-    opts.ReactDOM.hydrate(elementToRender, domElement)
-  } else {
-    // default to this if 'renderType' is null or doesn't match the other options
-    opts.ReactDOM.render(elementToRender, domElement)
+function validateModuleOptions<PropsType>(
+  options: CreateFederatedReactOptions<PropsType>
+) {
+  if (!options.config) {
+    throw new Error('Missing config')
   }
 
-  return null
+  if (!options.React) {
+    throw new Error('Missing React')
+  }
+
+  if (!options.ReactDOM) {
+    throw new Error('Missing ReactDOM')
+  }
+
+  if (!options.config.name) {
+    throw new Error('Missing name')
+  }
+
+  if (!options.config.scope) {
+    throw new Error('Missing scope')
+  }
+
+  if (!options.config.rootComponent && !options.config.loadRootComponent) {
+    throw new Error('Missing rootComponent or loadRootComponent')
+  }
+
+  if (options.config.rootComponent && options.config.loadRootComponent) {
+    throw new Error('Cannot have both rootComponent and loadRootComponent')
+  }
 }
 
 function createFederatedReact<PropsType>(
   options: CreateFederatedReactOptions<PropsType>
-) {
-  const { React, ReactDOM, federatedRuntime, config } = options
+): FederatedReactApp<PropsType> {
+  validateModuleOptions(options)
+
+  const { React, federatedRuntime, config } = options
   let { rootComponent } = config
   const {
     domElementId = `${config.scope}-${config.name}`,
@@ -50,180 +68,27 @@ function createFederatedReact<PropsType>(
     eventListeners,
   } = config
 
-  let domContainer = document.getElementById(domElementId)
-
-  if (!federatedRuntime) {
-    throw new Error(`Federated runtime not found.`)
-  }
-
   const moduleData = { scope, name }
   const lifecycles: FederatedModuleLifecycles<PropsType> = {
-    bootstrap: async () => {
-      eventService.emit(
-        FederatedEvents.MODULE_BEFORE_BOOTSTRAP,
-        {
-          module: moduleData,
-        },
-        moduleData
-      )
-      federatedRuntime.setModuleState(
-        { scope, name },
-        FederatedModuleStatuses.BOOTSTRAPPING
-      )
-
-      if (rootComponent) {
-        return Promise.resolve() // Root component is already loaded
-      }
-
-      if (loadRootComponent) rootComponent = await loadRootComponent()
-    },
-    mount: async (props?: PropsType, mountId?: string) => {
-      try {
-        if (lifecycles.bootstrap) await lifecycles.bootstrap()
-        federatedRuntime.setModuleState(
-          { scope, name },
-          FederatedModuleStatuses.MOUNTING
-        )
-        const propsToUse = props || defaultProps
-        federatedRuntime.validateProps({ scope, name }, propsToUse)
-
-        if (mountId) {
-          const mountIdElement = document.getElementById(mountId)
-          if (!mountIdElement) {
-            throw new Error(
-              `No DOM container '${mountId}' found for ${getModuleKey(
-                scope,
-                name
-              )}`
-            )
-          }
-          domContainer = mountIdElement
-        }
-
-        if (rootComponent) {
-          const rootComponentElement = React.createElement(
-            rootComponent,
-            propsToUse
-          )
-
-          eventService.emit(
-            FederatedEvents.MODULE_BEFORE_MOUNT,
-            {
-              module: moduleData,
-            },
-            moduleData
-          )
-
-          if (domContainer) {
-            reactDomRender(options, rootComponentElement, domContainer)
-          }
-
-          eventService.emit(
-            FederatedEvents.MODULE_MOUNTED,
-            {
-              module: moduleData,
-            },
-            moduleData
-          )
-
-          federatedRuntime.setModuleState(
-            { scope, name },
-            FederatedModuleStatuses.MOUNTED
-          )
-        }
-      } catch (error) {
-        eventService.emit(
-          FederatedEvents.MODULE_MOUNT_ERROR,
-          {
-            module: moduleData,
-          },
-          moduleData
-        )
-
-        federatedRuntime.setModuleState(
-          { scope, name },
-          FederatedModuleStatuses.LOAD_ERROR
-        )
-      }
-    },
-    unmount: () => {
-      try {
-        federatedRuntime.setModuleState(
-          { scope, name },
-          FederatedModuleStatuses.UNMOUNTING
-        )
-        if (domContainer) {
-          ReactDOM.unmountComponentAtNode(domContainer)
-
-          eventService.emit(
-            FederatedEvents.MODULE_UNMOUNTED,
-            {
-              module: moduleData,
-            },
-            moduleData
-          )
-
-          federatedRuntime.setModuleState(
-            { scope, name },
-            FederatedModuleStatuses.UNMOUNTED
-          )
-        }
-      } catch (error) {
-        eventService.emit(
-          FederatedEvents.MODULE_UNMOUNT_ERROR,
-          {
-            module: moduleData,
-          },
-          moduleData
-        )
-        federatedRuntime.setModuleState(
-          { scope, name },
-          FederatedModuleStatuses.UNMOUNT_ERROR
-        )
-      }
-    },
-    update: (props?: PropsType) => {
-      try {
-        federatedRuntime.setModuleState(
-          { scope, name },
-          FederatedModuleStatuses.UPDATING
-        )
-        const propsToUse = props || defaultProps
-        eventService.emit(
-          FederatedEvents.MODULE_BEFORE_UPDATE,
-          {
-            module: moduleData,
-          },
-          moduleData
-        )
-
-        if (lifecycles.unmount) lifecycles.unmount()
-        if (lifecycles.mount) lifecycles.mount(propsToUse)
-
-        eventService.emit(
-          FederatedEvents.MODULE_UPDATED,
-          {
-            module: moduleData,
-          },
-          moduleData
-        )
-      } catch (error) {
-        eventService.emit(
-          FederatedEvents.MODULE_UPDATE_ERROR,
-          {
-            module: moduleData,
-          },
-          moduleData
-        )
-        federatedRuntime.setModuleState(
-          { scope, name },
-          FederatedModuleStatuses.UPDATE_ERROR
-        )
-      }
-    },
+    bootstrap: () =>
+      bootstrapLifecycle<PropsType>(moduleData, federatedRuntime, options),
+    mount: (props, mountId) =>
+      mountLifecycle<PropsType>(
+        moduleData,
+        federatedRuntime,
+        options,
+        defaultProps as PropsType
+      )(props, mountId),
+    unmount: async () =>
+      unmountLifecycle(moduleData, federatedRuntime, options),
+    update: async (props?: PropsType) =>
+      updateLifecycle(moduleData, federatedRuntime, options)(props),
   }
 
-  const module: FederatedModule<PropsType> = {
+  return {
+    domElementId,
+    rootComponent,
+    loadRootComponent,
     activeWhenPaths: activeWhenPaths || [],
     exceptWhenPaths: exceptWhenPaths || [],
     description,
@@ -240,8 +105,6 @@ function createFederatedReact<PropsType>(
     },
     ...lifecycles,
   }
-
-  return module
 }
 
 export default createFederatedReact

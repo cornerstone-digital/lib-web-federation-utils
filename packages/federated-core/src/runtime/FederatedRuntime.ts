@@ -4,10 +4,12 @@ import {
   FederatedModuleStatuses,
   ExposedServicesType,
   FederatedModuleParams,
+  RootComponentTypes,
+  RootComponentType,
 } from '../types'
 
 import { FederatedRuntimeType, FederatedEvents } from './FederatedRuntime.types'
-import { isBrowser } from '../utils'
+import { environmentUtils } from '../utils'
 import { eventService, loggerService } from './services'
 import {
   addScriptTag,
@@ -191,6 +193,44 @@ class FederatedRuntime implements FederatedRuntimeType {
     })
   }
 
+  setModuleRootComponent<
+    ModuleComponentType extends RootComponentTypes,
+    PropsType
+  >(
+    module: FederatedModuleParams,
+    component: RootComponentType<ModuleComponentType, PropsType>
+  ): void {
+    const { scope, name } = module
+    const moduleKey = getModuleKey(scope, name)
+    const savedModule = this.modules.get(moduleKey)
+
+    if (savedModule) {
+      savedModule.rootComponent = component as RootComponentType<
+        ModuleComponentType,
+        PropsType
+      >
+      this.modules.set(moduleKey, savedModule)
+    }
+  }
+
+  getModuleRootComponent<
+    ModuleComponentType extends RootComponentTypes,
+    PropsType
+  >(
+    module: FederatedModuleParams
+  ): RootComponentType<ModuleComponentType, PropsType> | undefined | void {
+    const { scope, name } = module
+    const moduleKey = getModuleKey(scope, name)
+    const savedModule = this.modules.get(moduleKey)
+
+    if (savedModule) {
+      return savedModule.rootComponent as RootComponentType<
+        ModuleComponentType,
+        PropsType
+      >
+    }
+  }
+
   async registerModule(module: FederatedModule): Promise<FederatedRuntimeType> {
     const { scope, name } = module
     const moduleKey = getModuleKey(scope, name)
@@ -324,7 +364,7 @@ class FederatedRuntime implements FederatedRuntimeType {
       let resolvedModule: FederatedModule
 
       // Load stylesheet from manifest
-      if (isBrowser) {
+      if (environmentUtils.isBrowser()) {
         const moduleBaseUrl = window.__FEDERATED_CORE__.moduleBaseUrls[scope]
         const importMap = await this.fetchImportMapContent(moduleBaseUrl)
         const moduleUrl = importMap.imports[`${name}.css`]
@@ -408,7 +448,7 @@ class FederatedRuntime implements FederatedRuntimeType {
     const loadedModule = await this.loadModule({ scope, name })
 
     if (loadedModule?.mount) {
-      loadedModule.mount(props, mountId)
+      await loadedModule.mount(props, mountId)
     }
   }
 
@@ -417,17 +457,21 @@ class FederatedRuntime implements FederatedRuntimeType {
     const loadedModule = await this.modules.get(getModuleKey(scope, name))
 
     if (loadedModule?.unmount) {
-      loadedModule.unmount()
+      await loadedModule.unmount()
     }
   }
 
   validateProps(module: FederatedModuleParams, props: unknown): boolean {
     const { scope, name } = module
     const moduleKey = getModuleKey(scope, name)
-    this.services.event.emit(FederatedEvents.MODULE_VALIDATE_PROPS, {
-      module,
-      props,
-    })
+    this.services.event.emit(
+      FederatedEvents.MODULE_VALIDATE_PROPS,
+      {
+        module,
+        props,
+      },
+      module
+    )
     const loadedModule = this.modules.get(moduleKey)
 
     if (!loadedModule?.validateProps) {
@@ -504,7 +548,7 @@ class FederatedRuntime implements FederatedRuntimeType {
       }
     })
 
-    modulesToUnmount.forEach(async (module) => {
+    for (const module of modulesToUnmount) {
       const moduleKey = getModuleKey(module.scope, module.name)
       const moduleInstance = this.modules.get(moduleKey)
 
@@ -516,7 +560,7 @@ class FederatedRuntime implements FederatedRuntimeType {
           },
           module
         )
-        moduleInstance.unmount()
+        await moduleInstance.unmount()
 
         this.services.event.emit(
           FederatedEvents.MODULE_UNMOUNTED,
@@ -534,9 +578,9 @@ class FederatedRuntime implements FederatedRuntimeType {
           FederatedModuleStatuses.NOT_LOADED
         )
       }
-    })
+    }
 
-    modulesToMount.forEach(async (module) => {
+    for (const module of modulesToMount) {
       try {
         const { scope, name } = module
         const loadedModule = await this.loadModule({ scope, name })
@@ -549,7 +593,7 @@ class FederatedRuntime implements FederatedRuntimeType {
             },
             module
           )
-          loadedModule.mount()
+          await loadedModule.mount()
           this.services.event.emit(
             FederatedEvents.MODULE_MOUNTED,
             {
@@ -567,7 +611,7 @@ class FederatedRuntime implements FederatedRuntimeType {
           module
         )
       }
-    })
+    }
   }
 
   async preFetchRoutes(routePaths: string[]): Promise<FederatedRuntimeType> {
@@ -576,7 +620,7 @@ class FederatedRuntime implements FederatedRuntimeType {
         routes: routePaths,
       })
 
-      const routePromises = routePaths.map(async (path) => {
+      routePaths.forEach((path) => {
         this.services.event.emit(
           FederatedEvents.RUNTIME_BEFORE_ROUTE_PREFETCH,
           {
@@ -592,12 +636,13 @@ class FederatedRuntime implements FederatedRuntimeType {
             await this.loadModule({ scope, name })
           }
         })
+
         this.services.event.emit(FederatedEvents.RUNTIME_ROUTE_PREFETCHED, {
           path,
         })
       })
 
-      await Promise.all(routePromises)
+      // await Promise.all(routePromises)
 
       this.services.event.emit(FederatedEvents.RUNTIME_ROUTES_PREFETCHED, {
         routes: routePaths,
@@ -613,7 +658,7 @@ class FederatedRuntime implements FederatedRuntimeType {
   }
 
   // Lifecycle Methods
-  bootstrap(): void {
+  async bootstrap(): Promise<void> {
     this.bootstrapped = false
     const boostrapStartTime = Date.now()
     this.services.event.emit(FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP, {
@@ -624,37 +669,58 @@ class FederatedRuntime implements FederatedRuntimeType {
       importMapOverridesEnabled: this.importMapOverridesEnabled,
     })
 
-    window.addEventListener('popstate', (popstateEvent) => {
+    window.addEventListener('popstate', async (popstateEvent) => {
       this.services.event.emit(FederatedEvents.POPSTATE_EVENT_FIRED, {
         popstateEvent,
       })
 
-      this.reroute()
+      await this.reroute()
     })
 
     this.ensureSystemJs()
     this.addImportMapOverridesUi()
 
+    const bootstrapPromises: Promise<void>[] = []
+
     this.modules.forEach((module) => {
-      if (module.bootstrap) {
-        this.services.event.emit(
-          FederatedEvents.MODULE_BEFORE_BOOTSTRAP,
-          {
-            module,
-          },
-          module
-        )
-        module.bootstrap()
-        this.services.event.emit(
-          FederatedEvents.MODULE_BOOTSTRAPPED,
-          {
-            module,
-          },
-          module
-        )
-      }
+      bootstrapPromises.push(
+        new Promise<void>(async (resolve) => {
+          try {
+            if (module.bootstrap) {
+              this.services.event.emit(
+                FederatedEvents.MODULE_BEFORE_BOOTSTRAP,
+                {
+                  module,
+                },
+                module
+              )
+
+              await module.bootstrap()
+              this.services.event.emit(
+                FederatedEvents.MODULE_BOOTSTRAPPED,
+                {
+                  module,
+                },
+                module
+              )
+            }
+
+            resolve()
+          } catch (error) {
+            this.services.event.emit(
+              FederatedEvents.MODULE_BOOTSTRAP_ERROR,
+              {
+                module,
+              },
+              module
+            )
+            resolve()
+          }
+        })
+      )
     })
 
+    await Promise.all(bootstrapPromises)
     const bootstrapEndTime = Date.now()
     const bootstrapDuration = bootstrapEndTime - boostrapStartTime
     this.bootstrapped = true
@@ -672,7 +738,7 @@ class FederatedRuntime implements FederatedRuntimeType {
         startTime,
         modules: this.modules,
       })
-      this.bootstrap()
+      await this.bootstrap()
       await this.reroute()
       const startEndTime = Date.now()
       const startDuration = startEndTime - startTime
@@ -691,13 +757,15 @@ class FederatedRuntime implements FederatedRuntimeType {
 }
 
 export const getFederatedRuntime = (): FederatedRuntimeType | void => {
-  if (isBrowser) {
+  if (environmentUtils.isBrowser()) {
     if (!window.__FEDERATED_CORE__.federatedRuntime) {
       window.__FEDERATED_CORE__.federatedRuntime = new FederatedRuntime()
     }
 
     return window.__FEDERATED_CORE__.federatedRuntime
   }
+
+  return new FederatedRuntime()
 }
 
 export default FederatedRuntime

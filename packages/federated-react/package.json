@@ -1,27 +1,40 @@
 {
-    "name": "@vf/federated-react",
-    "version": "0.0.2-alpha.0",
-    "main": "dist/src/index.js",
-    "types": "dist/index.d.ts",
-    "scripts": {
-        "prebuild": "rimraf dist",
-        "build": "tsc",
-        "postbuild": "rimraf dist/jest*",
-        "lint": "eslint . --ext .js,.ts,.tsx --fix",
-        "test": "jest",
-        "test:watch": "yarn test --watchAll",
-        "test:cc": "yarn test --coverage",
-        "test:cc:watch": "yarn test:cc --watchAll"
-    },
-    "dependencies": {
-        "@vf/federated-core": "^0.0.2-alpha.0",
-        "systemjs": "^6.12.1",
-        "uuid": "^8.3.2"
-    },
-    "devDependencies": {
-        "@types/systemjs": "^6.1.1",
-        "@types/uuid": "^8.3.4",
-        "ts-node": "^10.8.0",
-        "typescript": "^4.7.2"
-    }
+  "name": "@vf/federated-react",
+  "version": "0.0.2-alpha.0",
+  "main": "dist/src/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc",
+    "postbuild": "rimraf dist/jest*",
+    "lint": "eslint . --ext .js,.ts,.tsx --fix",
+    "test": "jest --passWithNoTests ",
+    "test:watch": "yarn test --watchAll",
+    "test:cc": "yarn test --coverage",
+    "test:cc:watch": "yarn test:cc --watchAll"
+  },
+  "dependencies": {
+    "@vf/federated-core": "^0.0.2-alpha.0",
+    "lodash": "4.17.21",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-error-boundary": "^3.1.4",
+    "systemjs": "^6.12.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2",
+    "@types/systemjs": "^6.1.1",
+    "@types/uuid": "^8.3.4",
+    "ts-node": "^10.8.0",
+    "typescript": "^4.7.2"
+  },
+  "resolutions": {
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2",
+    "@types/systemjs": "^6.1.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  }
 }

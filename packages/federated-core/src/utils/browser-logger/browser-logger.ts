@@ -43,7 +43,7 @@ class BrowserLogger {
   protected log(
     level: LoggerLevels,
     message: string | object,
-    componentName = '',
+    componentName = 'unknown',
     logContext: object = {}
   ) {
     if (this.logLevel === 'off') return

@@ -1,8 +1,9 @@
+import * as React from 'react'
 import {
   FederatedEventPayloadMap,
   FederatedRuntimeType,
   FederatedEvents,
-} from '../runtime/FederatedRuntime.types'
+} from '../runtime'
 import { eventService, loggerService } from '../runtime/services'
 
 export type ImportMap = {
@@ -13,6 +14,7 @@ export enum FederatedModuleStatuses {
   NOT_LOADED = 'NOT_LOADED',
   LOADED = 'LOADED',
   BOOTSTRAPPING = 'BOOTSTRAPPING',
+  BOOTSTRAPPED = 'BOOTSTRAPPED',
   NOT_MOUNTED = 'NOT_MOUNTED',
   MOUNTING = 'MOUNTING',
   MOUNTED = 'MOUNTED',
@@ -50,17 +52,21 @@ export type RuntimeEventHandler = <
 ) => void
 
 export type FederatedModuleLifecycles<PropsType> = {
-  bootstrap?: () => void
-  mount?: (props?: PropsType, mountId?: string) => void
-  unmount?: () => void
-  update?: (props?: PropsType) => void
+  bootstrap: () => Promise<void>
+  mount: (props?: PropsType, mountId?: string) => Promise<void>
+  unmount: () => Promise<void>
+  update: (props?: PropsType) => Promise<void>
 }
 
-export type FederatedLifecyleMethods = keyof FederatedModuleLifecycles<unknown>
-
+export type FederatedLifecycleMethods = keyof FederatedModuleLifecycles<unknown>
 export type FederatedModuleTypes = 'app-module' | 'shared-module' | 'component'
-
-export type FederatedModule<PropsType = unknown> = {
+export type RootComponentTypes = 'react' | 'unknown'
+export type RootComponentType<RootComponentTypes, PropsType> =
+  RootComponentTypes extends 'react' ? React.ComponentType<PropsType> : never
+export type FederatedModuleBaseOptions<
+  PropsType,
+  ComponentType extends RootComponentTypes
+> = {
   scope: string
   name: string
   type: FederatedModuleTypes
@@ -71,9 +77,16 @@ export type FederatedModule<PropsType = unknown> = {
   eventListeners?: Record<string, RuntimeEventHandler>
   validateProps?: (props: PropsType) => boolean
   status?: FederatedModuleStatuses
-} & Partial<FederatedModuleLifecycles<PropsType>>
+  rootComponent?: unknown
+}
+
+export type FederatedModule<
+  PropsType = unknown,
+  RootComponentType extends RootComponentTypes = 'react'
+> = FederatedModuleBaseOptions<PropsType, RootComponentType> &
+  Partial<FederatedModuleLifecycles<PropsType>>
 
 export type FederatedGlobalInfo = {
   moduleBaseUrls: Record<string, string>
-  federatedRuntime?: FederatedRuntimeType
+  federatedRuntime: FederatedRuntimeType
 }

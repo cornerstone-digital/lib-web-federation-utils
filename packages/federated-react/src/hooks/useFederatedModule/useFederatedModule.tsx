@@ -1,24 +1,33 @@
 import { useEffect, useState } from 'react'
-import { FederatedModule, FederatedModuleLifecycles } from '@vf/federated-core'
-import { useFederatedRuntime } from '../useFederatedRuntime'
+import {
+  FederatedModuleLifecycles,
+  getFederatedRuntime,
+} from '@vf/federated-core'
 
 type UseFederatedModuleProps = {
   name: string
   scope: string
 }
+
 const useFederatedModule = ({
   name,
   scope,
-}: UseFederatedModuleProps): FederatedModuleLifecycles<unknown> | null => {
-  const federatedRuntime = useFederatedRuntime()
-  const [module, setModule] =
-    useState<FederatedModuleLifecycles<unknown> | null>(null)
+}: UseFederatedModuleProps): Partial<
+  FederatedModuleLifecycles<unknown>
+> | null => {
+  const federatedRuntime = getFederatedRuntime()
+  const [module, setModule] = useState<Partial<
+    FederatedModuleLifecycles<unknown>
+  > | null>(null)
 
   const mountModule = async () => {
-    const loadedModule: FederatedModule | undefined =
-      await federatedRuntime.loadModule({ scope, name })
+    try {
+      const loadedModule = await federatedRuntime?.loadModule({ scope, name })
 
-    if (loadedModule) setModule(loadedModule)
+      if (loadedModule) setModule(loadedModule)
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   useEffect(() => {

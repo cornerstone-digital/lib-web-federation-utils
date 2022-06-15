@@ -1,10 +1,14 @@
-import { FederatedModuleStatuses } from './src/types'
+import { FederatedModuleStatuses } from './src'
 
 // @ts-ignore
-window.System = {
-  import: jest.fn(() => {
-    return Promise.resolve({
-      status: FederatedModuleStatuses.NOT_LOADED,
-    })
-  }),
+const isBrowser = typeof window !== 'undefined'
+
+if (isBrowser) {
+  window.System = {
+    import: jest.fn(() => {
+      return Promise.resolve({
+        status: FederatedModuleStatuses.NOT_LOADED,
+      })
+    }),
+  }
 }

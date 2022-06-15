@@ -1,9 +1,6 @@
-/* eslint-disable */
-// @ts-ignore
-import defaultConfig from '../../jest.config'
-
 export default {
-  ...defaultConfig,
+  ...require('../../jest.config').default,
   displayName: '@vfuk/federated-react',
   coverageDirectory: '../../.testresults/federated-react/coverage',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 }

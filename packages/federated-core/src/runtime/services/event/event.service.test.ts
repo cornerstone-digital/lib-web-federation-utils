@@ -3,7 +3,6 @@ import eventService from './event.service'
 
 let dispatchedEventCount: Record<string, number> = {}
 window.dispatchEvent = jest.fn().mockImplementation((event: Event) => {
-  console.log('dispatchEvent', event)
   dispatchedEventCount[event.type] = dispatchedEventCount[event.type]
     ? dispatchedEventCount[event.type] + 1
     : 1
@@ -11,9 +10,7 @@ window.dispatchEvent = jest.fn().mockImplementation((event: Event) => {
 
 describe('eventService', () => {
   const type: FederatedEventKeys = 'federated-core:runtime:started'
-  const fn = () => {
-    console.log('test')
-  }
+  const fn = () => undefined
 
   beforeEach(() => {
     eventService.clear()
