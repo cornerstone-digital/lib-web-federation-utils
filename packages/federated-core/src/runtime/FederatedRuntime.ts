@@ -756,7 +756,7 @@ class FederatedRuntime implements FederatedRuntimeType {
   }
 }
 
-export const getFederatedRuntime = (): FederatedRuntimeType | void => {
+export const getFederatedRuntime = (): FederatedRuntimeType => {
   if (environmentUtils.isBrowser()) {
     if (!window.__FEDERATED_CORE__.federatedRuntime) {
       window.__FEDERATED_CORE__.federatedRuntime = new FederatedRuntime()
