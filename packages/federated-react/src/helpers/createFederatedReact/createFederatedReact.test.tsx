@@ -162,7 +162,7 @@ describe('createFederatedReact', () => {
             // @ts-ignore
             rootComponent: TestComponent,
             // @ts-ignore
-            loadRootComponent: () => TestComponent,
+            loadRootComponent: async () => TestComponent,
           },
         })
       }).toThrowError('Cannot have both rootComponent and loadRootComponent')
@@ -216,18 +216,15 @@ describe('createFederatedReact', () => {
     })
 
     it('should fire correct events when bootstrap fails', async () => {
-      const moduleInstance = createFederatedReact({
-        ...defaultOptions,
-        config: {
-          ...defaultOptions.config,
-          rootComponent: undefined,
-          loadRootComponent: () => {
-            throw new Error('Error loading module component')
-          },
-        },
-      })
-
+      const moduleInstance = createFederatedReact(defaultOptions)
       await federatedRuntime.registerModule(moduleInstance)
+
+      jest
+        .spyOn(federatedRuntime, 'setModuleState')
+        .mockImplementationOnce(() => {
+          throw new Error('Bootstrap failed')
+        })
+
       await moduleInstance.bootstrap()
 
       expect(dispatchedEventCount).toEqual({
@@ -235,7 +232,6 @@ describe('createFederatedReact', () => {
         'federated-core:module:test:app-module:before-bootstrap': 1,
         'federated-core:module:test:app-module:before-register': 1,
         'federated-core:module:test:app-module:bootstrap:error': 1,
-        'federated-core:module:test:app-module:state-changed': 1,
       })
     })
   })
@@ -252,7 +248,8 @@ describe('createFederatedReact', () => {
         config: {
           ...defaultOptions.config,
           rootComponent: undefined,
-          loadRootComponent: () => import('./__mocks__/module-component'),
+          loadRootComponent: async () =>
+            React.lazy(() => import('./__mocks__/module-component')),
         },
       }
 
@@ -326,7 +323,7 @@ describe('createFederatedReact', () => {
       ).toBe(1)
     })
 
-    it('should throw MODULE_BOOTSTRAP_ERROR if bootstrapping module fails', async () => {
+    it('should throw MODULE_MOUNT_ERROR if mounting module fails', async () => {
       const moduleInstance = createFederatedReact({
         ...defaultOptions,
         config: {
@@ -342,7 +339,7 @@ describe('createFederatedReact', () => {
 
       expect(
         dispatchedEventCount[
-          'federated-core:module:test:app-module:bootstrap:error'
+          'federated-core:module:test:app-module:mount:error'
         ]
       ).toBe(1)
     })
@@ -483,8 +480,6 @@ describe('createFederatedReact', () => {
         })
 
       await moduleInstance.unmount()
-
-      console.log(dispatchedEventCount)
 
       expect(
         dispatchedEventCount[

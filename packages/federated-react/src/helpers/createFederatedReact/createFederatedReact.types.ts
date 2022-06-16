@@ -25,9 +25,9 @@ export type CreateFederatedReactOptions<RootComponentProps> = {
     description?: string
     domElementId?: string
     rootComponent?: React.ComponentType<RootComponentProps>
-    loadRootComponent?: () => Promise<{
-      default: React.ReactElement | ComponentType<RootComponentProps>
-    }>
+    loadRootComponent?: () => Promise<
+      React.ComponentClass<unknown, any> | React.FunctionComponent<unknown>
+    >
     errorBoundary?: (
       error: Error
     ) => React.ReactElement<

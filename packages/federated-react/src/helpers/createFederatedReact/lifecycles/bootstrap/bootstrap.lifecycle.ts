@@ -11,11 +11,8 @@ import { ComponentType } from 'react'
 
 const bootstrapLifecycle = async <PropsType>(
   module: FederatedModuleParams,
-  federatedRuntime: FederatedRuntimeType,
-  opts: CreateFederatedReactOptions<PropsType>
+  federatedRuntime: FederatedRuntimeType
 ) => {
-  let { rootComponent, loadRootComponent } = opts.config
-
   try {
     eventService.emit(
       FederatedEvents.MODULE_BEFORE_BOOTSTRAP,
@@ -28,18 +25,6 @@ const bootstrapLifecycle = async <PropsType>(
       module,
       FederatedModuleStatuses.BOOTSTRAPPING
     )
-
-    let loadedRootComponent
-
-    if (loadRootComponent) {
-      loadedRootComponent = await loadRootComponent()
-      rootComponent = loadedRootComponent.default as ComponentType<PropsType>
-
-      federatedRuntime.setModuleRootComponent<'react', PropsType>(
-        module,
-        rootComponent
-      )
-    }
 
     eventService.emit(
       FederatedEvents.MODULE_BOOTSTRAPPED,

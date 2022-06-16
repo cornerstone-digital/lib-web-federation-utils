@@ -71,7 +71,7 @@ function createFederatedReact<PropsType>(
   const moduleData = { scope, name }
   const lifecycles: FederatedModuleLifecycles<PropsType> = {
     bootstrap: () =>
-      bootstrapLifecycle<PropsType>(moduleData, federatedRuntime, options),
+      bootstrapLifecycle<PropsType>(moduleData, federatedRuntime),
     mount: (props, mountId) =>
       mountLifecycle<PropsType>(
         moduleData,

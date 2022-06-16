@@ -2,7 +2,7 @@
   "name": "@vf/federated-react",
   "version": "0.1.0-alpha.1",
   "main": "dist/src/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
