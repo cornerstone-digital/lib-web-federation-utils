@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ComponentType } from 'react'
 import ReactDOM from 'react-dom'
 
 import {
@@ -26,7 +26,7 @@ export type CreateFederatedReactOptions<RootComponentProps> = {
     domElementId?: string
     rootComponent?: React.ComponentType<RootComponentProps>
     loadRootComponent?: () => Promise<{
-      default: React.ComponentType<RootComponentProps>
+      default: React.ReactElement | ComponentType<RootComponentProps>
     }>
     errorBoundary?: (
       error: Error
