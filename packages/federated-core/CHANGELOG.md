@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.3](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.1.0-alpha.2...@vf/federated-core@0.1.0-alpha.3) (2022-06-16)
+
+
+### Features
+
+* **react:** fix loadRootComponent ([f9bde70](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/f9bde70cede993d41243d29d3ea6d76932f9c341))
+
+
+
+
+
 # [0.1.0-alpha.2](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.0.2-alpha.1...@vf/federated-core@0.1.0-alpha.2) (2022-06-16)
 
 
