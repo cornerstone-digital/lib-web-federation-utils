@@ -3,14 +3,14 @@ import {
   FederatedEvents,
   FederatedModuleParams,
   FederatedModuleStatuses,
-  FederatedRuntimeType,
+  AbstactFederatedRuntime,
   getModuleKey,
 } from '@vf/federated-core'
 import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
 
 const updateLifecycle = <PropsType>(
   module: FederatedModuleParams,
-  federatedRuntime: FederatedRuntimeType,
+  federatedRuntime: AbstactFederatedRuntime,
   opts: CreateFederatedReactOptions<PropsType>
 ) => {
   return async (props?: PropsType) => {

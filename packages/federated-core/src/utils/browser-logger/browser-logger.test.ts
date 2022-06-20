@@ -43,7 +43,7 @@ const callLoggerLevels = (logger: BrowserLogger) => {
 
 const expectLogLevelCalledWith = (
   logLevel: LoggerLevels,
-  notCalled: boolean = false
+  notCalled = false
 ) => {
   let messageContext: object = {
     logContext: { componentName, ...logContext },

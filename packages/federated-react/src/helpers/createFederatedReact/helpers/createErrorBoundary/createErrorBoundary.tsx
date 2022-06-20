@@ -1,18 +1,15 @@
-import React, { ErrorInfo, PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
 import { stringUtils } from '@vf/federated-core'
 
-type ErrorBoundaryState = {
-  hasError: boolean
-  caughtError: Error | null
-  caughtErrorInfo: ErrorInfo | null
-}
-
 // @ts-ignore
 function createErrorBoundary<PropTypes>(
   opts: CreateFederatedReactOptions<PropTypes>
-): any {
+): {
+  (props: PropsWithChildren<PropTypes>): JSX.Element
+  displayName: string
+} {
   const WithErrorBoundary = (props: PropsWithChildren<PropTypes>) => {
     return (
       <ErrorBoundary

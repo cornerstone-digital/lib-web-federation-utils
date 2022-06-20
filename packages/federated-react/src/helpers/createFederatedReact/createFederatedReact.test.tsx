@@ -3,13 +3,8 @@ import ReactDOM from 'react-dom'
 import { screen } from '@testing-library/react'
 
 import createFederatedReact from './createFederatedReact'
-import {
-  eventService,
-  FederatedRuntime,
-  FederatedRuntimeType,
-} from '@vf/federated-core'
+import { AbstactFederatedRuntime } from '@vf/federated-core'
 import { CreateFederatedReactOptions } from './createFederatedReact.types'
-import reactDomRender from './helpers/reactDomRender'
 
 const TestComponent = () => <div>Test</div>
 
@@ -25,7 +20,7 @@ const addDomElementToBody = () => {
   document.body.appendChild(domElement)
 }
 
-let federatedRuntime: FederatedRuntimeType
+let federatedRuntime: AbstactFederatedRuntime
 
 describe('createFederatedReact', () => {
   beforeEach(() => {

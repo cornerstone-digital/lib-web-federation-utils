@@ -1,4 +1,4 @@
-import { FederatedGlobalInfo} from "@vf/federated-core";
+import { FederatedGlobalInfo } from '@vf/federated-core'
 
 export {}
 

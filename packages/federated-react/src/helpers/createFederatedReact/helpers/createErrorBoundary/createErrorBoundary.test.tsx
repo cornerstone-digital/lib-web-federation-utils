@@ -1,16 +1,17 @@
-import React, { Component, ComponentType } from 'react'
+import React, { ComponentType } from 'react'
 import ReactDOM from 'react-dom'
 import { render } from '@testing-library/react'
 
 import createErrorBoundary from './createErrorBoundary'
 import { getFederatedRuntime } from '@vf/federated-core'
-import exp from 'constants'
 
 let consoleErrorMock: jest.SpyInstance
 
 describe('createErrorBoundary', () => {
   beforeEach(() => {
-    consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {})
+    consoleErrorMock = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined)
   })
 
   afterEach(() => {
@@ -62,7 +63,7 @@ describe('createErrorBoundary', () => {
       )
     }
 
-    const { getByText, debug } = render(<Component />)
+    const { getByText } = render(<Component />)
 
     expect(getByText('Something went wrong')).toBeInTheDocument()
     expect(getByText('💥 CABOOM 💥')).toBeInTheDocument()
@@ -79,7 +80,7 @@ describe('createErrorBoundary', () => {
         errorBoundary: (error) => {
           return (
             <div>
-              <h1>Oops! That didn't go as expected!</h1>
+              <h1>Oops! That didn&apos;t go as expected!</h1>
               <p>{error.message}</p>
             </div>
           )
@@ -101,7 +102,7 @@ describe('createErrorBoundary', () => {
       )
     }
 
-    const { getByText, debug } = render(<Component />)
+    const { getByText } = render(<Component />)
 
     expect(getByText("Oops! That didn't go as expected!")).toBeInTheDocument()
     expect(getByText('💥 CABOOM 💥')).toBeInTheDocument()

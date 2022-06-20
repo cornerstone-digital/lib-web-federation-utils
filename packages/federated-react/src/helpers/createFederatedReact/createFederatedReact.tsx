@@ -3,12 +3,7 @@ import {
   FederatedReactApp,
 } from './createFederatedReact.types'
 
-import {
-  eventService,
-  FederatedEvents,
-  FederatedModuleLifecycles,
-  FederatedModuleStatuses,
-} from '@vf/federated-core'
+import { FederatedModuleLifecycles } from '@vf/federated-core'
 
 import bootstrapLifecycle from './lifecycles/bootstrap/bootstrap.lifecycle'
 import mountLifecycle from './lifecycles/mount/mount.lifecycle'
@@ -52,8 +47,8 @@ function createFederatedReact<PropsType>(
 ): FederatedReactApp<PropsType> {
   validateModuleOptions(options)
 
-  const { React, federatedRuntime, config } = options
-  let { rootComponent } = config
+  const { federatedRuntime, config } = options
+  const { rootComponent } = config
   const {
     domElementId = `${config.scope}-${config.name}`,
     loadRootComponent,

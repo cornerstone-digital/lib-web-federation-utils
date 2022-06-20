@@ -1,8 +1,8 @@
 type CreateShareModuleOptions = {
-  name: string;
-  scope: string;
-  methods: object;
-};
+  name: string
+  scope: string
+  methods: object
+}
 
 const createSharedModule = ({
   name,
@@ -14,7 +14,7 @@ const createSharedModule = ({
     scope,
     name,
     methods,
-  };
-};
+  }
+}
 
-export default createSharedModule;
+export default createSharedModule

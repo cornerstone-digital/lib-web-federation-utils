@@ -3,15 +3,12 @@ import {
   FederatedEvents,
   FederatedModuleParams,
   FederatedModuleStatuses,
-  FederatedRuntimeType,
-  getModuleKey,
+  AbstactFederatedRuntime,
 } from '@vf/federated-core'
-import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
-import { ComponentType } from 'react'
 
-const bootstrapLifecycle = async <PropsType>(
+const bootstrapLifecycle = async (
   module: FederatedModuleParams,
-  federatedRuntime: FederatedRuntimeType
+  federatedRuntime: AbstactFederatedRuntime
 ) => {
   try {
     eventService.emit(

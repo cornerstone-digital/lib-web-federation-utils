@@ -1,9 +1,9 @@
 import {
+  AbstactFederatedRuntime,
   eventService,
   FederatedEvents,
   FederatedModuleParams,
   FederatedModuleStatuses,
-  FederatedRuntimeType,
   getModuleKey,
 } from '@vf/federated-core'
 import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
@@ -13,7 +13,7 @@ import { ComponentType, ReactElement, Suspense } from 'react'
 
 const mountLifecycle = <PropsType>(
   module: FederatedModuleParams,
-  federatedRuntime: FederatedRuntimeType,
+  federatedRuntime: AbstactFederatedRuntime,
   opts: CreateFederatedReactOptions<PropsType>,
   defaultProps: PropsType
 ) => {
@@ -22,14 +22,15 @@ const mountLifecycle = <PropsType>(
     props: PropsType = defaultProps as PropsType,
     mountId?: string
   ) => {
-    const { React } = opts
-    let { scope, name, domElementId, rootComponent } = opts.config
+    const {
+      React,
+      config: { scope, name, domElementId },
+    } = opts
+    let { rootComponent } = opts.config
     const moduleKey = getModuleKey(scope, name)
     const savedModule = federatedRuntime.modules.get(moduleKey)
-    let domContainer: HTMLElement | null
-
-    domElementId = mountId || domElementId || defaultMountId
-    domContainer = document.getElementById(domElementId)
+    const elementId = mountId || domElementId || defaultMountId
+    const domContainer: HTMLElement | null = document.getElementById(elementId)
 
     if (!domContainer) {
       eventService.emit(
@@ -81,9 +82,11 @@ const mountLifecycle = <PropsType>(
 
         const errorBoundary = createdErrorBoundary(opts)
 
-        let elementToRender: ReactElement = React.createElement(errorBoundary, {
-          children: rootComponentElement,
-        })
+        let elementToRender: ReactElement = React.createElement(
+          errorBoundary,
+          {},
+          rootComponentElement
+        )
 
         if (useSuspense) {
           elementToRender = React.createElement(

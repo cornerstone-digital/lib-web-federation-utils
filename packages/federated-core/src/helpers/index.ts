@@ -1,1 +1,1 @@
-export { default as createSharedModule } from './createdSharedModule';
+export { default as createSharedModule } from './createdSharedModule'

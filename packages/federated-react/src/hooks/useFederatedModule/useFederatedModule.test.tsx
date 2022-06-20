@@ -1,11 +1,8 @@
-import React from 'react'
 import { FederatedModule, FederatedRuntime } from '@vf/federated-core'
 
 import useFederatedModule from './useFederatedModule'
 import { renderHook } from '@testing-library/react-hooks'
 import { waitFor } from '@testing-library/react'
-// import { waitFor } from '@testing-library/react'
-// import { act, renderHook } from '@testing-library/react-hooks'
 
 describe('useFederatedModule', () => {
   beforeEach(() => {
@@ -21,10 +18,6 @@ describe('useFederatedModule', () => {
   })
 
   it('should resolve the module', async () => {
-    type LazyProps = {
-      name: string
-    }
-
     const LazyModule: FederatedModule = {
       scope: 'broadband',
       name: 'test-module',

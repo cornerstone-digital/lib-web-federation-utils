@@ -1,2 +1,2 @@
-export * from './global';
-export * from './FederatedCore.types';
+export * from './global'
+export * from './FederatedCore.types'

@@ -3,13 +3,13 @@ import {
   FederatedEvents,
   FederatedModuleParams,
   FederatedModuleStatuses,
-  FederatedRuntimeType,
+  AbstactFederatedRuntime,
 } from '@vf/federated-core'
 import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
 
 const unmountLifecycle = <PropsType>(
   module: FederatedModuleParams,
-  federatedRuntime: FederatedRuntimeType,
+  federatedRuntime: AbstactFederatedRuntime,
   opts: CreateFederatedReactOptions<PropsType>
 ) => {
   try {
