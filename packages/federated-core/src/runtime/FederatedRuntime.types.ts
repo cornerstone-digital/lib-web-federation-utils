@@ -340,12 +340,15 @@ export abstract class AbstactFederatedRuntime {
   abstract get sharedDependencyBaseUrl(): string
   abstract set cdnUrl(value: string)
   abstract get cdnUrl(): string
+  abstract set modules(modules: Map<string, FederatedModule>)
+  abstract get modules(): Map<string, FederatedModule>
+  abstract get services(): ExposedServicesType
 
   // Helper Methods
   abstract addImportMapOverridesUi(): void
   abstract ensureSystemJs(): void
   abstract fetchImportMapContent(modulePath: string): Promise<ImportMap>
-  abstract addBaseUrl(scope: string, baseUrl: string): FederatedRuntimeType
+  abstract addBaseUrl(scope: string, baseUrl: string): this
 
   // Module Methods
 
@@ -366,9 +369,7 @@ export abstract class AbstactFederatedRuntime {
   >(
     module: FederatedModuleParams
   ): RootComponentType<ModuleComponentType, PropsType> | undefined | void
-  abstract registerModule(
-    module: FederatedModule
-  ): Promise<FederatedRuntimeType>
+  abstract registerModule(module: FederatedModule): Promise<this>
   abstract getModuleUrl(module: FederatedModuleParams): Promise<string>
   abstract getModulesByPath(path: string): FederatedModule[]
   abstract loadModule(
@@ -381,90 +382,15 @@ export abstract class AbstactFederatedRuntime {
   ): Promise<void>
   abstract unmountModule(module: FederatedModuleParams): Promise<void>
   abstract validateProps(module: FederatedModuleParams, props: unknown): boolean
-  abstract preFetchModules(
-    modules: FederatedModule[]
-  ): Promise<FederatedRuntimeType>
+  abstract preFetchModules(modules: FederatedModule[]): Promise<this>
   abstract applyModules(): Promise<void>
 
   // Navigation Methods
   abstract navigateTo(path: string): void
   abstract reroute(): Promise<void>
-  abstract preFetchRoutes(routePaths: string[]): Promise<FederatedRuntimeType>
+  abstract preFetchRoutes(routePaths: string[]): Promise<this>
 
   // Lifecycle Methods
   abstract bootstrap(): void
   abstract start(): Promise<void>
-}
-
-export type FederatedRuntimeType = {
-  // Booleans
-  _useNativeModules: boolean
-  _importMapOverridesEnabled: boolean
-  _debugEnabled: boolean
-  _modules: Map<string, FederatedModule>
-  _sharedDependencyBaseUrl: string
-  _cdnUrl: string
-
-  // Setters and Getters
-  set debugEnabled(value: boolean)
-  get debugEnabled(): boolean
-  set sharedDependencyBaseUrl(baseUrl: string)
-  get sharedDependencyBaseUrl(): string
-  set useNativeModules(useNativeModules: boolean)
-  get useNativeModules(): boolean
-  set importMapOverridesEnabled(importMapOverridesEnabled: boolean)
-  get importMapOverridesEnabled(): boolean
-  set cdnUrl(cdnUrl: string)
-  get cdnUrl(): string
-  set modules(modules: Map<string, FederatedModule>)
-  get modules(): Map<string, FederatedModule>
-  get services(): ExposedServicesType
-
-  // Helper Methods
-  addImportMapOverridesUi(): void
-  ensureSystemJs(): void
-  fetchImportMapContent(modulePath: string): Promise<ImportMap>
-  addBaseUrl(scope: string, baseUrl: string): FederatedRuntimeType
-
-  // Module Methods
-  setModuleState(
-    module: FederatedModuleParams,
-    state: FederatedModuleStatuses
-  ): void
-  setModuleRootComponent<
-    ModuleComponentType extends RootComponentTypes,
-    PropsType
-  >(
-    module: FederatedModuleParams,
-    component: RootComponentType<ModuleComponentType, PropsType>
-  ): void
-  getModuleRootComponent<
-    ModuleComponentType extends RootComponentTypes,
-    PropsType
-  >(
-    module: FederatedModuleParams
-  ): RootComponentType<ModuleComponentType, PropsType> | undefined | void
-  registerModule(module: FederatedModule): Promise<FederatedRuntimeType>
-  getModuleUrl(module: FederatedModuleParams): Promise<string>
-  getModulesByPath(path: string): FederatedModule[]
-  loadModule(
-    module: FederatedModuleParams
-  ): Promise<FederatedModule | undefined>
-  mountModule(
-    module: FederatedModuleParams,
-    props: unknown,
-    mountId: string
-  ): Promise<void>
-  unmountModule(module: FederatedModuleParams): Promise<void>
-  validateProps(module: FederatedModuleParams, props: unknown): boolean
-  preFetchModules(modules: FederatedModule[]): Promise<FederatedRuntimeType>
-
-  // Navigation Methods
-  navigateTo(path: string): void
-  reroute(): Promise<void>
-  preFetchRoutes(routePaths: string[]): Promise<FederatedRuntimeType>
-
-  // Lifecycle Methods
-  bootstrap(): void
-  start(): Promise<void>
 }
