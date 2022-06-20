@@ -3,6 +3,7 @@ import {
   FederatedEventPayloadMap,
   FederatedRuntimeType,
   FederatedEvents,
+  AbstactFederatedRuntime,
 } from '../runtime'
 import { eventService, loggerService } from '../runtime/services'
 
@@ -63,10 +64,7 @@ export type FederatedModuleTypes = 'app-module' | 'shared-module' | 'component'
 export type RootComponentTypes = 'react' | 'unknown'
 export type RootComponentType<RootComponentTypes, PropsType> =
   RootComponentTypes extends 'react' ? React.ComponentType<PropsType> : never
-export type FederatedModuleBaseOptions<
-  PropsType,
-  ComponentType extends RootComponentTypes
-> = {
+export type FederatedModuleBaseOptions<PropsType> = {
   scope: string
   name: string
   type: FederatedModuleTypes
@@ -80,13 +78,11 @@ export type FederatedModuleBaseOptions<
   rootComponent?: unknown
 }
 
-export type FederatedModule<
-  PropsType = unknown,
-  RootComponentType extends RootComponentTypes = 'react'
-> = FederatedModuleBaseOptions<PropsType, RootComponentType> &
-  Partial<FederatedModuleLifecycles<PropsType>>
+export type FederatedModule<PropsType = unknown> =
+  FederatedModuleBaseOptions<PropsType> &
+    Partial<FederatedModuleLifecycles<PropsType>>
 
 export type FederatedGlobalInfo = {
   moduleBaseUrls: Record<string, string>
-  federatedRuntime: FederatedRuntimeType
+  federatedRuntime: AbstactFederatedRuntime
 }

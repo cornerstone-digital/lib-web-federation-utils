@@ -7,7 +7,6 @@ import {
   RootComponentType,
   RootComponentTypes,
 } from '../types'
-import { ComponentType } from 'react'
 
 export enum FederatedEvents {
   // Bootstrap Events
@@ -319,6 +318,82 @@ export type FederatedEventPayloadMap = {
   [FederatedEvents.MODULE_STATE_CHANGED]: {
     module: FederatedModuleParams
   }
+}
+
+export abstract class AbstactFederatedRuntime {
+  // Booleans
+  abstract _useNativeModules: boolean
+  abstract _importMapOverridesEnabled: boolean
+  abstract _debugEnabled: boolean
+  abstract _modules: Map<string, FederatedModule>
+  abstract _sharedDependencyBaseUrl: string
+  abstract _cdnUrl: string
+
+  // Setters and Getters
+  abstract set useNativeModules(value: boolean)
+  abstract get useNativeModules(): boolean
+  abstract set importMapOverridesEnabled(value: boolean)
+  abstract get importMapOverridesEnabled(): boolean
+  abstract set debugEnabled(value: boolean)
+  abstract get debugEnabled(): boolean
+  abstract set sharedDependencyBaseUrl(value: string)
+  abstract get sharedDependencyBaseUrl(): string
+  abstract set cdnUrl(value: string)
+  abstract get cdnUrl(): string
+
+  // Helper Methods
+  abstract addImportMapOverridesUi(): void
+  abstract ensureSystemJs(): void
+  abstract fetchImportMapContent(modulePath: string): Promise<ImportMap>
+  abstract addBaseUrl(scope: string, baseUrl: string): FederatedRuntimeType
+
+  // Module Methods
+
+  abstract setModuleState(
+    module: FederatedModuleParams,
+    state: FederatedModuleStatuses
+  ): void
+  abstract setModuleRootComponent<
+    ModuleComponentType extends RootComponentTypes,
+    PropsType
+  >(
+    module: FederatedModuleParams,
+    component: RootComponentType<ModuleComponentType, PropsType>
+  ): void
+  abstract getModuleRootComponent<
+    ModuleComponentType extends RootComponentTypes,
+    PropsType
+  >(
+    module: FederatedModuleParams
+  ): RootComponentType<ModuleComponentType, PropsType> | undefined | void
+  abstract registerModule(
+    module: FederatedModule
+  ): Promise<FederatedRuntimeType>
+  abstract getModuleUrl(module: FederatedModuleParams): Promise<string>
+  abstract getModulesByPath(path: string): FederatedModule[]
+  abstract loadModule(
+    module: FederatedModuleParams
+  ): Promise<FederatedModule | undefined>
+  abstract mountModule(
+    module: FederatedModuleParams,
+    props: unknown,
+    mountId: string
+  ): Promise<void>
+  abstract unmountModule(module: FederatedModuleParams): Promise<void>
+  abstract validateProps(module: FederatedModuleParams, props: unknown): boolean
+  abstract preFetchModules(
+    modules: FederatedModule[]
+  ): Promise<FederatedRuntimeType>
+  abstract applyModules(): Promise<void>
+
+  // Navigation Methods
+  abstract navigateTo(path: string): void
+  abstract reroute(): Promise<void>
+  abstract preFetchRoutes(routePaths: string[]): Promise<FederatedRuntimeType>
+
+  // Lifecycle Methods
+  abstract bootstrap(): void
+  abstract start(): Promise<void>
 }
 
 export type FederatedRuntimeType = {
