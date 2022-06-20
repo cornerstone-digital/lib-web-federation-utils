@@ -88,6 +88,7 @@ describe('FederatedRuntime', () => {
         },
       })
 
+      // eslint-disable-next-line no-global-assign
       window = originalWindow
     })
 

@@ -1,7 +1,6 @@
 import * as React from 'react'
 import {
   FederatedEventPayloadMap,
-  FederatedRuntimeType,
   FederatedEvents,
   AbstactFederatedRuntime,
 } from '../runtime'
@@ -49,7 +48,7 @@ export type RuntimeEventHandler = <
   EventType extends FederatedEvent<FederatedEvents>
 >(
   event: EventType,
-  RuntimeEngine: FederatedRuntimeType
+  RuntimeEngine: AbstactFederatedRuntime
 ) => void
 
 export type FederatedModuleLifecycles<PropsType> = {
