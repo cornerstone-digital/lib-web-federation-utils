@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { screen } from '@testing-library/react'
 
 import createFederatedReact from './createFederatedReact'
-import { AbstactFederatedRuntime } from '@vf/federated-core'
+import { AbstactFederatedRuntime, FederatedRuntime } from '@vf/federated-core'
 import { CreateFederatedReactOptions } from './createFederatedReact.types'
 
 const TestComponent = () => <div>Test</div>
@@ -37,7 +37,7 @@ describe('createFederatedReact', () => {
       document.body.removeChild(document.body.firstChild)
     }
 
-    federatedRuntime = new FederatedRuntime() as FederatedRuntimeType
+    federatedRuntime = new FederatedRuntime() as AbstactFederatedRuntime
 
     addDomElementToBody()
 

@@ -84,7 +84,7 @@ const mountLifecycle = <PropsType>(
 
         let elementToRender: ReactElement = React.createElement(
           errorBoundary,
-          {},
+          {} as PropsType,
           rootComponentElement
         )
 
