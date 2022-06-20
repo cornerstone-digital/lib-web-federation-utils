@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.4](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react@0.1.0-alpha.3...@vf/federated-react@0.1.0-alpha.4) (2022-06-20)
+
+
+### Features
+
+* **core:** added share-modules ([415cf88](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/415cf884115af81091a3decd3455f578c9a66a3d))
+* **react:** fix createFederatedReact helper ([45134b6](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/45134b6a860ba568f441d533537e8b07a87ce9fb))
+
+
+
+
+
 # [0.1.0-alpha.3](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react@0.1.0-alpha.2...@vf/federated-react@0.1.0-alpha.3) (2022-06-16)
 
 

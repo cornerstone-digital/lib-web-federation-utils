@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.5](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.1.0-alpha.4...@vf/federated-core@0.1.0-alpha.5) (2022-06-20)
+
+
+### Features
+
+* **core:** added share-modules ([415cf88](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/415cf884115af81091a3decd3455f578c9a66a3d))
+* **core:** fix AbstractFederatedRuntime ([931dc4c](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/931dc4c77d747f473e1366c99a6f7d2906b51c49))
+* **core:** fix AbstractFederatedRuntime ([c3900a6](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/c3900a6ac61ef7832175c496497a71e6de22b0a4))
+* **core:** refactored FederatedRuntime ([d46e505](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/d46e505b2b81f0711504817e5399c9c717e20fd8))
+
+
+
+
+
 # [0.1.0-alpha.4](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.1.0-alpha.3...@vf/federated-core@0.1.0-alpha.4) (2022-06-16)
 
 
