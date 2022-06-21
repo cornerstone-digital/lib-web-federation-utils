@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.5](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react@0.1.0-alpha.4...@vf/federated-react@0.1.0-alpha.5) (2022-06-21)
+
+
+### Features
+
+* **react:** add support for react hydration with innerHTML check ([76a7e02](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/76a7e020f35d492424a4a3c0c31193a29245f7c7))
+
+
+
+
+
 # [0.1.0-alpha.4](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react@0.1.0-alpha.3...@vf/federated-react@0.1.0-alpha.4) (2022-06-20)
 
 
