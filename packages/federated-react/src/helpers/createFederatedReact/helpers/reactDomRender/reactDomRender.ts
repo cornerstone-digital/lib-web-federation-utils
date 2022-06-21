@@ -11,7 +11,9 @@ const reactDomRender = <PropsType>(
       ? opts.renderType()
       : opts.renderType || 'render'
 
-  if (renderType === 'hydrate') {
+  const hasInnerHtml = domElement.innerHTML !== ''
+
+  if (renderType === 'hydrate' || hasInnerHtml) {
     opts.ReactDOM.hydrate(elementToRender, domElement)
   } else {
     // default to this if 'renderType' is null or doesn't match the other options

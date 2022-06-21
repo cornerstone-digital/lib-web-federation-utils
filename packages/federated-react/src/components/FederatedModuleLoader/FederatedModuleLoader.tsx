@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useFederatedModule } from '../../hooks'
 import { v4 } from 'uuid'
 
