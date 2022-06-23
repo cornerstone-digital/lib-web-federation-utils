@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.6](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react@0.1.0-alpha.5...@vf/federated-react@0.1.0-alpha.6) (2022-06-23)
+
+
+### Bug Fixes
+
+* fix broken type references in react utils ([97dd833](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/97dd833ccd65ff30d8c9d716471d8d9888861f10))
+
+
+
+
+
 # [0.1.0-alpha.5](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react@0.1.0-alpha.4...@vf/federated-react@0.1.0-alpha.5) (2022-06-21)
 
 
