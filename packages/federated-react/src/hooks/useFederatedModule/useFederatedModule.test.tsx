@@ -21,7 +21,7 @@ describe('useFederatedModule', () => {
     const LazyModule: FederatedModule = {
       scope: 'broadband',
       name: 'test-module',
-      type: 'app-module',
+      type: 'journey-module',
       mount: jest.fn(),
       unmount: jest.fn(),
       update: jest.fn(),

@@ -27,7 +27,7 @@ describe('createErrorBoundary', () => {
       React,
       ReactDOM,
       config: {
-        type: 'app-module',
+        type: 'journey-module',
         scope: 'test-scope',
         name: 'test',
       },
@@ -43,7 +43,7 @@ describe('createErrorBoundary', () => {
       React,
       ReactDOM,
       config: {
-        type: 'app-module',
+        type: 'journey-module',
         scope: 'test-scope',
         name: 'test',
       },
@@ -74,7 +74,7 @@ describe('createErrorBoundary', () => {
       React,
       ReactDOM,
       config: {
-        type: 'app-module',
+        type: 'journey-module',
         scope: 'test-scope',
         name: 'test',
         errorBoundary: (error) => {

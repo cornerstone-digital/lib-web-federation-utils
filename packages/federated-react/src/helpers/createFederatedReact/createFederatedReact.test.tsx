@@ -47,7 +47,7 @@ describe('createFederatedReact', () => {
       federatedRuntime,
       enableSystemJs: true,
       config: {
-        type: 'app-module',
+        type: 'journey-module',
         scope: 'test',
         name: 'app-module',
         rootComponent: TestComponent,
