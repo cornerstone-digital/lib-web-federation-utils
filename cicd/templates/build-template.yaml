@@ -55,14 +55,14 @@ steps:
     displayName: Push version tags
 
   - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact - docs'
-      inputs:
-        PathtoPublish: ./packages/docsite
-        ArtifactName: docs
+    displayName: 'Publish Artifact - docs'
+    inputs:
+      PathtoPublish: ./packages/docsite
+      ArtifactName: docs
 
   - task: PublishBuildArtifacts@1
-      ## This task publishes the VSTS infrastructure documents for use later in the build and release. This is a required task.
-      displayName: 'Publish Artifact: infrastructure'
-      inputs:
-        PathtoPublish: infrastructure
-        ArtifactName: infrastructure
+    ## This task publishes the VSTS infrastructure documents for use later in the build and release. This is a required task.
+    displayName: 'Publish Artifact: infrastructure'
+    inputs:
+      PathtoPublish: infrastructure
+      ArtifactName: infrastructure
