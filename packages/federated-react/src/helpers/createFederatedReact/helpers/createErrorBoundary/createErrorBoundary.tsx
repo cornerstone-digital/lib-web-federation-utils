@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react'
+import React, { PropsWithChildren } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
 import { stringUtils } from '@vf/federated-core'

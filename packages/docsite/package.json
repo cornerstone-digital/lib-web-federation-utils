@@ -1,0 +1,12 @@
+{
+  "name": "@vf/federation-utils-docsite",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "serve": "docsify serve --open"
+  },
+  "devDependencies": {
+    "docsify-cli": "^4.4.4"
+  }
+}

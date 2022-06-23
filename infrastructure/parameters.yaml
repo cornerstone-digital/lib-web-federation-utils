@@ -1,0 +1,12 @@
+- ParameterKey: DomainName
+  ParameterValue: "${DomainName}"
+- ParameterKey: SubDomainName
+  ParameterValue: "${SubDomainName}"
+- ParameterKey: LoggingBucketName
+  ParameterValue: "${LoggingBucketName}"
+- ParameterKey: AcmCertificateArn
+  ParameterValue: "${AcmCertificateArn}"
+- ParameterKey: WAFMetricName
+  ParameterValue: "${WAFMetricName}"
+- ParameterKey: Environment
+  ParameterValue: "${RELEASE_ENVIRONMENTNAME}"

@@ -169,7 +169,7 @@ describe('FederatedRuntime', () => {
           const newMap: Map<string, FederatedModule> = new Map([
             [
               'scope/name',
-              { scope: 'scope', name: 'name', type: 'app-module' },
+              { scope: 'scope', name: 'name', type: 'journey-module' },
             ],
           ])
           federatedRuntime.modules = newMap
@@ -244,7 +244,7 @@ describe('FederatedRuntime', () => {
           const newMap: Map<string, FederatedModule> = new Map([
             [
               'scope/name',
-              { scope: 'scope', name: 'name', type: 'app-module' },
+              { scope: 'scope', name: 'name', type: 'journey-module' },
             ],
           ])
           federatedRuntime.modules = newMap
@@ -388,7 +388,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'name',
-            type: 'app-module',
+            type: 'journey-module',
           }
 
           federatedRuntime.registerModule(module)
@@ -406,7 +406,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             bootstrap: jest.fn(),
           }
 
@@ -433,7 +433,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'name',
-            type: 'app-module',
+            type: 'journey-module',
           }
 
           federatedRuntime.registerModule(module)
@@ -455,7 +455,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'name',
-            type: 'app-module',
+            type: 'journey-module',
             rootComponent: RootComponent,
           }
 
@@ -472,7 +472,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'name',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
           }
 
@@ -487,7 +487,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
           }
 
           federatedRuntime.registerModule(module)
@@ -501,7 +501,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
           }
 
           federatedRuntime.registerModule(module)
@@ -520,7 +520,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
           }
 
           federatedRuntime.registerModule(module)
@@ -586,7 +586,7 @@ describe('FederatedRuntime', () => {
           const module1: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
             activeWhenPaths: ['/path-1', '/path-2'],
           }
@@ -594,7 +594,7 @@ describe('FederatedRuntime', () => {
           const module2: FederatedModule = {
             scope: 'scope',
             name: 'module-2',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
             activeWhenPaths: ['/path-3', '/path-4'],
           }
@@ -612,7 +612,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
           }
 
@@ -645,7 +645,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.LOADED,
           }
 
@@ -678,7 +678,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.MOUNTED,
           }
 
@@ -699,7 +699,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
           }
 
@@ -731,7 +731,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
           }
 
@@ -770,7 +770,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
           }
 
           const importMapContent = {
@@ -804,7 +804,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
           }
 
@@ -844,7 +844,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.LOADED,
             mount: mountHandler,
           }
@@ -882,7 +882,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
             mount: mountHandler,
             unmount: unmountHandler,
@@ -929,7 +929,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
             mount: mountHandler,
             unmount: unmountHandler,
@@ -951,7 +951,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
             mount: mountHandler,
             unmount: unmountHandler,
@@ -973,7 +973,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
             mount: mountHandler,
             unmount: unmountHandler,
@@ -990,7 +990,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
             mount: mountHandler,
           }
@@ -998,7 +998,7 @@ describe('FederatedRuntime', () => {
           const module2: FederatedModule = {
             scope: 'scope',
             name: 'module-2',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
             mount: mountHandler,
           }
@@ -1065,7 +1065,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.LOADED,
             mount: mountHandler,
             activeWhenPaths: ['/path'],
@@ -1111,7 +1111,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.LOADED,
             unmount: unmountHandler,
             activeWhenPaths: ['/invalid-path'],
@@ -1158,7 +1158,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.LOADED,
             activeWhenPaths: ['/invalid-path'],
             exceptWhenPaths: [],
@@ -1207,7 +1207,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.LOADED,
             mount: mountHandler,
             activeWhenPaths: ['/path'],
@@ -1250,7 +1250,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
             activeWhenPaths: ['/path'],
             exceptWhenPaths: [],
@@ -1299,7 +1299,7 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'module-1',
-            type: 'app-module',
+            type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
             activeWhenPaths: ['/path'],
             exceptWhenPaths: [],
@@ -1344,14 +1344,14 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'name',
-            type: 'app-module',
+            type: 'journey-module',
             bootstrap: bootstrapHandler,
           }
 
           const module2: FederatedModule = {
             scope: 'scope',
             name: 'name',
-            type: 'app-module',
+            type: 'journey-module',
             bootstrap: bootstrapHandler,
           }
 
@@ -1433,14 +1433,14 @@ describe('FederatedRuntime', () => {
           const module1: FederatedModule = {
             scope: 'test-scope',
             name: 'test-module-1',
-            type: 'app-module',
+            type: 'journey-module',
             bootstrap: bootstrapHandler,
           }
 
           const module2: FederatedModule = {
             scope: 'test-scope',
             name: 'test-module-2',
-            type: 'app-module',
+            type: 'journey-module',
             bootstrap: bootstrapHandler,
           }
 
@@ -1469,14 +1469,14 @@ describe('FederatedRuntime', () => {
           const module: FederatedModule = {
             scope: 'scope',
             name: 'test-module-1',
-            type: 'app-module',
+            type: 'journey-module',
             bootstrap: bootstrapHandler,
           }
 
           const module2: FederatedModule = {
             scope: 'scope',
             name: 'test-module-2',
-            type: 'app-module',
+            type: 'journey-module',
             bootstrap: () => {
               throw new Error('bootstrap error')
             },

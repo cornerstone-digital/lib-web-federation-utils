@@ -1,4 +1,4 @@
-type CreateShareModuleOptions = {
+type CreateSharedModuleOptions = {
   name: string
   scope: string
   methods: object
@@ -8,7 +8,7 @@ const createSharedModule = ({
   name,
   scope,
   methods,
-}: CreateShareModuleOptions) => {
+}: CreateSharedModuleOptions) => {
   return {
     type: 'shared-module',
     scope,

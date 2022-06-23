@@ -9,7 +9,7 @@ import {
 import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
 import createdErrorBoundary from '../../helpers/createErrorBoundary/createErrorBoundary'
 import reactDomRender from '../../helpers/reactDomRender'
-import { ComponentType, ReactElement, Suspense } from 'react'
+import React, { ComponentType, ReactElement, Suspense } from 'react'
 
 const mountLifecycle = <PropsType>(
   module: FederatedModuleParams,

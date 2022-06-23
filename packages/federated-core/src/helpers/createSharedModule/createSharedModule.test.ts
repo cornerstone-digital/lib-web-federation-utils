@@ -1,4 +1,4 @@
-import createSharedModule from './createSharedModule'
+import createFederatedService from './createSharedModule'
 
 describe('createSharedModule', () => {
   it('should create a shared module', () => {
@@ -11,8 +11,8 @@ describe('createSharedModule', () => {
         },
       },
     }
-    const sharedModule = createSharedModule(data)
-    expect(sharedModule).toBeDefined()
-    expect(sharedModule.type).toBe('shared-module')
+    const sharedService = createFederatedService(data)
+    expect(sharedService).toBeDefined()
+    expect(sharedService.type).toBe('shared-module')
   })
 })

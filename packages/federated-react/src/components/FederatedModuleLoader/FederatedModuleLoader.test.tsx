@@ -1,3 +1,4 @@
+import React from 'react'
 import ReactDOM from 'react-dom'
 import FederatedModuleLoader from './FederatedModuleLoader'
 import { render } from '@testing-library/react'

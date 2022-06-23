@@ -1,0 +1,42 @@
+# Creating a Federated Journey
+
+```typescript
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+import { createFederatedReact } from '@vf/federated-react'
+import { getFederatedRuntime } from '@vf/federated-core'
+
+// Normal React Component
+import AcquisitionsMain from './AcquisitionsMain'
+
+const AcquisitionsMainFederated = createFederatedReact({
+  React,
+  ReactDOM,
+  federatedRuntime: getFederatedRuntime(),
+  enableSystemJs: true,
+  config: {
+    scope: 'broadband',
+    name: 'acquisitionsMain',
+    type: 'app-module',
+    activeWhenPaths: ['/broadband', '/broadband*'],
+    exceptWhenPaths: ['/broadband/services/*'],
+    domElementId: 'root',
+    rootComponent: AcquisitionsMain,
+  },
+})
+
+export const {
+  name,
+  scope,
+  bootstrap,
+  mount,
+  unmount,
+  update,
+  exceptWhenPaths,
+  activeWhenPaths,
+  type,
+  domElementId,
+  rootComponent,
+} = AcquisitionsMainFederated
+```

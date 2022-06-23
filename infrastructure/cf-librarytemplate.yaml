@@ -1,0 +1,217 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Creates an S3 bucket configured for hosting a static website, and a Route
+  53 DNS record pointing to the bucket
+Parameters:
+  DomainName:
+    Type: String
+    Description: The DNS name of an existing Amazon Route 53 hosted zone e.g. components.vodafoneaws.co.uk
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]{1,63}(?<!-)
+    ConstraintDescription: must be a valid DNS zone name.
+  SubDomainName:
+    Type: String
+    Description: The sub-domain name to prefix the Domain Name with.
+  LoggingBucketName:
+    Type: String
+    Description: Name of the bucket to use for server access logging.
+  AcmCertificateArn:
+    Type: String
+    Description: Arn of the SSL certificate to use.
+  WAFMetricName:
+    Type: String
+    Description: Metric name for use with the WAF.
+  Team:
+    Type: String
+    Description: Team the poject belongs to.
+    Default: Nucleus
+  Division:
+    Type: String
+    Description: Division the poject belongs to.
+    Default: undefined
+  Program:
+    Type: String
+    Description: Program the poject belongs to.
+    Default: undefined
+  Environment:
+    Type: String
+    Description: Environment the poject belongs to.
+  Domain:
+    Type: String
+    Description: Environment the poject belongs to.
+    Default: dx
+Resources:
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Join ['', [!Ref 'SubDomainName', '.' ,!Ref 'DomainName']]
+      WebsiteConfiguration:
+        IndexDocument: index.html
+      LoggingConfiguration:
+        DestinationBucketName: !Ref LoggingBucketName
+        LogFilePrefix: !Ref SubDomainName
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          -
+            ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      Tags:
+        - Key: Name
+          Value: !Sub "${Domain}-${Environment}-lib-federation-utils"
+        - Key: Domain
+          Value: !Ref Domain
+        - Key: Division
+          Value: !Ref 'Division'
+        - Key: Program
+          Value: !Ref 'Program'
+        - Key: Team
+          Value: !Ref Team
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref 'WebsiteBucket'
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            CanonicalUser: !GetAtt 'CloudFrontOriginAccessIdentity.S3CanonicalUserId'
+          Action: s3:GetObject
+          Resource:
+            - !Join ['', ['arn:aws:s3:::', !Ref 'WebsiteBucket', /*]]
+            - !Join ['', ['arn:aws:s3:::', !Ref 'WebsiteBucket']]
+        - Effect: Deny
+          Principal: '*'
+          Action: '*'
+          Resource:
+            - !Join ['', ['arn:aws:s3:::', !Ref 'WebsiteBucket', /*]]
+            - !Join ['', ['arn:aws:s3:::', !Ref 'WebsiteBucket']]
+          Condition:
+            Bool:
+              aws:SecureTransport: false
+  IPSet:
+    Type: "AWS::WAF::IPSet"
+    Properties:
+      IPSetDescriptors:
+        - Type: IPV4
+          Value: "212.183.131.193/32"
+        - Type: IPV4
+          Value: "212.183.131.194/32"
+        - Type: IPV4
+          Value: "212.183.131.195/32"
+        - Type: IPV4
+          Value: "212.183.131.196/32"
+        - Type: IPV4
+          Value: "212.183.131.197/32"
+        - Type: IPV4
+          Value: "212.183.131.198/32"
+        - Type: IPV4
+          Value: "194.62.232.100/32"
+        - Type: IPV4
+          Value: "194.62.232.101/32"
+        - Type: IPV4
+          Value: "194.62.232.102/32"
+        - Type: IPV4
+          Value: "194.62.232.103/32"
+        - Type: IPV4
+          Value: "194.62.232.104/32"
+        - Type: IPV4
+          Value: "52.212.58.71/32"
+        - Type: IPV4
+          Value: "52.48.191.169/32"
+        - Type: IPV4
+          Value: "34.241.175.197/32"
+        - Type: IPV4
+          Value: "52.212.216.226/32"
+        - Type: IPV4
+          Value: "52.211.223.103/32"
+        - Type: IPV4
+          Value: "52.210.238.229/32"
+        - Type: IPV4
+          Value: "54.72.246.94/32" # egress IP from non-prod-1-bastion.non-prod-1.digital.vodafoneaws.co.uk
+        - Type: IPV4
+          Value: "34.242.60.171/32" # egress IP from non-prod-1-bastion.non-prod-1.digital.vodafoneaws.co.uk
+        - Type: IPV4
+          Value: "52.49.202.36/32" # egress IP from non-prod-1-bastion.non-prod-1.digital.vodafoneaws.co.uk
+        - Type: IPV4
+          Value: "34.253.192.223/32" # egress IP from non-prod-1-bastion.non-prod-1.digital.vodafoneaws.co.uk
+      Name: !Join ['', [!Ref 'AWS::StackName', '-waf-ipset']]
+  IPRestrictRule:
+    Type: "AWS::WAF::Rule"
+    Properties:
+      MetricName: !Join ['', [!Ref 'WAFMetricName', 'IPRule']]
+      Name: !Join ['', [!Ref 'AWS::StackName', '-waf-rule']]
+      Predicates:
+        - Type: IPMatch
+          Negated: false
+          DataId: !Ref IPSet
+  WAFAcl:
+    Type: "AWS::WAF::WebACL"
+    Properties:
+      Name: !Join ['', [!Ref 'AWS::StackName', '-waf']]
+      DefaultAction:
+        Type: "BLOCK"
+      MetricName: !Ref WAFMetricName
+      Rules:
+        -
+          Action:
+            Type: "ALLOW"
+          Priority: 1
+          RuleId:
+            Ref: "IPRestrictRule"
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: "S3Origin"
+  WebsiteCloudfront:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        WebACLId:
+          Ref: "WAFAcl"
+        Comment: Cloudfront Distribution pointing to S3 bucket
+        Origins:
+        - DomainName: !GetAtt WebsiteBucket.DomainName
+          Id: S3Origin
+          S3OriginConfig:
+            OriginAccessIdentity: !Join [ "", [ "origin-access-identity/cloudfront/", !Ref CloudFrontOriginAccessIdentity ] ]
+        Enabled: true
+        HttpVersion: 'http2'
+        DefaultRootObject: index.html
+        Aliases:
+        - !Join ['', [!Ref 'SubDomainName', '.' ,!Ref 'DomainName']]
+        DefaultCacheBehavior:
+          AllowedMethods:
+          - GET
+          - HEAD
+          Compress: true
+          TargetOriginId: S3Origin
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: all
+          ViewerProtocolPolicy: redirect-to-https
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          AcmCertificateArn: !Ref AcmCertificateArn
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2018
+  WebsiteDNSName:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: !Join ['', [!Ref 'DomainName', .]]
+      RecordSets:
+      - Name: !Join ['', [!Ref 'SubDomainName', '.' ,!Ref 'DomainName']]
+        Type: A
+        AliasTarget:
+          HostedZoneId: Z2FDTNDATAQYW2
+          DNSName: !GetAtt [WebsiteCloudfront, DomainName]
+Outputs:
+  BucketName:
+    Value: !Ref 'WebsiteBucket'
+    Description: Name of S3 bucket to hold website content
+  CloudfrontEndpoint:
+    Value: !GetAtt [WebsiteCloudfront, DomainName]
+    Description: Endpoint for Cloudfront distribution
+  FullDomain:
+    Value: !Join ['', [!Ref 'SubDomainName', '.' ,!Ref 'DomainName']]
+    Description: Full DomainName

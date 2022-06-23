@@ -59,7 +59,10 @@ export type FederatedModuleLifecycles<PropsType> = {
 }
 
 export type FederatedLifecycleMethods = keyof FederatedModuleLifecycles<unknown>
-export type FederatedModuleTypes = 'app-module' | 'shared-module' | 'component'
+export type FederatedModuleTypes =
+  | 'journey-module'
+  | 'shared-module'
+  | 'component'
 export type RootComponentTypes = 'react' | 'unknown'
 export type RootComponentType<RootComponentTypes, PropsType> =
   RootComponentTypes extends 'react' ? React.ComponentType<PropsType> : never

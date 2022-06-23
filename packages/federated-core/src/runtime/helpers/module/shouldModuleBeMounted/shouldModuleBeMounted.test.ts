@@ -6,7 +6,7 @@ describe('shouldModuleBeMounted', () => {
     const module: FederatedModule = {
       scope: 'scope',
       name: 'name',
-      type: 'app-module',
+      type: 'journey-module',
       activeWhenPaths: ['/active-path'],
       exceptWhenPaths: [],
     }
@@ -18,7 +18,7 @@ describe('shouldModuleBeMounted', () => {
     const module: FederatedModule = {
       scope: 'scope',
       name: 'name',
-      type: 'app-module',
+      type: 'journey-module',
       activeWhenPaths: ['/active-path*'],
       exceptWhenPaths: ['/active-path/sub-path'],
     }
@@ -30,7 +30,7 @@ describe('shouldModuleBeMounted', () => {
     const module: FederatedModule = {
       scope: 'scope',
       name: 'name',
-      type: 'app-module',
+      type: 'journey-module',
       activeWhenPaths: ['/active-path'],
     }
 

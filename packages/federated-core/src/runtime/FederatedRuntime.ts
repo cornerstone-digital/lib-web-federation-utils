@@ -322,7 +322,7 @@ class FederatedRuntime implements AbstactFederatedRuntime {
         const storeModule = this.modules.get(moduleKey)
         if (
           storeModule &&
-          ['app-module', 'component'].includes(storeModule.type) &&
+          ['journey-module', 'component'].includes(storeModule.type) &&
           this.modules.get(moduleKey)?.status ===
             FederatedModuleStatuses.MOUNTED
         ) {
@@ -547,7 +547,7 @@ class FederatedRuntime implements AbstactFederatedRuntime {
           module
         )
       } else if (
-        moduleInstance?.type === 'app-module' ||
+        moduleInstance?.type === 'journey-module' ||
         moduleInstance?.type === 'component'
       ) {
         this.setModuleState(
