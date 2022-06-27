@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.2.0...@vf/federated-core@0.3.0) (2022-06-27)
+
+
+### Features
+
+* **core:** add new createSharedImportMap helper ([9f48096](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/9f48096cbd4756a13c3e1b9d3574bbd41685b211))
+
+
+
+
+
 # [0.2.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.1.0-alpha.6...@vf/federated-core@0.2.0) (2022-06-27)
 
 
