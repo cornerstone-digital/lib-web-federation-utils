@@ -6,3 +6,4 @@ export default {
   coverageDirectory: '../../.testresults/federated-core/coverage',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 }
+
