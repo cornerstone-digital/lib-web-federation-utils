@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0](/compare/@vf/federated-vue@0.0.2-alpha.6...@vf/federated-vue@0.1.0) (2022-06-27)
+
+
+### Features
+
+* **core:** updates 3372914
+
+
+
+
+
 ## [0.0.2-alpha.6](/compare/@vf/federated-vue@0.0.2-alpha.5...@vf/federated-vue@0.0.2-alpha.6) (2022-06-27)
 
 **Note:** Version bump only for package @vf/federated-vue
