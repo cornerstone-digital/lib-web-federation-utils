@@ -1,19 +1,20 @@
 import {
-  AbstactFederatedRuntime,
+  AbstractFederatedRuntime,
   eventService,
   FederatedEvents,
   FederatedModuleParams,
   FederatedModuleStatuses,
   getModuleKey,
+  EventMap,
 } from '@vf/federated-core'
 import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
 import createdErrorBoundary from '../../helpers/createErrorBoundary/createErrorBoundary'
 import reactDomRender from '../../helpers/reactDomRender'
-import React, { ComponentType, ReactElement, Suspense } from 'react'
+import { ComponentType, ReactElement, Suspense } from 'react'
 
 const mountLifecycle = <PropsType>(
   module: FederatedModuleParams,
-  federatedRuntime: AbstactFederatedRuntime,
+  federatedRuntime: AbstractFederatedRuntime,
   opts: CreateFederatedReactOptions<PropsType>,
   defaultProps: PropsType
 ) => {
@@ -33,13 +34,15 @@ const mountLifecycle = <PropsType>(
     const domContainer: HTMLElement | null = document.getElementById(elementId)
 
     if (!domContainer) {
-      eventService.emit(
-        FederatedEvents.MODULE_MOUNT_ERROR,
+      eventService.emit<EventMap>(
         {
-          module,
-          error: new Error(
-            `Could not find dom container with id ${domElementId}`
-          ),
+          type: FederatedEvents.MODULE_MOUNT_ERROR,
+          payload: {
+            module,
+            error: new Error(
+              `Could not find dom container with id ${domElementId}`
+            ),
+          },
         },
         module
       )
@@ -96,10 +99,12 @@ const mountLifecycle = <PropsType>(
           )
         }
 
-        eventService.emit(
-          FederatedEvents.MODULE_BEFORE_MOUNT,
+        eventService.emit<EventMap>(
           {
-            module,
+            type: FederatedEvents.MODULE_BEFORE_MOUNT,
+            payload: {
+              module,
+            },
           },
           module
         )
@@ -108,10 +113,12 @@ const mountLifecycle = <PropsType>(
           reactDomRender(opts, elementToRender, domContainer)
         }
 
-        eventService.emit(
-          FederatedEvents.MODULE_MOUNTED,
+        eventService.emit<EventMap>(
           {
-            module,
+            type: FederatedEvents.MODULE_MOUNTED,
+            payload: {
+              module,
+            },
           },
           module
         )
@@ -122,11 +129,13 @@ const mountLifecycle = <PropsType>(
         )
       }
     } catch (error) {
-      eventService.emit(
-        FederatedEvents.MODULE_MOUNT_ERROR,
+      eventService.emit<EventMap>(
         {
-          module,
-          error: error as Error,
+          type: FederatedEvents.MODULE_MOUNT_ERROR,
+          payload: {
+            module,
+            error: error as Error,
+          },
         },
         module
       )

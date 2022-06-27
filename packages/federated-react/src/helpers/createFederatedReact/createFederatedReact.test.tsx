@@ -3,7 +3,11 @@ import ReactDOM from 'react-dom'
 import { screen } from '@testing-library/react'
 
 import createFederatedReact from './createFederatedReact'
-import { AbstactFederatedRuntime, FederatedRuntime } from '@vf/federated-core'
+import {
+  AbstractFederatedRuntime,
+  FederatedEvents,
+  FederatedRuntime,
+} from '@vf/federated-core'
 import { CreateFederatedReactOptions } from './createFederatedReact.types'
 
 const TestComponent = () => <div>Test</div>
@@ -20,7 +24,7 @@ const addDomElementToBody = () => {
   document.body.appendChild(domElement)
 }
 
-let federatedRuntime: AbstactFederatedRuntime
+let federatedRuntime: AbstractFederatedRuntime
 
 describe('createFederatedReact', () => {
   beforeEach(() => {
@@ -37,7 +41,7 @@ describe('createFederatedReact', () => {
       document.body.removeChild(document.body.firstChild)
     }
 
-    federatedRuntime = new FederatedRuntime() as AbstactFederatedRuntime
+    federatedRuntime = new FederatedRuntime() as AbstractFederatedRuntime
 
     addDomElementToBody()
 
@@ -580,6 +584,23 @@ describe('createFederatedReact', () => {
       expect(
         dispatchedEventCount[
           'federated-core:module:test:app-module:mount:error'
+        ]
+      ).toBe(1)
+    })
+
+    it('should catch error and throw', async () => {
+      const moduleInstance = createFederatedReact(defaultOptions)
+      await federatedRuntime.registerModule(moduleInstance)
+
+      jest.spyOn(federatedRuntime.modules, 'get').mockImplementationOnce(() => {
+        throw new Error('Error getting module')
+      })
+
+      await moduleInstance.update()
+
+      expect(
+        dispatchedEventCount[
+          'federated-core:module:test:app-module:update:error'
         ]
       ).toBe(1)
     })

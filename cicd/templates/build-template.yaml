@@ -19,7 +19,7 @@ parameters:
 steps:
   - template: init-workspace.yaml
 
-  - script: git switch -c ${{parameters.releaseBranch}}
+  - script: git switch ${{parameters.releaseBranch}}
     displayName: Switch branch
 
   - script: git update-index --skip-worktree -- .npmrc

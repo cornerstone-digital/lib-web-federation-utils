@@ -3,14 +3,15 @@ import {
   FederatedEvents,
   FederatedModuleParams,
   FederatedModuleStatuses,
-  AbstactFederatedRuntime,
+  AbstractFederatedRuntime,
   getModuleKey,
+  EventMap,
 } from '@vf/federated-core'
 import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
 
 const updateLifecycle = <PropsType>(
   module: FederatedModuleParams,
-  federatedRuntime: AbstactFederatedRuntime,
+  federatedRuntime: AbstractFederatedRuntime,
   opts: CreateFederatedReactOptions<PropsType>
 ) => {
   return async (props?: PropsType) => {
@@ -20,16 +21,29 @@ const updateLifecycle = <PropsType>(
       const moduleKey = getModuleKey(module.scope, module.name)
       const loadedModule = federatedRuntime.modules.get(moduleKey)
 
-      eventService.emit(
-        FederatedEvents.MODULE_BEFORE_UPDATE,
+      eventService.emit<EventMap>(
         {
-          module,
+          type: FederatedEvents.MODULE_BEFORE_UPDATE,
+          payload: {
+            module,
+          },
         },
         module
       )
 
       if (!loadedModule) {
-        throw new Error(`Could not find module with key ${moduleKey}`)
+        eventService.emit<EventMap>(
+          {
+            type: FederatedEvents.MODULE_UPDATE_ERROR,
+            payload: {
+              module,
+              error: new Error(`Could not find module with key ${moduleKey}`),
+            },
+          },
+          module
+        )
+
+        return
       }
 
       if (loadedModule?.unmount) {
@@ -39,18 +53,23 @@ const updateLifecycle = <PropsType>(
         await loadedModule.mount(propsToUse)
       }
 
-      eventService.emit(
-        FederatedEvents.MODULE_UPDATED,
+      eventService.emit<EventMap>(
         {
-          module: module,
+          type: FederatedEvents.MODULE_UPDATED,
+          payload: {
+            module: module,
+          },
         },
         module
       )
     } catch (error) {
-      eventService.emit(
-        FederatedEvents.MODULE_UPDATE_ERROR,
+      eventService.emit<EventMap>(
         {
-          module: module,
+          type: FederatedEvents.MODULE_UPDATE_ERROR,
+          payload: {
+            module: module,
+            error: error as Error,
+          },
         },
         module
       )

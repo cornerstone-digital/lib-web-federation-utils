@@ -3,18 +3,21 @@ import {
   FederatedEvents,
   FederatedModuleParams,
   FederatedModuleStatuses,
-  AbstactFederatedRuntime,
+  AbstractFederatedRuntime,
+  EventMap,
 } from '@vf/federated-core'
 
 const bootstrapLifecycle = async (
   module: FederatedModuleParams,
-  federatedRuntime: AbstactFederatedRuntime
+  federatedRuntime: AbstractFederatedRuntime
 ) => {
   try {
-    eventService.emit(
-      FederatedEvents.MODULE_BEFORE_BOOTSTRAP,
+    eventService.emit<EventMap>(
       {
-        module,
+        type: FederatedEvents.MODULE_BEFORE_BOOTSTRAP,
+        payload: {
+          module,
+        },
       },
       module
     )
@@ -23,10 +26,12 @@ const bootstrapLifecycle = async (
       FederatedModuleStatuses.BOOTSTRAPPING
     )
 
-    eventService.emit(
-      FederatedEvents.MODULE_BOOTSTRAPPED,
+    eventService.emit<EventMap>(
       {
-        module,
+        type: FederatedEvents.MODULE_BOOTSTRAPPED,
+        payload: {
+          module,
+        },
       },
       module
     )
@@ -36,11 +41,13 @@ const bootstrapLifecycle = async (
       FederatedModuleStatuses.BOOTSTRAPPED
     )
   } catch (error) {
-    eventService.emit(
-      FederatedEvents.MODULE_BOOTSTRAP_ERROR,
+    eventService.emit<EventMap>(
       {
-        module,
-        error: error as Error,
+        type: FederatedEvents.MODULE_BOOTSTRAP_ERROR,
+        payload: {
+          module,
+          error: error as Error,
+        },
       },
       module
     )

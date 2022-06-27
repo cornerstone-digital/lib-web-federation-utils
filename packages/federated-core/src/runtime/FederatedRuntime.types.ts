@@ -56,7 +56,7 @@ export enum FederatedEvents {
   SYSTEMJS_MODULE_LOADING = 'federated-core:systemjs:module:loading',
   SYSTEMJS_MODULE_LOADED = 'federated-core:systemjs:module:loaded',
 
-  // Module Registation Events
+  // Module Registration Events
   MODULE_BEFORE_REGISTER = 'federated-core:module:%moduleKey%:before-register',
   MODULE_REGISTERED = 'federated-core:module:%moduleKey%:registered',
   MODULE_ALREADY_REGISTERED = 'federated-core:module:%moduleKey%:already-registered',
@@ -68,6 +68,7 @@ export enum FederatedEvents {
   MODULE_ALREADY_LOADED = 'federated-core:module:%moduleKey%:already-loaded',
   MODULE_LOAD_ERROR = 'federated-core:module:%moduleKey%:load:error',
   MODULE_VALIDATE_PROPS = 'federated-core:module:%moduleKey%:validate-props',
+  MODULE_STATE_CHANGED = 'federated-core:module:%moduleKey%:state-changed',
 
   // Module Bootstrap Events
   MODULE_BEFORE_BOOTSTRAP = 'federated-core:module:%moduleKey%:before-bootstrap',
@@ -90,14 +91,9 @@ export enum FederatedEvents {
   MODULE_BEFORE_UPDATE = 'federated-core:module:%moduleKey%:before-update',
   MODULE_UPDATED = 'federated-core:module:%moduleKey%:updated',
   MODULE_UPDATE_ERROR = 'federated-core:module:%moduleKey%:update:error',
-
-  // Module Events
-  MODULE_STATE_CHANGED = 'federated-core:module:%moduleKey%:state-changed',
 }
 
-export type FederatedEventKeys = `${FederatedEvents}`
-
-export type FederatedEventPayloadMap = {
+export type FederatedPayloadMap = {
   // Runtime Bootstrap Events
   [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: {
     bootstrapTime: string
@@ -116,7 +112,7 @@ export type FederatedEventPayloadMap = {
 
   // Runtime Start Events
   [FederatedEvents.RUNTIME_BEFORE_START]: {
-    startTime: number
+    startTime: string
     modules: Map<string, FederatedModuleParams>
   }
   [FederatedEvents.RUNTIME_STARTED]: {
@@ -190,11 +186,9 @@ export type FederatedEventPayloadMap = {
     loadedTime: number
   }
   [FederatedEvents.SYSTEMJS_MODULE_LOADING]: {
-    moduleKey: string
     module: FederatedModuleParams
   }
   [FederatedEvents.SYSTEMJS_MODULE_LOADED]: {
-    moduleKey: string
     module: FederatedModuleParams
   }
   [FederatedEvents.SYSTEMJS_LOAD_ERROR]: {
@@ -224,15 +218,12 @@ export type FederatedEventPayloadMap = {
 
   // Module Registration Events
   [FederatedEvents.MODULE_ALREADY_REGISTERED]: {
-    moduleKey: string
     module: FederatedModuleParams
   }
   [FederatedEvents.MODULE_BEFORE_REGISTER]: {
-    moduleKey: string
     module: FederatedModuleParams
   }
   [FederatedEvents.MODULE_REGISTERED]: {
-    moduleKey: string
     module: FederatedModuleParams
   }
   [FederatedEvents.MODULE_REGISTER_ERROR]: {
@@ -249,6 +240,7 @@ export type FederatedEventPayloadMap = {
   }
   [FederatedEvents.MODULE_BOOTSTRAP_ERROR]: {
     module: FederatedModuleParams
+    error: Error
   }
 
   // Module Load Events
@@ -268,6 +260,9 @@ export type FederatedEventPayloadMap = {
   [FederatedEvents.MODULE_VALIDATE_PROPS]: {
     module: FederatedModuleParams
     props: unknown
+  }
+  [FederatedEvents.MODULE_STATE_CHANGED]: {
+    module: FederatedModuleParams
   }
 
   // Module Mount Events
@@ -313,14 +308,270 @@ export type FederatedEventPayloadMap = {
     module: FederatedModuleParams
     error: Error
   }
-
-  // Module Events
-  [FederatedEvents.MODULE_STATE_CHANGED]: {
-    module: FederatedModuleParams
-  }
 }
 
-export abstract class AbstactFederatedRuntime {
+export type FederatedEventKeys = `${FederatedEvents}`
+
+export type EventTypeKeys<EventsKeys extends string = ''> = EventsKeys
+
+export type EventData<Type extends string, Payload> = {
+  type?: Type
+  payload?: Payload
+}
+
+export type EventMap<
+  CustomEventMap extends EventData<string, unknown> = Record<string, unknown>
+> =
+  // Runtime Bootstrap Events
+  | EventData<
+      FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]
+    >
+  | EventData<
+      FederatedEvents.RUNTIME_BOOTSTRAPPED,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_BOOTSTRAPPED]
+    >
+  | EventData<
+      FederatedEvents.RUNTIME_BOOTSTRAP_ERROR,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_BOOTSTRAP_ERROR]
+    >
+
+  // Runtime Start Events
+  | EventData<
+      FederatedEvents.RUNTIME_BEFORE_START,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_BEFORE_START]
+    >
+  | EventData<
+      FederatedEvents.RUNTIME_STARTED,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_STARTED]
+    >
+  | EventData<
+      FederatedEvents.RUNTIME_START_ERROR,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_START_ERROR]
+    >
+
+  // Pre-Fetch Module Events
+  | EventData<
+      FederatedEvents.RUNTIME_MODULES_PREFETCH_START,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_MODULES_PREFETCH_START]
+    >
+  | EventData<
+      FederatedEvents.RUNTIME_MODULES_PREFETCHED,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_MODULES_PREFETCHED]
+    >
+  | EventData<
+      FederatedEvents.RUNTIME_BEFORE_MODULE_PREFETCH,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_BEFORE_MODULE_PREFETCH]
+    >
+  | EventData<
+      FederatedEvents.RUNTIME_MODULE_PREFETCHED,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_MODULE_PREFETCHED]
+    >
+  | EventData<
+      FederatedEvents.RUNTIME_MODULE_PREFETCH_ERROR,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_MODULE_PREFETCH_ERROR]
+    >
+
+  // Pre-Fetch Routes Events
+  | EventData<
+      FederatedEvents.RUNTIME_ROUTES_PREFETCH_START,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_ROUTES_PREFETCH_START]
+    >
+  | EventData<
+      FederatedEvents.RUNTIME_ROUTES_PREFETCHED,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_ROUTES_PREFETCHED]
+    >
+  | EventData<
+      FederatedEvents.RUNTIME_BEFORE_ROUTE_PREFETCH,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_BEFORE_ROUTE_PREFETCH]
+    >
+  | EventData<
+      FederatedEvents.RUNTIME_ROUTE_PREFETCHED,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_ROUTE_PREFETCHED]
+    >
+  | EventData<
+      FederatedEvents.RUNTIME_ROUTES_PREFETCH_ERROR,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_ROUTES_PREFETCH_ERROR]
+    >
+
+  // Router Events
+  | EventData<
+      FederatedEvents.POPSTATE_EVENT_FIRED,
+      FederatedPayloadMap[FederatedEvents.POPSTATE_EVENT_FIRED]
+    >
+  | EventData<
+      FederatedEvents.POPSTATE_EVENT_ERROR,
+      FederatedPayloadMap[FederatedEvents.POPSTATE_EVENT_ERROR]
+    >
+  | EventData<
+      FederatedEvents.ROUTE_ALREADY_ACTIVE,
+      FederatedPayloadMap[FederatedEvents.ROUTE_ALREADY_ACTIVE]
+    >
+  | EventData<
+      FederatedEvents.ROUTE_CHANGED,
+      FederatedPayloadMap[FederatedEvents.ROUTE_CHANGED]
+    >
+  | EventData<
+      FederatedEvents.ROUTE_ERROR,
+      FederatedPayloadMap[FederatedEvents.ROUTE_ERROR]
+    >
+  | EventData<
+      FederatedEvents.ROUTE_NAVIGATE_TO,
+      FederatedPayloadMap[FederatedEvents.ROUTE_NAVIGATE_TO]
+    >
+
+  // SystemJS Events
+  | EventData<
+      FederatedEvents.SYSTEMJS_LOADED,
+      FederatedPayloadMap[FederatedEvents.SYSTEMJS_LOADED]
+    >
+  | EventData<
+      FederatedEvents.SYSTEMJS_MODULE_LOADING,
+      FederatedPayloadMap[FederatedEvents.SYSTEMJS_MODULE_LOADING]
+    >
+  | EventData<
+      FederatedEvents.SYSTEMJS_MODULE_LOADED,
+      FederatedPayloadMap[FederatedEvents.SYSTEMJS_MODULE_LOADED]
+    >
+  | EventData<
+      FederatedEvents.SYSTEMJS_LOAD_ERROR,
+      FederatedPayloadMap[FederatedEvents.SYSTEMJS_LOAD_ERROR]
+    >
+
+  // Native Module Events
+  | EventData<
+      FederatedEvents.NATIVE_MODULE_LOADING,
+      FederatedPayloadMap[FederatedEvents.NATIVE_MODULE_LOADING]
+    >
+  | EventData<
+      FederatedEvents.NATIVE_MODULE_LOADED,
+      FederatedPayloadMap[FederatedEvents.NATIVE_MODULE_LOADED]
+    >
+  | EventData<
+      FederatedEvents.NATIVE_MODULE_LOAD_ERROR,
+      FederatedPayloadMap[FederatedEvents.NATIVE_MODULE_LOAD_ERROR]
+    >
+
+  // Import Map Events
+  | EventData<
+      FederatedEvents.IMPORT_MAP_OVERRIDES_LOADED,
+      FederatedPayloadMap[FederatedEvents.IMPORT_MAP_OVERRIDES_LOADED]
+    >
+  | EventData<
+      FederatedEvents.IMPORT_MAP_OVERRIDES_LOAD_ERROR,
+      FederatedPayloadMap[FederatedEvents.IMPORT_MAP_OVERRIDES_LOAD_ERROR]
+    >
+
+  // Module Registration Events
+  | EventData<
+      FederatedEvents.MODULE_ALREADY_REGISTERED,
+      FederatedPayloadMap[FederatedEvents.MODULE_ALREADY_REGISTERED]
+    >
+  | EventData<
+      FederatedEvents.MODULE_BEFORE_REGISTER,
+      FederatedPayloadMap[FederatedEvents.MODULE_BEFORE_REGISTER]
+    >
+  | EventData<
+      FederatedEvents.MODULE_REGISTERED,
+      FederatedPayloadMap[FederatedEvents.MODULE_REGISTERED]
+    >
+  | EventData<
+      FederatedEvents.MODULE_REGISTER_ERROR,
+      FederatedPayloadMap[FederatedEvents.MODULE_REGISTER_ERROR]
+    >
+
+  // Module Bootstrap Events
+  | EventData<
+      FederatedEvents.MODULE_BEFORE_BOOTSTRAP,
+      FederatedPayloadMap[FederatedEvents.MODULE_BEFORE_BOOTSTRAP]
+    >
+  | EventData<
+      FederatedEvents.MODULE_BOOTSTRAPPED,
+      FederatedPayloadMap[FederatedEvents.MODULE_BOOTSTRAPPED]
+    >
+  | EventData<
+      FederatedEvents.MODULE_BOOTSTRAP_ERROR,
+      FederatedPayloadMap[FederatedEvents.MODULE_BOOTSTRAP_ERROR]
+    >
+
+  // Module Load Events
+  | EventData<
+      FederatedEvents.MODULE_BEFORE_LOAD,
+      FederatedPayloadMap[FederatedEvents.MODULE_BEFORE_LOAD]
+    >
+  | EventData<
+      FederatedEvents.MODULE_LOADED,
+      FederatedPayloadMap[FederatedEvents.MODULE_LOADED]
+    >
+  | EventData<
+      FederatedEvents.MODULE_LOAD_ERROR,
+      FederatedPayloadMap[FederatedEvents.MODULE_LOAD_ERROR]
+    >
+  | EventData<
+      FederatedEvents.MODULE_ALREADY_LOADED,
+      FederatedPayloadMap[FederatedEvents.MODULE_ALREADY_LOADED]
+    >
+  | EventData<
+      FederatedEvents.MODULE_VALIDATE_PROPS,
+      FederatedPayloadMap[FederatedEvents.MODULE_VALIDATE_PROPS]
+    >
+
+  // Module Mount Events
+  | EventData<
+      FederatedEvents.MODULE_BEFORE_MOUNT,
+      FederatedPayloadMap[FederatedEvents.MODULE_BEFORE_MOUNT]
+    >
+  | EventData<
+      FederatedEvents.MODULE_ALREADY_MOUNTED,
+      FederatedPayloadMap[FederatedEvents.MODULE_ALREADY_MOUNTED]
+    >
+  | EventData<
+      FederatedEvents.MODULE_MOUNTED,
+      FederatedPayloadMap[FederatedEvents.MODULE_MOUNTED]
+    >
+  | EventData<
+      FederatedEvents.MODULE_MOUNT_ERROR,
+      FederatedPayloadMap[FederatedEvents.MODULE_MOUNT_ERROR]
+    >
+  | EventData<
+      FederatedEvents.MODULE_STATE_CHANGED,
+      FederatedPayloadMap[FederatedEvents.MODULE_STATE_CHANGED]
+    >
+
+  // Module Unmount Events
+  | EventData<
+      FederatedEvents.MODULE_BEFORE_UNMOUNT,
+      FederatedPayloadMap[FederatedEvents.MODULE_BEFORE_UNMOUNT]
+    >
+  | EventData<
+      FederatedEvents.MODULE_UNMOUNTED,
+      FederatedPayloadMap[FederatedEvents.MODULE_UNMOUNTED]
+    >
+  | EventData<
+      FederatedEvents.MODULE_NOT_MOUNTED,
+      FederatedPayloadMap[FederatedEvents.MODULE_NOT_MOUNTED]
+    >
+  | EventData<
+      FederatedEvents.MODULE_UNMOUNT_ERROR,
+      FederatedPayloadMap[FederatedEvents.MODULE_UNMOUNT_ERROR]
+    >
+
+  // Module Update Events
+  | EventData<
+      FederatedEvents.MODULE_BEFORE_UPDATE,
+      FederatedPayloadMap[FederatedEvents.MODULE_BEFORE_UPDATE]
+    >
+  | EventData<
+      FederatedEvents.MODULE_UPDATED,
+      FederatedPayloadMap[FederatedEvents.MODULE_UPDATED]
+    >
+  | EventData<
+      FederatedEvents.MODULE_UPDATE_ERROR,
+      FederatedPayloadMap[FederatedEvents.MODULE_UPDATE_ERROR]
+    >
+  | CustomEventMap
+
+export abstract class AbstractFederatedRuntime {
   // Booleans
   abstract _useNativeModules: boolean
   abstract _importMapOverridesEnabled: boolean

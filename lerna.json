@@ -12,7 +12,8 @@
     }
   },
   "packages": [
-    "packages/**"
+    "packages/**",
+    "examples/**"
   ],
   "version": "independent"
 }

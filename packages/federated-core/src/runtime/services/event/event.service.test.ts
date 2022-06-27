@@ -1,5 +1,5 @@
-import { FederatedEventKeys } from '../../FederatedRuntime.types'
 import eventService from './event.service'
+import { EventMap, FederatedEvents } from '../../FederatedRuntime.types'
 
 let dispatchedEventCount: Record<string, number> = {}
 window.dispatchEvent = jest.fn().mockImplementation((event: Event) => {
@@ -9,7 +9,7 @@ window.dispatchEvent = jest.fn().mockImplementation((event: Event) => {
 })
 
 describe('eventService', () => {
-  const type: FederatedEventKeys = 'federated-core:runtime:started'
+  const type = 'federated-core:runtime:started'
   const fn = () => undefined
 
   beforeEach(() => {
@@ -55,11 +55,10 @@ describe('eventService', () => {
     it('should replace ${moduleKey} in eventKey when passed module params', () => {
       jest.spyOn(window, 'addEventListener')
 
-      eventService.register(
-        'federated-core:module:%moduleKey%:before-load',
-        fn,
-        { scope: 'test-scope', name: 'test-module' }
-      )
+      eventService.register(FederatedEvents.MODULE_BEFORE_LOAD, fn, {
+        scope: 'test-scope',
+        name: 'test-module',
+      })
       expect(window.addEventListener).toHaveBeenCalledWith(
         'federated-core:module:test-scope:test-module:before-load',
         fn
@@ -103,8 +102,13 @@ describe('eventService', () => {
 
   describe('emit', () => {
     it('should emit an event', () => {
-      eventService.emit(type, {
-        modules: [{ scope: 'test-scope', name: 'test-module-1' }],
+      eventService.emit<EventMap>({
+        type: FederatedEvents.RUNTIME_STARTED,
+        payload: {
+          startTime: Date.now(),
+          startEndTime: Date.now() + 1000,
+          startDuration: 1000,
+        },
       })
       expect(dispatchedEventCount).toEqual({
         [type]: 1,
@@ -115,9 +119,11 @@ describe('eventService', () => {
       jest.spyOn(window, 'addEventListener')
       const module = { scope: 'test-scope', name: 'test-module' }
 
-      eventService.emit(
-        'federated-core:module:%moduleKey%:before-load',
-        { module },
+      eventService.emit<EventMap>(
+        {
+          type: FederatedEvents.MODULE_BEFORE_LOAD,
+          payload: { module },
+        },
         module
       )
       expect(dispatchedEventCount).toEqual({

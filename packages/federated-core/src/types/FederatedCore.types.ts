@@ -1,9 +1,6 @@
 import * as React from 'react'
-import {
-  FederatedEventPayloadMap,
-  FederatedEvents,
-  AbstactFederatedRuntime,
-} from '../runtime'
+import { Component } from 'vue'
+import { AbstractFederatedRuntime } from '../runtime'
 import { eventService, loggerService } from '../runtime/services'
 
 export type ImportMap = {
@@ -31,25 +28,10 @@ export type FederatedModuleStatusValues = `${FederatedModuleStatuses}`
 
 export type FederatedModuleParams = Pick<FederatedModule, 'scope' | 'name'>
 
-export type FederatedEvent<EventType extends FederatedEvents> = {
-  type: EventType
-  payload: FederatedEventPayloadMap[EventType]
-  module?: FederatedModuleParams
-}
-
 export type ExposedServicesType = {
   event: typeof eventService
   logger: typeof loggerService
 }
-
-export type ExposedServiceKeys = keyof ExposedServicesType
-
-export type RuntimeEventHandler = <
-  EventType extends FederatedEvent<FederatedEvents>
->(
-  event: EventType,
-  RuntimeEngine: AbstactFederatedRuntime
-) => void
 
 export type FederatedModuleLifecycles<PropsType> = {
   bootstrap: () => Promise<void>
@@ -63,9 +45,13 @@ export type FederatedModuleTypes =
   | 'journey-module'
   | 'shared-module'
   | 'component'
-export type RootComponentTypes = 'react' | 'unknown'
+export type RootComponentTypes = 'react' | 'vue' | 'unknown'
 export type RootComponentType<RootComponentTypes, PropsType> =
-  RootComponentTypes extends 'react' ? React.ComponentType<PropsType> : never
+  RootComponentTypes extends 'react'
+    ? React.ComponentType<PropsType>
+    : never | RootComponentTypes extends 'vue'
+    ? Component<PropsType>
+    : never
 export type FederatedModuleBaseOptions<PropsType> = {
   scope: string
   name: string
@@ -73,8 +59,6 @@ export type FederatedModuleBaseOptions<PropsType> = {
   description?: string
   activeWhenPaths?: string[]
   exceptWhenPaths?: string[]
-  lazyLoad?: boolean
-  eventListeners?: Record<string, RuntimeEventHandler>
   validateProps?: (props: PropsType) => boolean
   status?: FederatedModuleStatuses
   rootComponent?: unknown
@@ -86,5 +70,5 @@ export type FederatedModule<PropsType = unknown> =
 
 export type FederatedGlobalInfo = {
   moduleBaseUrls: Record<string, string>
-  federatedRuntime: AbstactFederatedRuntime
+  federatedRuntime: AbstractFederatedRuntime
 }

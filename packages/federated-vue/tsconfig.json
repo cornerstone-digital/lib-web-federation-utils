@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "rootDir": "./",
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationDir": "./dist",
+    "types": ["node", "jest", "@types/systemjs", "@testing-library/jest-dom"],
+    "typeRoots": ["@node_modules/@types", "../../node_modules/@types", "src/types"],
+  },
+  "exclude": ["node_modules", "dist"]
+}

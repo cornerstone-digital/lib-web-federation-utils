@@ -57,6 +57,7 @@ describe('createErrorBoundary', () => {
 
     const Component = () => {
       return (
+        // @ts-ignore
         <ErrorBoundary>
           <ErroredComponent />
         </ErrorBoundary>
@@ -70,7 +71,7 @@ describe('createErrorBoundary', () => {
   })
 
   it('should return an error boundary component with custom error boundary', () => {
-    const ErrorBoundary: ComponentType = createErrorBoundary({
+    const ErrorBoundary: React.FC = createErrorBoundary({
       React,
       ReactDOM,
       config: {
@@ -95,7 +96,10 @@ describe('createErrorBoundary', () => {
     }
 
     const Component = () => {
+      if (!ErrorBoundary) return null
+
       return (
+        // @ts-ignore
         <ErrorBoundary>
           <ErroredComponent />
         </ErrorBoundary>

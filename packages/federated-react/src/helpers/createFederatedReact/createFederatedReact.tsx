@@ -60,7 +60,6 @@ function createFederatedReact<PropsType>(
     propValidationFunction,
     activeWhenPaths,
     exceptWhenPaths,
-    eventListeners,
   } = config
 
   const moduleData = { scope, name }
@@ -86,7 +85,6 @@ function createFederatedReact<PropsType>(
     activeWhenPaths: activeWhenPaths || [],
     exceptWhenPaths: exceptWhenPaths || [],
     description,
-    eventListeners: eventListeners || {},
     name,
     scope,
     type,

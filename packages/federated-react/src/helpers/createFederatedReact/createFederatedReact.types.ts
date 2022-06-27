@@ -2,11 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import {
-  RuntimeEventHandler,
   FederatedModuleTypes,
   FederatedModuleBaseOptions,
   FederatedModuleLifecycles,
-  AbstactFederatedRuntime,
+  AbstractFederatedRuntime,
 } from '@vf/federated-core'
 
 export type RenderTypes =
@@ -38,12 +37,11 @@ export type CreateFederatedReactOptions<RootComponentProps> = {
     propValidationFunction?: (props: RootComponentProps) => boolean
     activeWhenPaths?: string[]
     exceptWhenPaths?: string[]
-    eventListeners?: Record<string, RuntimeEventHandler>
   }
   renderType?: RenderTypes | (() => RenderTypes)
   React: typeof React
   ReactDOM: typeof ReactDOM
-  federatedRuntime: AbstactFederatedRuntime
+  federatedRuntime: AbstractFederatedRuntime
   enableSystemJs?: boolean
 }
 

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, ReactElement } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
 import { stringUtils } from '@vf/federated-core'
@@ -7,11 +7,12 @@ import { stringUtils } from '@vf/federated-core'
 function createErrorBoundary<PropTypes>(
   opts: CreateFederatedReactOptions<PropTypes>
 ): {
-  (props: PropsWithChildren<PropTypes>): JSX.Element
+  (props: PropsWithChildren<PropTypes>): ReactElement<unknown>
   displayName: string
 } {
   const WithErrorBoundary = (props: PropsWithChildren<PropTypes>) => {
     return (
+      // @ts-ignore
       <ErrorBoundary
         fallbackRender={({ error }) => {
           if (opts.config.errorBoundary) {

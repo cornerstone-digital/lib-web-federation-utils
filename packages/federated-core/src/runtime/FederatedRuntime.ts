@@ -1,25 +1,26 @@
 import {
-  FederatedModule,
-  ImportMap,
-  FederatedModuleStatuses,
   ExposedServicesType,
+  FederatedModule,
   FederatedModuleParams,
-  RootComponentTypes,
+  FederatedModuleStatuses,
+  ImportMap,
   RootComponentType,
+  RootComponentTypes,
 } from '../types'
 
 import {
+  AbstractFederatedRuntime,
+  EventMap,
   FederatedEvents,
-  AbstactFederatedRuntime,
 } from './FederatedRuntime.types'
 import { environmentUtils } from '../utils'
 import { eventService, loggerService } from './services'
 import {
-  addScriptTag,
-  addMetaTag,
-  addLinkTag,
-  getModuleKey,
   addHtmlElementWithAttrs,
+  addLinkTag,
+  addMetaTag,
+  addScriptTag,
+  getModuleKey,
   shouldModuleBeMounted,
 } from './helpers'
 
@@ -28,7 +29,7 @@ const ExposedServices: ExposedServicesType = {
   logger: loggerService,
 }
 
-class FederatedRuntime implements AbstactFederatedRuntime {
+class FederatedRuntime implements AbstractFederatedRuntime {
   _bootstrapped = false
   _started = false
   _useNativeModules = false
@@ -127,8 +128,11 @@ class FederatedRuntime implements AbstactFederatedRuntime {
         'https://cdn.jsdelivr.net/npm/import-map-overrides/dist/import-map-overrides.js'
       )
 
-      this.services.event.emit(FederatedEvents.IMPORT_MAP_OVERRIDES_LOADED, {
-        loadedTime: Date.now(),
+      this.services.event.emit<EventMap>({
+        type: FederatedEvents.IMPORT_MAP_OVERRIDES_LOADED,
+        payload: {
+          loadedTime: Date.now(),
+        },
       })
     }
   }
@@ -153,8 +157,11 @@ class FederatedRuntime implements AbstactFederatedRuntime {
         `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/dynamic-import-maps.min.js`
       )
 
-      this.services.event.emit(FederatedEvents.SYSTEMJS_LOADED, {
-        loadedTime: Date.now(),
+      this.services.event.emit<EventMap>({
+        type: FederatedEvents.SYSTEMJS_LOADED,
+        payload: {
+          loadedTime: Date.now(),
+        },
       })
     }
   }
@@ -185,10 +192,12 @@ class FederatedRuntime implements AbstactFederatedRuntime {
         moduleEntry.status = state as FederatedModuleStatuses
         this.modules.set(moduleKey, moduleEntry)
 
-        this.services.event.emit(
-          FederatedEvents.MODULE_STATE_CHANGED,
+        this.services.event.emit<EventMap>(
           {
-            module: moduleEntry,
+            type: FederatedEvents.MODULE_STATE_CHANGED,
+            payload: {
+              module: moduleEntry,
+            },
           },
           module
         )
@@ -242,11 +251,12 @@ class FederatedRuntime implements AbstactFederatedRuntime {
       this.modules.has(moduleKey) &&
       this.modules.get(moduleKey)?.status === FederatedModuleStatuses.LOADED
     ) {
-      this.services.event.emit(
-        FederatedEvents.MODULE_ALREADY_REGISTERED,
+      this.services.event.emit<EventMap>(
         {
-          moduleKey,
-          module,
+          type: FederatedEvents.MODULE_ALREADY_REGISTERED,
+          payload: {
+            module,
+          },
         },
         module
       )
@@ -254,20 +264,22 @@ class FederatedRuntime implements AbstactFederatedRuntime {
       this.modules.has(moduleKey) &&
       this.modules.get(moduleKey)?.status === FederatedModuleStatuses.MOUNTED
     ) {
-      this.services.event.emit(
-        FederatedEvents.MODULE_ALREADY_MOUNTED,
+      this.services.event.emit<EventMap>(
         {
-          moduleKey,
-          module,
+          type: FederatedEvents.MODULE_ALREADY_MOUNTED,
+          payload: {
+            module,
+          },
         },
         module
       )
     } else {
-      this.services.event.emit(
-        FederatedEvents.MODULE_BEFORE_REGISTER,
+      this.services.event.emit<EventMap>(
         {
-          moduleKey,
-          module,
+          type: FederatedEvents.MODULE_BEFORE_REGISTER,
+          payload: {
+            module,
+          },
         },
         module
       )
@@ -277,11 +289,12 @@ class FederatedRuntime implements AbstactFederatedRuntime {
         FederatedModuleStatuses.NOT_LOADED
       )
       this.modules.set(moduleKey, module)
-      this.services.event.emit(
-        FederatedEvents.MODULE_REGISTERED,
+      this.services.event.emit<EventMap>(
         {
-          moduleKey,
-          module,
+          type: FederatedEvents.MODULE_REGISTERED,
+          payload: {
+            module,
+          },
         },
         module
       )
@@ -326,11 +339,12 @@ class FederatedRuntime implements AbstactFederatedRuntime {
           this.modules.get(moduleKey)?.status ===
             FederatedModuleStatuses.MOUNTED
         ) {
-          this.services.event.emit(
-            FederatedEvents.MODULE_ALREADY_MOUNTED,
+          this.services.event.emit<EventMap>(
             {
-              moduleKey,
-              module,
+              type: FederatedEvents.MODULE_ALREADY_MOUNTED,
+              payload: {
+                module,
+              },
             },
             module
           )
@@ -342,11 +356,12 @@ class FederatedRuntime implements AbstactFederatedRuntime {
           storeModule &&
           this.modules.get(moduleKey)?.status === FederatedModuleStatuses.LOADED
         ) {
-          this.services.event.emit(
-            FederatedEvents.MODULE_ALREADY_LOADED,
+          this.services.event.emit<EventMap>(
             {
-              moduleKey,
-              module,
+              type: FederatedEvents.MODULE_ALREADY_LOADED,
+              payload: {
+                module,
+              },
             },
             module
           )
@@ -355,11 +370,12 @@ class FederatedRuntime implements AbstactFederatedRuntime {
         }
       }
 
-      this.services.event.emit(
-        FederatedEvents.MODULE_BEFORE_LOAD,
+      this.services.event.emit<EventMap>(
         {
-          moduleKey,
-          module,
+          type: FederatedEvents.MODULE_BEFORE_LOAD,
+          payload: {
+            module,
+          },
         },
         module
       )
@@ -378,10 +394,12 @@ class FederatedRuntime implements AbstactFederatedRuntime {
       }
 
       if (this.useNativeModules) {
-        this.services.event.emit(
-          FederatedEvents.NATIVE_MODULE_LOADING,
+        this.services.event.emit<EventMap>(
           {
-            module,
+            type: FederatedEvents.NATIVE_MODULE_LOADING,
+            payload: {
+              module,
+            },
           },
           module
         )
@@ -390,27 +408,34 @@ class FederatedRuntime implements AbstactFederatedRuntime {
           /* webpackIgnore: true */ /* @vite-ignore */ moduleUrl
         )
 
-        this.services.event.emit(
-          FederatedEvents.NATIVE_MODULE_LOADED,
+        this.services.event.emit<EventMap>(
           {
-            module: resolvedModule,
+            type: FederatedEvents.NATIVE_MODULE_LOADED,
+            payload: {
+              loadedTime: new Date().getTime(),
+              module: resolvedModule,
+            },
           },
           module
         )
       } else {
-        this.services.event.emit(
-          FederatedEvents.SYSTEMJS_MODULE_LOADING,
+        this.services.event.emit<EventMap>(
           {
-            module,
+            type: FederatedEvents.SYSTEMJS_MODULE_LOADING,
+            payload: {
+              module,
+            },
           },
           module
         )
         resolvedModule = await System.import(name)
 
-        this.services.event.emit(
-          FederatedEvents.SYSTEMJS_MODULE_LOADED,
+        this.services.event.emit<EventMap>(
           {
-            module: resolvedModule,
+            type: FederatedEvents.SYSTEMJS_MODULE_LOADED,
+            payload: {
+              module: resolvedModule,
+            },
           },
           module
         )
@@ -429,11 +454,13 @@ class FederatedRuntime implements AbstactFederatedRuntime {
 
       return resolvedModule
     } catch (error) {
-      this.services.event.emit(
-        FederatedEvents.MODULE_LOAD_ERROR,
+      this.services.event.emit<EventMap>(
         {
-          module,
-          error: error as Error,
+          type: FederatedEvents.MODULE_LOAD_ERROR,
+          payload: {
+            module,
+            error: error as Error,
+          },
         },
         module
       )
@@ -467,11 +494,13 @@ class FederatedRuntime implements AbstactFederatedRuntime {
   validateProps(module: FederatedModuleParams, props: unknown): boolean {
     const { scope, name } = module
     const moduleKey = getModuleKey(scope, name)
-    this.services.event.emit(
-      FederatedEvents.MODULE_VALIDATE_PROPS,
+    this.services.event.emit<EventMap>(
       {
-        module,
-        props,
+        type: FederatedEvents.MODULE_VALIDATE_PROPS,
+        payload: {
+          module,
+          props,
+        },
       },
       module
     )
@@ -485,29 +514,39 @@ class FederatedRuntime implements AbstactFederatedRuntime {
   }
 
   async preFetchModules(modules: FederatedModule[]): Promise<this> {
-    this.services.event.emit(FederatedEvents.RUNTIME_MODULES_PREFETCH_START, {
-      modules,
+    this.services.event.emit<EventMap>({
+      type: FederatedEvents.RUNTIME_MODULES_PREFETCH_START,
+      payload: {
+        modules,
+      },
     })
 
     for (const module of modules) {
       const { name, scope } = module
       const moduleKey = getModuleKey(scope, name)
       if (!this.modules.has(moduleKey)) {
-        this.services.event.emit(
-          FederatedEvents.RUNTIME_BEFORE_MODULE_PREFETCH,
-          {
+        this.services.event.emit<EventMap>({
+          type: FederatedEvents.RUNTIME_BEFORE_MODULE_PREFETCH,
+          payload: {
             module,
-          }
-        )
+          },
+        })
         await this.loadModule({ scope, name })
-        this.services.event.emit(FederatedEvents.RUNTIME_MODULE_PREFETCHED, {
-          module,
+
+        this.services.event.emit<EventMap>({
+          type: FederatedEvents.RUNTIME_MODULE_PREFETCHED,
+          payload: {
+            module,
+          },
         })
       }
     }
 
-    this.services.event.emit(FederatedEvents.RUNTIME_MODULES_PREFETCHED, {
-      modules,
+    this.services.event.emit<EventMap>({
+      type: FederatedEvents.RUNTIME_MODULES_PREFETCHED,
+      payload: {
+        modules,
+      },
     })
 
     return this
@@ -530,19 +569,23 @@ class FederatedRuntime implements AbstactFederatedRuntime {
       const moduleInstance = this.modules.get(moduleKey)
 
       if (moduleInstance?.unmount) {
-        this.services.event.emit(
-          FederatedEvents.MODULE_BEFORE_UNMOUNT,
+        this.services.event.emit<EventMap>(
           {
-            module,
+            type: FederatedEvents.MODULE_BEFORE_UNMOUNT,
+            payload: {
+              module,
+            },
           },
           module
         )
         await moduleInstance.unmount()
 
-        this.services.event.emit(
-          FederatedEvents.MODULE_UNMOUNTED,
+        this.services.event.emit<EventMap>(
           {
-            module: moduleInstance,
+            type: FederatedEvents.MODULE_UNMOUNTED,
+            payload: {
+              module: moduleInstance,
+            },
           },
           module
         )
@@ -563,27 +606,34 @@ class FederatedRuntime implements AbstactFederatedRuntime {
         const loadedModule = await this.loadModule({ scope, name })
 
         if (loadedModule?.mount) {
-          this.services.event.emit(
-            FederatedEvents.MODULE_BEFORE_MOUNT,
+          this.services.event.emit<EventMap>(
             {
-              module: loadedModule,
+              type: FederatedEvents.MODULE_BEFORE_MOUNT,
+              payload: {
+                module: loadedModule,
+              },
             },
             module
           )
           await loadedModule.mount()
-          this.services.event.emit(
-            FederatedEvents.MODULE_MOUNTED,
+          this.services.event.emit<EventMap>(
             {
-              module: loadedModule,
+              type: FederatedEvents.MODULE_MOUNTED,
+              payload: {
+                module: loadedModule,
+              },
             },
             module
           )
         }
       } catch (error) {
-        this.services.event.emit(
-          FederatedEvents.MODULE_MOUNT_ERROR,
+        this.services.event.emit<EventMap>(
           {
-            module,
+            type: FederatedEvents.MODULE_MOUNT_ERROR,
+            payload: {
+              module,
+              error: error as Error,
+            },
           },
           module
         )
@@ -594,16 +644,22 @@ class FederatedRuntime implements AbstactFederatedRuntime {
   // Navigation Methods
   navigateTo(path: string): void {
     if (window.location.pathname === path) {
-      this.services.event.emit(FederatedEvents.ROUTE_ALREADY_ACTIVE, {
-        path,
+      this.services.event.emit<EventMap>({
+        type: FederatedEvents.ROUTE_ALREADY_ACTIVE,
+        payload: {
+          path,
+        },
       })
 
       return
     }
 
-    this.services.event.emit(FederatedEvents.ROUTE_NAVIGATE_TO, {
-      previousPath: window.location.pathname,
-      path,
+    this.services.event.emit<EventMap>({
+      type: FederatedEvents.ROUTE_NAVIGATE_TO,
+      payload: {
+        previousPath: window.location.pathname,
+        path,
+      },
     })
 
     window.history.pushState(null, '', path)
@@ -613,8 +669,11 @@ class FederatedRuntime implements AbstactFederatedRuntime {
   }
 
   async reroute(): Promise<void> {
-    this.services.event.emit(FederatedEvents.ROUTE_CHANGED, {
-      path: window.location.pathname,
+    this.services.event.emit<EventMap>({
+      type: FederatedEvents.ROUTE_CHANGED,
+      payload: {
+        path: window.location.pathname,
+      },
     })
 
     await this.applyModules()
@@ -622,17 +681,20 @@ class FederatedRuntime implements AbstactFederatedRuntime {
 
   async preFetchRoutes(routePaths: string[]): Promise<this> {
     try {
-      this.services.event.emit(FederatedEvents.RUNTIME_ROUTES_PREFETCH_START, {
-        routes: routePaths,
+      this.services.event.emit<EventMap>({
+        type: FederatedEvents.RUNTIME_ROUTES_PREFETCH_START,
+        payload: {
+          routes: routePaths,
+        },
       })
 
       routePaths.forEach((path) => {
-        this.services.event.emit(
-          FederatedEvents.RUNTIME_BEFORE_ROUTE_PREFETCH,
-          {
+        this.services.event.emit<EventMap>({
+          type: FederatedEvents.RUNTIME_BEFORE_ROUTE_PREFETCH,
+          payload: {
             path,
-          }
-        )
+          },
+        })
 
         const modules = this.getModulesByPath(path)
 
@@ -643,20 +705,27 @@ class FederatedRuntime implements AbstactFederatedRuntime {
           }
         })
 
-        this.services.event.emit(FederatedEvents.RUNTIME_ROUTE_PREFETCHED, {
-          path,
+        this.services.event.emit<EventMap>({
+          type: FederatedEvents.RUNTIME_ROUTE_PREFETCHED,
+          payload: {
+            path,
+          },
         })
       })
 
-      // await Promise.all(routePromises)
-
-      this.services.event.emit(FederatedEvents.RUNTIME_ROUTES_PREFETCHED, {
-        routes: routePaths,
+      this.services.event.emit<EventMap>({
+        type: FederatedEvents.RUNTIME_ROUTES_PREFETCHED,
+        payload: {
+          routes: routePaths,
+        },
       })
     } catch (error) {
-      console.error(error)
-      this.services.event.emit(FederatedEvents.RUNTIME_ROUTES_PREFETCH_ERROR, {
-        routes: routePaths,
+      this.services.event.emit<EventMap>({
+        type: FederatedEvents.RUNTIME_ROUTES_PREFETCH_ERROR,
+        payload: {
+          routes: routePaths,
+          error: error as Error,
+        },
       })
     }
 
@@ -667,17 +736,23 @@ class FederatedRuntime implements AbstactFederatedRuntime {
   async bootstrap(): Promise<void> {
     this.bootstrapped = false
     const boostrapStartTime = Date.now()
-    this.services.event.emit(FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP, {
-      bootstrapTime: new Date().toDateString(),
-      modules: this.modules,
-      modulesBaseUrls: window.__FEDERATED_CORE__.moduleBaseUrls,
-      useNativeModules: this.useNativeModules,
-      importMapOverridesEnabled: this.importMapOverridesEnabled,
+    this.services.event.emit<EventMap>({
+      type: FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP,
+      payload: {
+        bootstrapTime: new Date().toDateString(),
+        modules: this.modules,
+        modulesBaseUrls: window.__FEDERATED_CORE__.moduleBaseUrls,
+        useNativeModules: this.useNativeModules,
+        importMapOverridesEnabled: this.importMapOverridesEnabled,
+      },
     })
 
     window.addEventListener('popstate', async (popstateEvent) => {
-      this.services.event.emit(FederatedEvents.POPSTATE_EVENT_FIRED, {
-        popstateEvent,
+      this.services.event.emit<EventMap>({
+        type: FederatedEvents.POPSTATE_EVENT_FIRED,
+        payload: {
+          popstateEvent,
+        },
       })
 
       await this.reroute()
@@ -690,28 +765,35 @@ class FederatedRuntime implements AbstactFederatedRuntime {
       const moduleData = entry[1]
       try {
         if (moduleData.bootstrap) {
-          this.services.event.emit(
-            FederatedEvents.MODULE_BEFORE_BOOTSTRAP,
+          this.services.event.emit<EventMap>(
             {
-              module: moduleData,
+              type: FederatedEvents.MODULE_BEFORE_BOOTSTRAP,
+              payload: {
+                module: moduleData,
+              },
             },
             moduleData
           )
 
           await moduleData.bootstrap()
-          this.services.event.emit(
-            FederatedEvents.MODULE_BOOTSTRAPPED,
+          this.services.event.emit<EventMap>(
             {
-              module: moduleData,
+              type: FederatedEvents.MODULE_BOOTSTRAPPED,
+              payload: {
+                module: moduleData,
+              },
             },
             moduleData
           )
         }
       } catch (error) {
-        this.services.event.emit(
-          FederatedEvents.MODULE_BOOTSTRAP_ERROR,
+        this.services.event.emit<EventMap>(
           {
-            module: moduleData,
+            type: FederatedEvents.MODULE_BOOTSTRAP_ERROR,
+            payload: {
+              module: moduleData,
+              error: error as Error,
+            },
           },
           moduleData
         )
@@ -721,33 +803,45 @@ class FederatedRuntime implements AbstactFederatedRuntime {
     const bootstrapEndTime = Date.now()
     const bootstrapDuration = bootstrapEndTime - boostrapStartTime
     this.bootstrapped = true
-    this.services.event.emit(FederatedEvents.RUNTIME_BOOTSTRAPPED, {
-      bootstrapEndTime,
-      bootstrapDuration,
+    this.services.event.emit<EventMap>({
+      type: FederatedEvents.RUNTIME_BOOTSTRAPPED,
+      payload: {
+        bootstrapEndTime,
+        bootstrapDuration,
+      },
     })
   }
 
   async start(): Promise<void> {
     try {
-      this.started = false
       const startTime = Date.now()
-      this.services.event.emit(FederatedEvents.RUNTIME_BEFORE_START, {
-        startTime,
-        modules: this.modules,
+      this.started = false
+      this.services.event.emit<EventMap>({
+        type: FederatedEvents.RUNTIME_BEFORE_START,
+        payload: {
+          startTime: new Date(startTime).toDateString(),
+          modules: this.modules,
+        },
       })
       await this.bootstrap()
       await this.reroute()
       const startEndTime = Date.now()
       const startDuration = startEndTime - startTime
-      this.services.event.emit(FederatedEvents.RUNTIME_STARTED, {
-        startTime,
-        startEndTime,
-        startDuration,
+      this.services.event.emit<EventMap>({
+        type: FederatedEvents.RUNTIME_STARTED,
+        payload: {
+          startTime,
+          startEndTime,
+          startDuration,
+        },
       })
       this.started = true
     } catch (error) {
-      this.services.event.emit(FederatedEvents.RUNTIME_START_ERROR, {
-        error: error as Error,
+      this.services.event.emit<EventMap>({
+        type: FederatedEvents.RUNTIME_START_ERROR,
+        payload: {
+          error: error as Error,
+        },
       })
     }
   }

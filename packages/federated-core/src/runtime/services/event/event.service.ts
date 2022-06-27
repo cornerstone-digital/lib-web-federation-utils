@@ -2,8 +2,9 @@ import { getModuleKey } from '../../helpers'
 import { FederatedModule, FederatedModuleParams } from '../../../types'
 import { EventServiceType, EventStoreMap } from './event.service.types'
 import {
-  FederatedEventPayloadMap,
-  FederatedEventKeys,
+  EventData,
+  EventMap,
+  EventTypeKeys,
 } from 'src/runtime/FederatedRuntime.types'
 
 export const eventStore: EventStoreMap = new Map()
@@ -18,18 +19,18 @@ const unregister = (id: string) => {
   }
 }
 
-const register = (
-  type: FederatedEventKeys,
+const register = <EventKeys extends string>(
+  type: EventTypeKeys<EventKeys>,
   fn: EventListener,
   module?: FederatedModuleParams
 ) => {
   const id = `${type}__${Date.now()}__${Math.floor(Math.random() * 1000)}`
-  let eventType: string = type
+  let eventType: string = type as string
   if (module) {
     eventType = replaceModuleKey(eventType, module)
   }
 
-  eventStore.set(id, { type, fn })
+  eventStore.set(id, { type: eventType, fn })
   window.addEventListener(eventType, fn)
 
   return () => unregister(id)
@@ -39,17 +40,16 @@ const replaceModuleKey = (type: string, module: FederatedModuleParams) => {
   return type.replace(`%moduleKey%`, getModuleKey(module.scope, module.name))
 }
 
-const emit = (
-  type: FederatedEventKeys,
-  payload: FederatedEventPayloadMap[typeof type],
+const emit = <CustomEvents extends EventData<string, unknown>>(
+  event: EventMap<CustomEvents>,
   module?: FederatedModule
 ): void => {
-  let eventType: string = type
+  let eventType: string = event.type as string
   if (module?.name) {
     eventType = replaceModuleKey(eventType, module)
   }
 
-  window.dispatchEvent(new CustomEvent(eventType, payload as object))
+  window.dispatchEvent(new CustomEvent(eventType, event.payload as object))
 }
 
 const unregisterAll = () => {

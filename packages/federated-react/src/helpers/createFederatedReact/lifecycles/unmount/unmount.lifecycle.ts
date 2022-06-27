@@ -3,13 +3,14 @@ import {
   FederatedEvents,
   FederatedModuleParams,
   FederatedModuleStatuses,
-  AbstactFederatedRuntime,
+  AbstractFederatedRuntime,
+  EventMap,
 } from '@vf/federated-core'
 import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
 
 const unmountLifecycle = <PropsType>(
   module: FederatedModuleParams,
-  federatedRuntime: AbstactFederatedRuntime,
+  federatedRuntime: AbstractFederatedRuntime,
   opts: CreateFederatedReactOptions<PropsType>
 ) => {
   try {
@@ -25,10 +26,12 @@ const unmountLifecycle = <PropsType>(
     if (domContainer) {
       ReactDOM.unmountComponentAtNode(domContainer)
 
-      eventService.emit(
-        FederatedEvents.MODULE_UNMOUNTED,
+      eventService.emit<EventMap>(
         {
-          module,
+          type: FederatedEvents.MODULE_UNMOUNTED,
+          payload: {
+            module,
+          },
         },
         module
       )
@@ -39,10 +42,13 @@ const unmountLifecycle = <PropsType>(
       )
     }
   } catch (error) {
-    eventService.emit(
-      FederatedEvents.MODULE_UNMOUNT_ERROR,
+    eventService.emit<EventMap>(
       {
-        module,
+        type: FederatedEvents.MODULE_UNMOUNT_ERROR,
+        payload: {
+          module,
+          error: error as Error,
+        },
       },
       module
     )

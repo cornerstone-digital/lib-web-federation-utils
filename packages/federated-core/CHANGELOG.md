@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.9](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.1.0-alpha.8...@vf/federated-core@0.1.0-alpha.9) (2022-06-27)
+
+**Note:** Version bump only for package @vf/federated-core
+
+
+
+
+
+# [0.1.0-alpha.8](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.1.0-alpha.7...@vf/federated-core@0.1.0-alpha.8) (2022-06-24)
+
+
+### Bug Fixes
+
+* revert broken rebase ([907bc9d](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/907bc9dae2947d745faa1ec4ef314fa7923a6ae9))
+
+
+
+
+
+# [0.1.0-alpha.7](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.1.0-alpha.6...@vf/federated-core@0.1.0-alpha.7) (2022-06-23)
+
+**Note:** Version bump only for package @vf/federated-core
+
+
+
+
+
 # [0.1.0-alpha.6](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.1.0-alpha.5...@vf/federated-core@0.1.0-alpha.6) (2022-06-23)
 
 **Note:** Version bump only for package @vf/federated-core
