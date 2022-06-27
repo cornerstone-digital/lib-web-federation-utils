@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.2](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/example-vue-app@0.0.2-alpha.2...@vf/example-vue-app@0.0.2) (2022-06-27)
+
+**Note:** Version bump only for package @vf/example-vue-app
+
+
+
+
+
 ## 0.0.2-alpha.2 (2022-06-27)
 
 **Note:** Version bump only for package @vf/example-vue-app
