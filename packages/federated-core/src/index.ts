@@ -1,7 +1,6 @@
 import { environmentUtils } from './utils'
 import { FederatedRuntime } from './runtime'
 
-// Exports here
 export * from './utils'
 export * from './runtime'
 export * from './types'
