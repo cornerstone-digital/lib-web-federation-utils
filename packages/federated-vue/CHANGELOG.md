@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.0.2-alpha.4 (2022-06-27)
+
+**Note:** Version bump only for package @vf/federated-vue
+
+
+
+
+
 ## [0.0.2-alpha.3](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-vue@0.0.2-alpha.2...@vf/federated-vue@0.0.2-alpha.3) (2022-06-27)
 
 **Note:** Version bump only for package @vf/federated-vue
