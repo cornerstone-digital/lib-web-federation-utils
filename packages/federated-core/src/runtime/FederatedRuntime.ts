@@ -844,6 +844,13 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
 export const getFederatedRuntime = () => {
   if (environmentUtils.isBrowser()) {
+    if (!window.__FEDERATED_CORE__) {
+      window.__FEDERATED_CORE__ = {
+        federatedRuntime: new FederatedRuntime(),
+        moduleBaseUrls: {},
+      }
+    }
+
     if (!window.__FEDERATED_CORE__.federatedRuntime) {
       window.__FEDERATED_CORE__.federatedRuntime = new FederatedRuntime()
     }

@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createSharedImportMap should return import map with dev when isDev true 1`] = `
+Object {
+  "react": "http://cdn.vodadone.co.uk/shared-assets/react/17.0.2/umd/react.production.min.js",
+  "react-dom": "http://cdn.vodadone.co.uk/shared-assets/react-dom/17.0.2/umd/react-dom.production.min.js",
+  "react-is": "http://cdn.vodadone.co.uk/shared-assets/react-is/17.0.2/umd/react-is.production.min.js",
+  "styled-components": "http://cdn.vodadone.co.uk/shared-assets/styled-components/5.3.5/styled-components.min.js",
+  "vue": "http://cdn.vodadone.co.uk/shared-assets/vue/3.2.25/vue.global.prod.min.js",
+}
+`;
+
+exports[`createSharedImportMap should return import map with prod when isDev false 1`] = `
+Object {
+  "react": "http://cdn.vodadone.co.uk/shared-assets/react/17.0.2/umd/react.production.min.js",
+  "react-dom": "http://cdn.vodadone.co.uk/shared-assets/react-dom/17.0.2/umd/react-dom.production.min.js",
+  "react-is": "http://cdn.vodadone.co.uk/shared-assets/react-is/17.0.2/umd/react-is.production.min.js",
+  "styled-components": "http://cdn.vodadone.co.uk/shared-assets/styled-components/5.3.5/styled-components.min.js",
+  "vue": "http://cdn.vodadone.co.uk/shared-assets/vue/3.2.25/vue.global.prod.min.js",
+}
+`;

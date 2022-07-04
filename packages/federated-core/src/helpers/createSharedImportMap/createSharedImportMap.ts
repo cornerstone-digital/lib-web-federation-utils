@@ -1,10 +1,6 @@
 import { SharedImportMapConfig } from './createSharedImportMap.types'
 
 const getDepMap = (format: 'umd' | 'esm') => ({
-  // react: {
-  //   dev: `react/17/${format}/react.development.js`,
-  //   prod: `react/17/${format}/react.production.min.js`,
-  // },
   vue: {
     dev: `vue/3.2.25/vue.global.prod.min.js`,
     prod: `vue/3.2.25/vue.global.prod.min.js`,
@@ -30,7 +26,7 @@ const getDepMap = (format: 'umd' | 'esm') => ({
   },
 })
 
-const getImportUrl = (url: string, baseUrl: string) => {
+export const getImportUrl = (url: string, baseUrl: string) => {
   if (url.startsWith('http')) {
     return url
   }
