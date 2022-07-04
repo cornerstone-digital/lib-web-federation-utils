@@ -1,5 +1,5 @@
 {
   "imports": {
-    "ReactFederatedJourney": "http://localhost:8001/ReactFederatedJourney.umd.js"
+    "ReactFederatedJourney": "http://localhost:8001/ReactFederatedJourney.es.js"
   }
 }

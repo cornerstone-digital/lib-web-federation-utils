@@ -5,7 +5,7 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import * as React from "react";
-import React__default, { useEffect, Suspense } from "react";
+import React__default, { Suspense } from "react";
 import ReactDOM from "react-dom";
 var UNKNOWN_FUNCTION = "?";
 function computeStackTrace(ex) {
@@ -574,9 +574,9 @@ var Observable = function() {
       }
     };
   };
-  Observable2.prototype.notify = function(data2) {
+  Observable2.prototype.notify = function(data) {
     this.observers.forEach(function(observer) {
-      return observer(data2);
+      return observer(data);
     });
   };
   return Observable2;
@@ -588,8 +588,8 @@ function mergeObservables() {
   }
   var globalObservable = new Observable(function() {
     var subscriptions = observables.map(function(observable) {
-      return observable.subscribe(function(data2) {
-        return globalObservable.notify(data2);
+      return observable.subscribe(function(data) {
+        return globalObservable.notify(data);
       });
     });
     return function() {
@@ -1614,12 +1614,12 @@ var HttpRequest = function() {
     this.endpointBuilder = endpointBuilder;
     this.bytesLimit = bytesLimit;
   }
-  HttpRequest2.prototype.send = function(data2, bytesCount, reason) {
+  HttpRequest2.prototype.send = function(data, bytesCount, reason) {
     var url = this.endpointBuilder.build();
     var canUseBeacon = !!navigator.sendBeacon && bytesCount < this.bytesLimit;
     if (canUseBeacon) {
       try {
-        var isQueued = navigator.sendBeacon(url, data2);
+        var isQueued = navigator.sendBeacon(url, data);
         if (isQueued) {
           return;
         }
@@ -1630,7 +1630,7 @@ var HttpRequest = function() {
     }
     var request = new XMLHttpRequest();
     request.open("POST", url, true);
-    request.send(data2);
+    request.send(data);
   };
   return HttpRequest2;
 }();
@@ -2575,11 +2575,11 @@ var LifeCycle = function() {
   function LifeCycle2() {
     this.callbacks = {};
   }
-  LifeCycle2.prototype.notify = function(eventType, data2) {
+  LifeCycle2.prototype.notify = function(eventType, data) {
     var eventCallbacks = this.callbacks[eventType];
     if (eventCallbacks) {
       eventCallbacks.forEach(function(callback) {
-        return callback(data2);
+        return callback(data);
       });
     }
   };
@@ -2896,10 +2896,10 @@ const emit = (event, module) => {
   if (module == null ? void 0 : module.name) {
     eventType = replaceModuleKey(eventType, module);
   }
+  window.dispatchEvent(new CustomEvent(eventType, event.payload));
   if (window.__FEDERATED_CORE__.federatedRuntime.debugEnabled) {
     console.log(`[EventService] Emitted event: ${eventType}`, event.payload);
   }
-  window.dispatchEvent(new CustomEvent(eventType, event.payload));
 };
 const unregisterAll = () => {
   eventStore.forEach((_value, key) => {
@@ -3039,7 +3039,7 @@ class FederatedRuntime {
       });
     }
   }
-  async fetchImportMapContent(modulePath = "") {
+  async fetchImportMapContent(modulePath) {
     const importMapPath = `${modulePath}/entries-import-map.json`;
     const importMap = await fetch(importMapPath);
     return importMap.json();
@@ -3051,11 +3051,18 @@ class FederatedRuntime {
   setModuleState(module, state) {
     const { scope: scope2, name: name2 } = module;
     const moduleKey = getModuleKey(scope2, name2);
-    const moduleInstance = {
-      ...this.modules.get(moduleKey),
-      status: state
-    };
-    this.modules.set(moduleKey, moduleInstance);
+    Array.from(this.modules.entries()).forEach(([key, moduleEntry]) => {
+      if (key === moduleKey) {
+        moduleEntry.status = state;
+        this.modules.set(moduleKey, moduleEntry);
+        this.services.event.emit({
+          type: FederatedEvents.MODULE_STATE_CHANGED,
+          payload: {
+            module: moduleEntry
+          }
+        }, module);
+      }
+    });
   }
   setModuleRootComponent(module, component) {
     const { scope: scope2, name: name2 } = module;
@@ -3131,10 +3138,8 @@ class FederatedRuntime {
     const { scope: scope2, name: name2 } = module;
     try {
       const moduleKey = getModuleKey(scope2, name2);
-      console.log("moduleKey", moduleKey);
       if (this.modules.has(moduleKey)) {
         const storeModule = this.modules.get(moduleKey);
-        console.log("storeModule", storeModule);
         if (storeModule && ["journey-module", "component"].includes(storeModule.type) && ((_a2 = this.modules.get(moduleKey)) == null ? void 0 : _a2.status) === FederatedModuleStatuses.MOUNTED) {
           this.services.event.emit({
             type: FederatedEvents.MODULE_ALREADY_MOUNTED,
@@ -3161,14 +3166,13 @@ class FederatedRuntime {
         }
       }, module);
       let resolvedModule;
-      const moduleBaseUrl = window.__FEDERATED_CORE__.moduleBaseUrls[scope2];
-      console.log("moduleBaseUrl", moduleBaseUrl);
-      const importMap = await this.fetchImportMapContent(moduleBaseUrl);
-      console.log("importMap", importMap);
-      const moduleUrl = importMap.imports[`${name2}.css`];
-      console.log("moduleUrl", moduleUrl);
-      if (moduleUrl) {
-        addLinkTag(`${name2}.css`, "stylesheet", moduleUrl);
+      if (isBrowser()) {
+        const moduleBaseUrl = window.__FEDERATED_CORE__.moduleBaseUrls[scope2];
+        const importMap = await this.fetchImportMapContent(moduleBaseUrl);
+        const moduleUrl = importMap.imports[`${name2}.css`];
+        if (moduleUrl) {
+          addLinkTag(`${name2}.css`, "stylesheet", moduleUrl);
+        }
       }
       if (this.useNativeModules) {
         this.services.event.emit({
@@ -3177,11 +3181,11 @@ class FederatedRuntime {
             module
           }
         }, module);
-        const moduleUrl2 = await this.getModuleUrl({ scope: scope2, name: name2 });
+        const moduleUrl = await this.getModuleUrl({ scope: scope2, name: name2 });
         resolvedModule = await import(
           /* webpackIgnore: true */
           /* @vite-ignore */
-          moduleUrl2
+          moduleUrl
         );
         this.services.event.emit({
           type: FederatedEvents.NATIVE_MODULE_LOADED,
@@ -3197,8 +3201,7 @@ class FederatedRuntime {
             module
           }
         }, module);
-        resolvedModule = await System.import(importMap.imports[name2]);
-        console.log("resolvedModule", resolvedModule);
+        resolvedModule = await System.import(name2);
         this.services.event.emit({
           type: FederatedEvents.SYSTEMJS_MODULE_LOADED,
           payload: {
@@ -3450,7 +3453,6 @@ class FederatedRuntime {
     this.addImportMapOverridesUi();
     for (const entry of this.modules) {
       const moduleData = entry[1];
-      console.log("moduleData", moduleData);
       try {
         if (moduleData.bootstrap) {
           this.services.event.emit({
@@ -3643,73 +3645,6 @@ reactJsxRuntime_production_min.jsxs = q;
 const jsx = jsxRuntime.exports.jsx;
 const jsxs = jsxRuntime.exports.jsxs;
 const Fragment = jsxRuntime.exports.Fragment;
-const getFederatedModule = async ({ name: name2, scope: scope2 }) => {
-  const federatedRuntime = getFederatedRuntime();
-  try {
-    const loadedModule = await (federatedRuntime == null ? void 0 : federatedRuntime.loadModule({ scope: scope2, name: name2 }));
-    return loadedModule;
-  } catch (e) {
-    console.error(e);
-    return;
-  }
-};
-var getRandomValues;
-var rnds8 = new Uint8Array(16);
-function rng() {
-  if (!getRandomValues) {
-    getRandomValues = typeof crypto !== "undefined" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto) || typeof msCrypto !== "undefined" && typeof msCrypto.getRandomValues === "function" && msCrypto.getRandomValues.bind(msCrypto);
-    if (!getRandomValues) {
-      throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
-    }
-  }
-  return getRandomValues(rnds8);
-}
-var REGEX = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
-function validate(uuid) {
-  return typeof uuid === "string" && REGEX.test(uuid);
-}
-var byteToHex = [];
-for (var i = 0; i < 256; ++i) {
-  byteToHex.push((i + 256).toString(16).substr(1));
-}
-function stringify(arr) {
-  var offset = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
-  var uuid = (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
-  if (!validate(uuid)) {
-    throw TypeError("Stringified UUID is invalid");
-  }
-  return uuid;
-}
-function v4(options, buf, offset) {
-  options = options || {};
-  var rnds = options.random || (options.rng || rng)();
-  rnds[6] = rnds[6] & 15 | 64;
-  rnds[8] = rnds[8] & 63 | 128;
-  if (buf) {
-    offset = offset || 0;
-    for (var i = 0; i < 16; ++i) {
-      buf[offset + i] = rnds[i];
-    }
-    return buf;
-  }
-  return stringify(rnds);
-}
-function FederatedModuleLoader({ scope: scope2, name: name2, props, mountId = `${scope2}-${name2}-${v4()}` }) {
-  let module;
-  const mountModule = async () => {
-    module = await getFederatedModule({ scope: scope2, name: name2 });
-    if (module == null ? void 0 : module.mount)
-      module == null ? void 0 : module.mount(props, mountId);
-  };
-  useEffect(() => {
-    mountModule();
-    return () => {
-      if (module == null ? void 0 : module.unmount)
-        module == null ? void 0 : module.unmount();
-    };
-  }, [scope2, name2]);
-  return jsx("div", { id: mountId });
-}
 const bootstrapLifecycle = async (module, federatedRuntime) => {
   try {
     eventService.emit({
@@ -3837,26 +3772,25 @@ function createErrorBoundary(opts) {
   WithErrorBoundary.displayName = `WithErrorBoundary${pascalise(opts.config.name)}`;
   return WithErrorBoundary;
 }
-const reactDomRender = (opts, elementToRender, domElement, callback) => {
+const reactDomRender = (opts, elementToRender, domElement) => {
   const renderType = typeof opts.renderType === "function" ? opts.renderType() : opts.renderType || "render";
   const hasInnerHtml = domElement.innerHTML !== "";
   if (renderType === "hydrate" || hasInnerHtml) {
-    opts.ReactDOM.hydrate(elementToRender, domElement, callback);
+    opts.ReactDOM.hydrate(elementToRender, domElement);
   } else {
-    opts.ReactDOM.render(elementToRender, domElement, callback);
+    opts.ReactDOM.render(elementToRender, domElement);
   }
   return null;
 };
 const mountLifecycle = (module, federatedRuntime, opts, defaultProps) => {
   const defaultMountId = `${module.scope}-${module.name}`;
-  return async (props = defaultProps, mountId, callback) => {
+  return async (props = defaultProps, mountId) => {
     const { React: React2, config: { scope: scope2, name: name2, domElementId: domElementId2 } } = opts;
     let { rootComponent: rootComponent2 } = opts.config;
     const moduleKey = getModuleKey(scope2, name2);
     const savedModule = federatedRuntime.modules.get(moduleKey);
     const elementId = mountId || domElementId2 || defaultMountId;
     const domContainer = document.getElementById(elementId);
-    console.log("domContainer", domContainer);
     if (!domContainer) {
       eventService.emit({
         type: FederatedEvents.MODULE_MOUNT_ERROR,
@@ -3896,7 +3830,7 @@ const mountLifecycle = (module, federatedRuntime, opts, defaultProps) => {
           }
         }, module);
         if (domContainer) {
-          reactDomRender(opts, elementToRender, domContainer, callback);
+          reactDomRender(opts, elementToRender, domContainer);
         }
         eventService.emit({
           type: FederatedEvents.MODULE_MOUNTED,
@@ -4019,7 +3953,7 @@ function createFederatedReact(options) {
   validateModuleOptions(options);
   const { federatedRuntime, config } = options;
   const { rootComponent: rootComponent2 } = config;
-  const { domElementId: domElementId2 = `${config.scope}-${config.name}`, loadRootComponent, defaultProps, name: name2, scope: scope2, type: type2, description: description2, propValidationFunction, activeWhenPaths: activeWhenPaths2, exceptWhenPaths: exceptWhenPaths2 } = config;
+  const { domElementId: domElementId2 = `${config.scope}-${config.name}`, loadRootComponent, defaultProps, name: name2, scope: scope2, type: type2, description, propValidationFunction, activeWhenPaths: activeWhenPaths2, exceptWhenPaths: exceptWhenPaths2 } = config;
   const moduleData = { scope: scope2, name: name2 };
   const lifecycles = {
     bootstrap: () => bootstrapLifecycle(moduleData, federatedRuntime),
@@ -4033,7 +3967,7 @@ function createFederatedReact(options) {
     loadRootComponent,
     activeWhenPaths: activeWhenPaths2 || [],
     exceptWhenPaths: exceptWhenPaths2 || [],
-    description: description2,
+    description,
     name: name2,
     scope: scope2,
     type: type2,
@@ -4046,825 +3980,14 @@ function createFederatedReact(options) {
     ...lifecycles
   };
 }
-const data = {
-  slides: [
-    {
-      id: "1",
-      primaryImage: {
-        sm: { src: "https://source.unsplash.com/WKxjbY9rQaw/300x300" }
-      },
-      content: ""
-    },
-    {
-      id: "2",
-      primaryImage: {
-        sm: { src: "https://source.unsplash.com/uY-9Dyz8PPM/300x300" }
-      },
-      content: ""
-    },
-    {
-      id: "3",
-      primaryImage: {
-        sm: { src: "https://source.unsplash.com/Vv_PsvSY7NE/300x300" }
-      },
-      content: ""
-    }
-  ],
-  backgroundImage: {
-    sm: { src: "https://source.unsplash.com/LeG68PrXA6Y/800x600" }
-  },
-  headingText: "Wireless, Effortless, AirPods",
-  headingLevel: 3
-};
-const AppComponent = () => {
-  return /* @__PURE__ */ jsxs(Fragment, {
-    children: [/* @__PURE__ */ jsx("h3", {
-      style: {
-        textAlign: "center",
-        padding: 20
-      },
-      children: "Consuming Federated Component"
-    }), /* @__PURE__ */ jsx(FederatedModuleLoader, {
-      scope: "vfuk-federated-component-example",
-      name: "FederatedStandardBanner",
-      props: {
-        bannerData: data
-      }
-    })]
-  });
-};
-const topBar = {
-  leftLinks: [
-    {
-      url: "http://localhost:6069",
-      title: "Personal",
-      icon: "members"
-    },
-    {
-      url: "http://localhost:6069/business",
-      title: "Business",
-      icon: "careers"
-    }
-  ],
-  rightLinks: [
-    {
-      url: "https://www.vodafone.co.uk",
-      title: "Find a store",
-      icon: "location"
-    },
-    {
-      url: "https://www.vodafone.co.uk",
-      title: "Network status checker",
-      icon: "network-signal"
-    }
-  ]
-};
-const mainLinks = [
-  {
-    title: "Shop",
-    icon: "shopping-checkout",
-    links: [
-      {
-        title: "Deals",
-        icon: "clock",
-        id: "shop-deals",
-        url: "#/Components/Organisms/Navigation/Header",
-        longTitle: "Explore some sick deals!",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Be Unlimited",
-            id: "shop-deals-be-unlimited"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Latest offers",
-            id: "latest-offers"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Trade in",
-            id: "trade-in"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Coming soon",
-            id: "coming-soon"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Deals for customers",
-            id: "deals-for-customers"
-          }
-        ]
-      },
-      {
-        title: "Mobile & tablet",
-        icon: "mobile",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Pay as you go phones"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Pay monthly phones"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Compare phones"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Brands"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Tablets"
-          }
-        ]
-      },
-      {
-        title: "Plans",
-        icon: "cost-control",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "SIM only"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Pay monthly"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Pay as you go"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "VOXI"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Entertainment"
-          }
-        ]
-      },
-      {
-        title: "Broadband",
-        icon: "broadband-or-wifi",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Switching to us"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Broadband deals"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Broadband + mobile"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Gigafast broadband"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Broadband help"
-          }
-        ]
-      },
-      {
-        title: "Smart tech",
-        icon: "smart-plug",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "V by Vodafone"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Wearables"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "One Number"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Dongles & mobile WiFi"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Gigacube"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    title: "My Vodafone",
-    icon: "admin",
-    links: [
-      {
-        title: "Billing & payments",
-        icon: "bill-or-report",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/r",
-            title: "Recent bills"
-          },
-          {
-            url: "https://www.vodafone.co.uk/r",
-            title: "Usage"
-          },
-          {
-            url: "https://www.vodafone.co.uk/r",
-            title: "Make a payment"
-          },
-          {
-            url: "https://www.vodafone.co.uk/r",
-            title: "Manage Direct Debit"
-          },
-          {
-            url: "https://www.vodafone.co.uk/r",
-            title: "Top up"
-          }
-        ]
-      },
-      {
-        title: "My products",
-        icon: "mobile",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Upgrades"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Existing customer offers"
-          }
-        ]
-      },
-      {
-        title: "Settings",
-        icon: "cost-control",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Account settings"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Personal details"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Password & security"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "My account controls"
-          }
-        ]
-      },
-      {
-        title: "Vodafone apps",
-        icon: "broadband-or-wifi",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "My Vodafone app"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Vodafone Start"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "VeryMe Rewards"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    title: "Help",
-    icon: "chat",
-    links: [
-      {
-        title: "Costs & charges",
-        icon: "price-tag",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Travelling abroad"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Calling abroad from UK"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "UK call charges"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Data charges"
-          }
-        ]
-      },
-      {
-        title: "Support",
-        icon: "mobile",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Getting started"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Unlocking your phone"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Transfer your number"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Manage data usage"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "SIM swap"
-          }
-        ]
-      },
-      {
-        title: "Network",
-        icon: "cost-control",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "5G"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Network status checker"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Network improvements"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Calling"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Messaging"
-          }
-        ]
-      },
-      {
-        title: "Delivery",
-        icon: "broadband-or-wifi",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Returns"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Accessibility"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Life events"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    title: "5G",
-    icon: "5g",
-    links: [
-      {
-        title: "Unlimited",
-        icon: "clock",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Pay monthly plans"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "SIM only plans"
-          }
-        ]
-      },
-      {
-        title: "5G phone & devices",
-        icon: "mobile",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Samsung Galaxy S10 5G"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Xiaomi Mi MIX 3 5G"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "5G Gigacube"
-          }
-        ]
-      },
-      {
-        title: "Discover 5G",
-        icon: "cost-control",
-        longTitle: "Explore some sick deals!",
-        url: "#/Components/Organisms/Navigation/Header",
-        links: [
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Check coverage"
-          },
-          {
-            url: "https://www.vodafone.co.uk/",
-            title: "Register interest"
-          }
-        ]
-      }
-    ]
-  }
-];
-const skipLink = false;
-const showSearch = true;
-const showBasket = true;
-const user = {
-  name: "John Smith",
-  links: [
-    {
-      url: "https://www.vodafone.co.uk",
-      title: "MyVodafone",
-      icon: "admin",
-      confirmationMessage: ""
-    },
-    {
-      url: "https://www.vodafone.co.uk",
-      title: "Upgrade your plan",
-      icon: "upgrade",
-      confirmationMessage: ""
-    },
-    {
-      url: "https://www.vodafone.co.uk",
-      title: "Deals for customers",
-      icon: "price-tag",
-      confirmationMessage: ""
-    },
-    {
-      url: "https://www.vodafone.co.uk",
-      title: "Switch account",
-      icon: "switch",
-      confirmationMessage: ""
-    },
-    {
-      url: "https://www.vodafone.co.uk",
-      title: "Logout",
-      icon: "log-out",
-      confirmationMessage: "Are you sure you want to log out?"
-    }
-  ]
-};
-var headerData = {
-  topBar,
-  mainLinks,
-  skipLink,
-  showSearch,
-  showBasket,
-  user
-};
-const social = [
-  {
-    id: "social-instagram",
-    srText: "Instagram",
-    icon: "instagram-inverse",
-    url: "//vodafone.co.uk"
-  },
-  {
-    id: "social-youtube",
-    srText: "Youtube",
-    icon: "youtube-inverse",
-    url: "//vodafone.co.uk"
-  },
-  {
-    id: "social-linkedin",
-    srText: "Linkedin",
-    icon: "linkedin-inverse",
-    url: "//vodafone.co.uk"
-  },
-  {
-    id: "social-twitter",
-    srText: "Twitter",
-    icon: "twitter-inverse",
-    url: "//vodafone.co.uk"
-  },
-  {
-    id: "social-facebook",
-    srText: "Facebook",
-    icon: "facebook-inverse",
-    url: "//vodafone.co.uk"
-  }
-];
-const partnerLogo = {
-  image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Apple-logo.png/640px-Apple-logo.png",
-  srText: "Apple"
-};
-const legalLinks = [
-  {
-    id: "legal-link-1",
-    text: "VOXI",
-    url: "//vodafone.co.uk"
-  },
-  {
-    id: "legal-link-2",
-    text: "Talkmobile",
-    url: "//vodafone.co.uk"
-  },
-  {
-    id: "legal-link-3",
-    text: "Privacy & cookie policy",
-    url: "//vodafone.co.uk"
-  },
-  {
-    id: "legal-link-4",
-    text: "Site map",
-    url: "//vodafone.co.uk"
-  },
-  {
-    id: "legal-link-5",
-    text: "Modern slavery",
-    url: "//vodafone.co.uk"
-  },
-  {
-    id: "legal-link-6",
-    text: "Terms & conditions",
-    url: "//vodafone.co.uk"
-  }
-];
-const partnerLinks = [
-  {
-    id: "partner-link-1",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png",
-    text: "Samsung",
-    srText: "Samsung logo",
-    url: "//vodafone.co.uk"
-  },
-  {
-    id: "partner-link-2",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png",
-    text: "Samsung",
-    srText: "Samsung logo",
-    url: "//vodafone.co.uk"
-  },
-  {
-    id: "partner-link-3",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png",
-    text: "Samsung",
-    srText: "Samsung logo",
-    url: "//vodafone.co.uk"
-  },
-  {
-    id: "partner-link-4",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png",
-    text: "Samsung",
-    srText: "Samsung logo",
-    url: "//vodafone.co.uk"
-  }
-];
-const linkGroups = {
-  openOnMD: false,
-  groups: [
-    {
-      headingText: "About Vodafone",
-      links: [
-        {
-          id: "content-link-1",
-          text: "About us",
-          srText: "About us",
-          url: "https://www.vodafone.co.uk/"
-        },
-        {
-          id: "content-link-2",
-          text: "Accessibility services",
-          srText: "Accessibility services",
-          url: "https://www.vodafone.co.uk/"
-        },
-        {
-          id: "content-link-3",
-          text: "Careers with Vodafone",
-          srText: "Careers with Vodafone",
-          url: "https://www.vodafone.co.uk/"
-        },
-        {
-          id: "content-link-4",
-          text: "Coverage checker",
-          srText: "Coverage checker",
-          url: "https://www.vodafone.co.uk/"
-        },
-        {
-          id: "content-link-5",
-          text: "Essential customer information",
-          srText: "Essential customer information",
-          url: "https://www.vodafone.co.uk/"
-        }
-      ]
-    },
-    {
-      headingText: "Buying online",
-      links: [
-        {
-          id: "content-link-6",
-          text: "Broadband deals",
-          srText: "Broadband deals",
-          url: "https://www.vodafone.co.uk/"
-        },
-        {
-          id: "content-link-7",
-          text: "iPad and tablets",
-          srText: "iPad and tablets",
-          url: "https://www.vodafone.co.uk/"
-        },
-        {
-          id: "content-link-8",
-          text: "Mobile broadband",
-          srText: "Mobile broadband",
-          url: "https://www.vodafone.co.uk/"
-        },
-        {
-          id: "content-link-9",
-          text: "Pay as you go bundles",
-          srText: "Pay as you go bundles",
-          url: "https://www.vodafone.co.uk/"
-        },
-        {
-          id: "content-link-10",
-          text: "Pay monthly bundles",
-          srText: "Pay monthly bundles",
-          url: "https://www.vodafone.co.uk/"
-        }
-      ]
-    }
-  ]
-};
-const companyInfo = "Vodafone Limited is authorised and regulated by the Financial Conduct Authority for consumer credit lending and insurance distribution activity (Financial Services Register Number 71220) Registered in England and Wales. Company Number 01471587. Registered Office: Vodafone House, The Connection, Newbury, Berkshire, RG14 2FN.";
-const additionalInfo = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
-const copyrightText = "\xA92022 Vodafone Limited";
-var footerData = {
-  social,
-  partnerLogo,
-  legalLinks,
-  partnerLinks,
-  linkGroups,
-  companyInfo,
-  additionalInfo,
-  copyrightText
-};
-const title = "This is in the <head> tag";
-const description = "This is in the <head> tag";
-const canonical = "This is in the <head> tag";
-const ampHtml = "This is in the <head> tag";
-const robots = "This is in the <head> tag";
-const openGraphDescription = "This is in the <head> tag";
-const openGraphType = "This is in the <head> tag";
-const openGraphTitle = "This is in the <head> tag";
-const openGraphUrl = "This is in the <head> tag";
-const openGraphImage = "This is in the <head> tag";
-const twitterTitle = "This is in the <head> tag";
-const twitterDescription = "This is in the <head> tag";
-const twitterImage = "This is in the <head> tag";
-const twitterSite = "This is in the <head> tag";
-const twitterCreator = "This is in the <head> tag";
-const twitterCard = "This is in the <head> tag";
-const schema = {
-  schemaOne: "This is in the head tag schema",
-  schemaTwo: [
-    "This is in the head tag schema"
-  ],
-  schemaThree: [
-    {
-      one: "This is in the head tag schema",
-      two: "This is in the head tag schema"
-    },
-    {
-      three: "This is in the head tag schema",
-      four: "This is in the head tag schema"
-    }
-  ],
-  schemaFour: {
-    one: {
-      one: "This is in the head tag schema",
-      two: "This is in the head tag schema"
-    },
-    two: {
-      three: "This is in the head tag schema",
-      four: "This is in the head tag schema"
-    }
-  }
-};
-const organisationSchema = {
-  type: "This is in the head tag schema",
-  name: "This is in the head tag schema",
-  foundingDate: "This is in the head tag schema",
-  url: "This is in the head tag schema",
-  logo: "This is in the head tag schema",
-  address: {
-    type: "This is in the head tag schema",
-    streetAddress: "This is in the head tag schema",
-    addressLocality: "This is in the head tag schema",
-    addressRegion: "This is in the head tag schema",
-    postalCode: "This is in the head tag schema"
-  },
-  contactPoint: {
-    type: "This is in the head tag schema",
-    telephone: "This is in the head tag schema",
-    contactType: "This is in the head tag schema",
-    areaServed: "This is in the head tag schema"
-  },
-  sameAs: [
-    "This is in the head tag schema",
-    "This is in the head tag schema",
-    "This is in the head tag schema"
-  ]
-};
-var headerTags = {
-  title,
-  description,
-  canonical,
-  ampHtml,
-  robots,
-  openGraphDescription,
-  openGraphType,
-  openGraphTitle,
-  openGraphUrl,
-  openGraphImage,
-  twitterTitle,
-  twitterDescription,
-  twitterImage,
-  twitterSite,
-  twitterCreator,
-  twitterCard,
-  schema,
-  organisationSchema
-};
 const App = () => {
   return /* @__PURE__ */ jsx(Fragment, {
-    children: /* @__PURE__ */ jsx(FederatedModuleLoader, {
-      scope: "vfuk-federated-component-example",
-      name: "FederatedPageTemplate",
-      props: {
-        headerData,
-        footerData,
-        headerTags,
-        ChildComponent: /* @__PURE__ */ jsx(AppComponent, {})
-      }
+    children: /* @__PURE__ */ jsx("h1", {
+      children: "Hello"
     })
   });
 };
-const {
+var {
   name,
   scope,
   mount,
@@ -4886,7 +4009,7 @@ const {
     name: "ReactFederatedJourney",
     type: "journey-module",
     activeWhenPaths: ["/", "/mixed"],
-    exceptWhenPaths: [],
+    exceptWhenPaths: ["/asasd"],
     domElementId: "root",
     rootComponent: App
   }
