@@ -14,7 +14,7 @@ export default {
     '^.+\\.(t|j)sx?$': ['@swc/jest'],
   },
   verbose: true,
-  coverageTheshold: {
+  coverageThreshold: {
     global: {
       branches: 100,
       functions: 100,
