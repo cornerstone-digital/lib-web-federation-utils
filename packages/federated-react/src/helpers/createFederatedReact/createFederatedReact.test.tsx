@@ -3,11 +3,7 @@ import ReactDOM from 'react-dom'
 import { screen } from '@testing-library/react'
 
 import createFederatedReact from './createFederatedReact'
-import {
-  AbstractFederatedRuntime,
-  FederatedEvents,
-  FederatedRuntime,
-} from '@vf/federated-core'
+import { AbstractFederatedRuntime, FederatedRuntime } from '@vf/federated-core'
 import { CreateFederatedReactOptions } from './createFederatedReact.types'
 
 const TestComponent = () => <div>Test</div>
@@ -211,6 +207,7 @@ describe('createFederatedReact', () => {
       expect(dispatchedEventCount).toEqual({
         'federated-core:module:test:app-module:before-bootstrap': 1,
         'federated-core:module:test:app-module:bootstrapped': 1,
+        'federated-core:module:test:app-module:state-changed': 2,
       })
     })
 
@@ -231,6 +228,7 @@ describe('createFederatedReact', () => {
         'federated-core:module:test:app-module:before-bootstrap': 1,
         'federated-core:module:test:app-module:before-register': 1,
         'federated-core:module:test:app-module:bootstrap:error': 1,
+        'federated-core:module:test:app-module:state-changed': 1,
       })
     })
   })
@@ -274,7 +272,7 @@ describe('createFederatedReact', () => {
         'federated-core:module:test:app-module:registered': 1,
         'federated-core:module:test:app-module:mounted': 1,
         'federated-core:module:test:app-module:validate-props': 1,
-        'federated-core:module:test:app-module:state-changed': 4,
+        'federated-core:module:test:app-module:state-changed': 5,
       })
     })
 
@@ -451,7 +449,7 @@ describe('createFederatedReact', () => {
         'federated-core:module:test:app-module:mounted': 1,
         'federated-core:module:test:app-module:unmounted': 1,
         'federated-core:module:test:app-module:validate-props': 1,
-        'federated-core:module:test:app-module:state-changed': 6,
+        'federated-core:module:test:app-module:state-changed': 7,
       })
     })
 
@@ -539,7 +537,7 @@ describe('createFederatedReact', () => {
         'federated-core:module:test:app-module:bootstrapped': 2,
         'federated-core:module:test:app-module:mounted': 2,
         'federated-core:module:test:app-module:registered': 1,
-        'federated-core:module:test:app-module:state-changed': 11,
+        'federated-core:module:test:app-module:state-changed': 12,
         'federated-core:module:test:app-module:unmounted': 1,
         'federated-core:module:test:app-module:updated': 1,
         'federated-core:module:test:app-module:validate-props': 2,

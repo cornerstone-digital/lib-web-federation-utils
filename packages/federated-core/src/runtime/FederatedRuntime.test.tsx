@@ -423,7 +423,7 @@ describe('FederatedRuntime', () => {
           expect(dispatchedEventCount).toEqual({
             'federated-core:module:scope:module-1:before-register': 1,
             'federated-core:module:scope:module-1:registered': 1,
-            'federated-core:module:scope:module-1:state-changed': 1,
+            'federated-core:module:scope:module-1:state-changed': 2,
           })
         })
       })
@@ -494,6 +494,7 @@ describe('FederatedRuntime', () => {
           expect(dispatchedEventCount).toEqual({
             'federated-core:module:scope:module-1:before-register': 1,
             'federated-core:module:scope:module-1:registered': 1,
+            'federated-core:module:scope:module-1:state-changed': 1,
           })
         })
 
@@ -561,8 +562,7 @@ describe('FederatedRuntime', () => {
         it('should return module url', async () => {
           const importMapContent = {
             imports: {
-              'scope:name':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              name: 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -670,6 +670,7 @@ describe('FederatedRuntime', () => {
             'federated-core:module:scope:module-1:already-loaded': 1,
             'federated-core:module:scope:module-1:before-register': 1,
             'federated-core:module:scope:module-1:registered': 1,
+            'federated-core:module:scope:module-1:state-changed': 1,
             [FederatedEvents.SYSTEMJS_LOADED]: 1,
           })
         })
@@ -691,6 +692,7 @@ describe('FederatedRuntime', () => {
             'federated-core:module:scope:module-1:already-mounted': 1,
             'federated-core:module:scope:module-1:before-register': 1,
             'federated-core:module:scope:module-1:registered': 1,
+            'federated-core:module:scope:module-1:state-changed': 1,
             [FederatedEvents.SYSTEMJS_LOADED]: 1,
           })
         })
@@ -760,7 +762,7 @@ describe('FederatedRuntime', () => {
             'federated-core:module:scope:module-1:before-load': 1,
             'federated-core:module:scope:module-1:before-register': 1,
             'federated-core:module:scope:module-1:registered': 1,
-            'federated-core:module:scope:module-1:state-changed': 1,
+            'federated-core:module:scope:module-1:state-changed': 2,
             [FederatedEvents.NATIVE_MODULE_LOADING]: 1,
             [FederatedEvents.NATIVE_MODULE_LOADED]: 1,
           })
@@ -1097,6 +1099,7 @@ describe('FederatedRuntime', () => {
             'federated-core:module:scope:module-1:already-loaded': 1,
             'federated-core:module:scope:module-1:before-mount': 1,
             'federated-core:module:scope:module-1:mounted': 1,
+            'federated-core:module:scope:module-1:state-changed': 1,
           })
 
           expect(lifecycleMethodCallCount).toEqual({
@@ -1144,6 +1147,7 @@ describe('FederatedRuntime', () => {
             [FederatedEvents.ROUTE_CHANGED]: 1,
             'federated-core:module:scope:module-1:before-unmount': 1,
             'federated-core:module:scope:module-1:unmounted': 1,
+            'federated-core:module:scope:module-1:state-changed': 1,
           })
 
           expect(lifecycleMethodCallCount).toEqual({
@@ -1188,7 +1192,7 @@ describe('FederatedRuntime', () => {
             'federated-core:module:scope:module-1:before-register': 1,
             'federated-core:module:scope:module-1:registered': 1,
             [FederatedEvents.ROUTE_CHANGED]: 1,
-            'federated-core:module:scope:module-1:state-changed': 1,
+            'federated-core:module:scope:module-1:state-changed': 2,
           })
 
           expect(lifecycleMethodCallCount).toEqual({
@@ -1241,6 +1245,7 @@ describe('FederatedRuntime', () => {
             [FederatedEvents.ROUTE_CHANGED]: 1,
             'federated-core:module:scope:module-1:before-mount': 1,
             'federated-core:module:scope:module-1:mount:error': 1,
+            'federated-core:module:scope:module-1:state-changed': 1,
           })
         })
       })
@@ -1272,27 +1277,21 @@ describe('FederatedRuntime', () => {
           // @ts-ignore
           global.System.import = jest.fn(() => Promise.resolve(module))
 
-          federatedRuntime.services.event.register(
-            FederatedEvents.MODULE_STATE_CHANGED,
-            () => {
-              expect(dispatchedEventCount).toEqual({
-                'federated-core:module:scope:module-1:before-load': 1,
-                'federated-core:module:scope:module-1:before-register': 1,
-                'federated-core:module:scope:module-1:registered': 1,
-                [FederatedEvents.RUNTIME_ROUTES_PREFETCH_START]: 1,
-                [FederatedEvents.RUNTIME_BEFORE_ROUTE_PREFETCH]: 1,
-                [FederatedEvents.RUNTIME_ROUTE_PREFETCHED]: 1,
-                [FederatedEvents.RUNTIME_ROUTES_PREFETCHED]: 1,
-                [FederatedEvents.SYSTEMJS_MODULE_LOADING]: 1,
-                [FederatedEvents.SYSTEMJS_MODULE_LOADED]: 1,
-                'federated-core:module:scope:module-1:state-changed': 1,
-              })
-            },
-            module
-          )
-
           await federatedRuntime.registerModule(module)
           await federatedRuntime.preFetchRoutes(['/path'])
+
+          expect(dispatchedEventCount).toEqual({
+            'federated-core:module:scope:module-1:before-register': 1,
+            'federated-core:module:scope:module-1:state-changed': 2,
+            'federated-core:module:scope:module-1:registered': 1,
+            'federated-core:runtime:routes:pre-fetch:start': 1,
+            'federated-core:runtime:route:before-prefetch': 1,
+            'federated-core:module:scope:module-1:before-load': 1,
+            'federated-core:runtime:route:prefetched': 1,
+            'federated-core:runtime:routes:pre-fetched': 1,
+            'federated-core:systemjs:module:loading': 1,
+            'federated-core:systemjs:module:loaded': 1,
+          })
         })
 
         it('should emit RUNTIME_ROUTES_PREFETCH_ERROR when pre-fetch fails', async () => {
@@ -1317,6 +1316,7 @@ describe('FederatedRuntime', () => {
             () => {
               expect(dispatchedEventCount).toEqual({
                 'federated-core:module:scope:module-1:before-register': 1,
+                'federated-core:module:scope:module-1:state-changed': 1,
                 'federated-core:module:scope:module-1:registered': 1,
                 'federated-core:runtime:routes:pre-fetch:start': 1,
                 'federated-core:runtime:route:before-prefetch': 1,
@@ -1456,10 +1456,12 @@ describe('FederatedRuntime', () => {
             'federated-core:module:test-scope:test-module-1:before-register': 1,
             'federated-core:module:test-scope:test-module-1:bootstrapped': 1,
             'federated-core:module:test-scope:test-module-1:registered': 1,
+            'federated-core:module:test-scope:test-module-1:state-changed': 1,
             'federated-core:module:test-scope:test-module-2:before-bootstrap': 1,
             'federated-core:module:test-scope:test-module-2:before-register': 1,
             'federated-core:module:test-scope:test-module-2:bootstrapped': 1,
             'federated-core:module:test-scope:test-module-2:registered': 1,
+            'federated-core:module:test-scope:test-module-2:state-changed': 1,
           })
 
           expect(lifecycleMethodCallCount.bootstrap).toEqual(2)

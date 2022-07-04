@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <meta id="importmap-type" name="importmap-type" content="systemjs-importmap" />
+</head>
+
+<body>
+    <div id="app">
+        <header id="header"></header>
+        <main>
+            <div id="root"></div>
+        </main>
+    </div>
+
+    <script type="module" src="./src/index.tsx"></script>
+    <script crossorigin="anonymous" type="systemjs-importmap" src="http://localhost:8001/entries-import-map.json"></script>
+    <!-- System JS -->
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.12.1/system.min.js" data-cookieconsent="ignore"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.12.1/extras/named-exports.min.js" data-cookieconsent="ignore"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.12.1/extras/amd.min.js" data-cookieconsent="ignore"></script>
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.12.1/extras/dynamic-import-maps.min.js" data-cookieconsent="ignore"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/import-map-overrides/dist/import-map-overrides.js"></script>
+</body>
+
+</html>

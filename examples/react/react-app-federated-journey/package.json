@@ -1,0 +1,32 @@
+{
+    "name": "@vf/federated-react-app-journey",
+    "version": "0.0.1-alpha.0",
+    "scripts": {
+        "build": "ts-node --project ./tsconfig.json ./tools/compile.ts",
+        "start": "yarn build && npx http-server ./dist --port 8001 --cors"
+    },
+    "dependencies": {
+        "@vf/federated-react": "^0.1.0-alpha.9",
+        "@vfuk/core-functional-banner": "1.0.x",
+        "@vfuk/core-inline-link": "^3.1.0",
+        "@vfuk/core-interactive-fifty-fifty-banner": "12.0.x",
+        "@vfuk/core-standard-banner": "1.0.x",
+        "react": "17.0.2",
+        "react-dom": "17.0.2",
+        "styled-components": "^5.3.5",
+        "vite-plugin-static-copy": "^0.6.0"
+    },
+    "devDependencies": {
+        "@originjs/vite-plugin-commonjs": "^1.0.3",
+        "@types/node": "16",
+        "@types/react": "17.0.2",
+        "@types/react-dom": "17.0.2",
+        "@vitejs/plugin-react": "^1.3.2",
+        "typescript": "^4.6.4",
+        "vite": "^2.9.9"
+    },
+    "ts-node": {
+        "esm": true,
+        "experimentalSpecifierResolution": true
+    }
+}

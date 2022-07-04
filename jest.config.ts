@@ -8,12 +8,18 @@ export default {
   ],
   maxWorkers: '50%',
   modulePaths: ['<rootDir>/packages'],
-  testPathIgnorePatterns: [
-    'dist',
-  ],
+  testPathIgnorePatterns: ['dist'],
   testEnvironment: 'jsdom',
   transform: {
     '^.+\\.(t|j)sx?$': ['@swc/jest'],
   },
-  verbose: true
+  verbose: true,
+  coverageTheshold: {
+    global: {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
+  },
 }

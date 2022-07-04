@@ -1,0 +1,7 @@
+{
+  "src/Card/index.ts": {
+    "file": "FederatedCard.umd.js",
+    "src": "src/Card/index.ts",
+    "isEntry": true
+  }
+}

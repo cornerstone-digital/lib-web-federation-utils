@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { useFederatedModule } from '../../hooks'
+import React from 'react'
+import { FederatedModule, getFederatedModule } from '@vf/federated-core'
 import { v4 } from 'uuid'
 
 type FederatedModuleLoaderProps<PropTypes> = {
@@ -15,14 +15,13 @@ function FederatedModuleLoader<PropTypes>({
   props,
   mountId = `${scope}-${name}-${v4()}`,
 }: FederatedModuleLoaderProps<PropTypes>) {
-  const module = useFederatedModule({ scope, name })
+  const module = getFederatedModule({ scope, name })
 
-  useEffect(() => {
-    if (module?.mount) module?.mount(props, mountId)
-    return () => {
-      if (module?.unmount) module?.unmount()
+  module.then((module: FederatedModule | undefined) => {
+    if (module?.mount) {
+      module?.mount(props, mountId)
     }
-  }, [scope, name, module, mountId])
+  })
 
   return <div id={mountId} />
 }

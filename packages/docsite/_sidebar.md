@@ -16,25 +16,19 @@
   - [Creating a Federated Entry Point (FEP)](/sections/getting-started/creating-a-federated-entry-point.md)
   - [Creating a Federated Component (FC)](/sections/getting-started/creating-a-federated-component.md)
   - [Creating a Federated Shared Module (FSM)](/sections/getting-started/creating-a-federated-shared-module.md)
-  - [Consuming a Federated Component](/sections/getting-started/consuming-a-federated-component.md)
+  - [Consuming a Federated React Component](/sections/getting-started/consuming-a-federated-component.md)
 - Packages
   - [@vf/federated-core](/sections/packages/federated-core.md)
   - [@vf/federated-react](/sections/packages/federated-react.md)
 
-[//]: # (- Development Workflow)
+[//]: # '- Development Workflow'
+[//]: # '  - [Local Development](/sections/development-workflow/local-development.md)'
+[//]: # '    - [Running a Federated Module Locally](/sections/development-workflow/running-a-federated-module-locally.md)'
+[//]: # '    - [Using Import Map Overrides](/sections/development-workflow/using-import-map-overrides.md)'
+[//]: # '  - [Testing](/sections/development-workflow/testing/index.md)'
+[//]: # '    - [Writing Unit Tests](/sections/development-workflow/testing/writing-unit-tests.md)'
+[//]: # '    - [Writing Cypress Tests](/sections/development-workflow/testing/writing-cypress-tests.md)'
+[//]: # '    - [Mocking SystemJS with Jest](/sections/development-workflow/testing/mocking-systemjs-with-jest.md)'
 
-[//]: # (  - [Local Development]&#40;/sections/development-workflow/local-development.md&#41;)
-
-[//]: # (    - [Running a Federated Module Locally]&#40;/sections/development-workflow/running-a-federated-module-locally.md&#41;)
-
-[//]: # (    - [Using Import Map Overrides]&#40;/sections/development-workflow/using-import-map-overrides.md&#41;)
-
-[//]: # (  - [Testing]&#40;/sections/development-workflow/testing/index.md&#41;)
-
-[//]: # (    - [Writing Unit Tests]&#40;/sections/development-workflow/testing/writing-unit-tests.md&#41;)
-
-[//]: # (    - [Writing Cypress Tests]&#40;/sections/development-workflow/testing/writing-cypress-tests.md&#41;)
-
-[//]: # (    - [Mocking SystemJS with Jest]&#40;/sections/development-workflow/testing/mocking-systemjs-with-jest.md&#41;)
 - [Contributing](/sections/contributing/index.md)
 - [Glossary](/_glossary.md)

@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "rootDir": "./",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "types": ["node", "@vf/federated-web-build-types"],
+    "typeRoots": ["node_modules/@types"],
+    "moduleResolution": "Node",
+    "declaration": true,
+    "outDir": "./dist",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "exclude": ["node_modules", "dist"]
+}

@@ -3,7 +3,10 @@ import {
   FederatedReactApp,
 } from './createFederatedReact.types'
 
-import { FederatedModuleLifecycles } from '@vf/federated-core'
+import {
+  FederatedModuleLifecycles,
+  FederatedModuleStatuses,
+} from '@vf/federated-core'
 
 import bootstrapLifecycle from './lifecycles/bootstrap/bootstrap.lifecycle'
 import mountLifecycle from './lifecycles/mount/mount.lifecycle'
@@ -84,6 +87,7 @@ function createFederatedReact<PropsType>(
     loadRootComponent,
     activeWhenPaths: activeWhenPaths || [],
     exceptWhenPaths: exceptWhenPaths || [],
+    status: FederatedModuleStatuses.NOT_LOADED,
     description,
     name,
     scope,

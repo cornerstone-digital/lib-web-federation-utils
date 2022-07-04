@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import FederatedModuleLoader from './FederatedModuleLoader'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import {
   FederatedEvents,
-  FederatedRuntime,
+  FederatedModule,
   getFederatedRuntime,
 } from '@vf/federated-core'
 
@@ -24,24 +24,35 @@ const handleModuleUnmount = jest.fn(() => {
   }
 })
 
-jest.mock('../../hooks', () => ({
-  useFederatedModule: () => {
-    return {
-      scope: 'test',
-      name: 'module-1',
-      mount: handleModuleMount,
-      unmount: handleModuleUnmount,
-    }
-  },
-}))
+const testModule: FederatedModule = {
+  scope: 'test',
+  name: 'module-1',
+  type: 'component',
+  mount: async (props, mountId) => handleModuleMount(),
+  unmount: async () => handleModuleUnmount(),
+  update: jest.fn(),
+}
+
+jest.mock('@vf/federated-core', () => {
+  return {
+    ...jest.requireActual('@vf/federated-core'),
+    getFederatedModule: () => {
+      return Promise.resolve(testModule)
+    },
+  }
+})
 
 describe('FederatedModuleLoader', () => {
   beforeEach(() => {
     jest.resetAllMocks()
 
+    const federatedRuntime = getFederatedRuntime()
+
+    federatedRuntime.registerModule(testModule)
+
     window.__FEDERATED_CORE__ = {
       moduleBaseUrls: {},
-      federatedRuntime: new FederatedRuntime(),
+      federatedRuntime,
     }
   })
 
@@ -96,6 +107,8 @@ describe('FederatedModuleLoader', () => {
 
   it('should call mount on module', () => {
     const reactRenderSpy = jest.spyOn(ReactDOM, 'render')
+    const mountSpy = jest.spyOn(testModule, 'mount')
+
     render(
       <FederatedModuleLoader
         scope="test"
@@ -105,8 +118,10 @@ describe('FederatedModuleLoader', () => {
       />
     )
 
-    expect(handleModuleMount).toHaveBeenCalled()
-    expect(reactRenderSpy).toHaveBeenCalled()
+    waitFor(() => {
+      expect(mountSpy).toHaveBeenCalled()
+      expect(reactRenderSpy).toHaveBeenCalled()
+    })
   })
 
   it('should call unmount on module', () => {

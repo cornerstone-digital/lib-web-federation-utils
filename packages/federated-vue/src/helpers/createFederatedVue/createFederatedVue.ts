@@ -1,5 +1,8 @@
 import { FederatedModuleLifecycles } from '@vf/federated-core'
-import { CreateFederatedVueOptions } from './createFederatedVue.types'
+import {
+  CreateFederatedVueOptions,
+  FederatedVueApp,
+} from './createFederatedVue.types'
 
 // Lifecycles
 import bootstrapLifecycle from './lifecycles/bootstrap'
@@ -7,19 +10,50 @@ import mountLifecycle from './lifecycles/mount'
 import unmountLifecycle from './lifecycles/unmount'
 import updateLifecycle from './lifecycles/update'
 
-function createFederatedVue<PropsType>(
+function validateModuleOptions<PropsType>(
   options: CreateFederatedVueOptions<PropsType>
 ) {
+  if (!options.config) {
+    throw new Error('Missing config')
+  }
+
+  if (!options.Vue) {
+    throw new Error('Missing Vue')
+  }
+
+  if (!options.config.name) {
+    throw new Error('Missing name')
+  }
+
+  if (!options.config.scope) {
+    throw new Error('Missing scope')
+  }
+
+  if (!options.config.rootComponent && !options.config.loadRootComponent) {
+    throw new Error('Missing rootComponent or loadRootComponent')
+  }
+
+  if (options.config.rootComponent && options.config.loadRootComponent) {
+    throw new Error('Cannot have both rootComponent and loadRootComponent')
+  }
+}
+
+function createFederatedVue<PropsType>(
+  options: CreateFederatedVueOptions<PropsType>
+): FederatedVueApp<PropsType> {
+  validateModuleOptions(options)
+
   const { config, federatedRuntime } = options
+  const { rootComponent } = config
 
   const {
-    scope,
+    domElementId = `${config.scope}-${config.name}`,
+    loadRootComponent,
+    defaultProps,
     name,
+    scope,
     type,
     description,
-    domElementId,
-    rootComponent,
-    loadRootComponent,
     propValidationFunction,
     activeWhenPaths,
     exceptWhenPaths,
@@ -34,7 +68,7 @@ function createFederatedVue<PropsType>(
         moduleData,
         federatedRuntime,
         options,
-        props as PropsType
+        defaultProps as PropsType
       )(props, mountId),
     unmount: async () =>
       unmountLifecycle(moduleData, federatedRuntime, options),

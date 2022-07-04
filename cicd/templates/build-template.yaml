@@ -37,6 +37,16 @@ steps:
     inputs:
       Arguments: 'lerna:bootstrap'
 
+   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Linting'
+    inputs:
+      Arguments: 'nx:affected:lint'
+
+   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Linting'
+    inputs:
+      Arguments: 'nx:affected:test:cc'
+
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Version'
     inputs:

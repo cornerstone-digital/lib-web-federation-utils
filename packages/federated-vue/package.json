@@ -1,30 +1,30 @@
 {
-  "name": "@vf/federated-vue",
-  "version": "0.2.1",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "tsc",
-    "postbuild": "rimraf dist/jest*",
-    "lint": "eslint . --ext .js,.ts,.tsx --fix",
-    "test": "jest --passWithNoTests ",
-    "test:watch": "yarn test --watchAll",
-    "test:cc": "yarn test --coverage",
-    "test:cc:watch": "yarn test:cc --watchAll"
-  },
-  "dependencies": {
-    "@vf/federated-core": "^0.3.0",
-    "ajv": "^8.11.0",
-    "vue": "^3.2.25"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^2.3.3",
-    "typescript": "^4.5.4",
-    "vite": "^2.9.9",
-    "vue-tsc": "^0.34.7"
-  }
+    "name": "@vf/federated-vue",
+    "version": "0.2.1",
+    "main": "dist/src/index.js",
+    "types": "dist/src/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "prebuild": "rimraf dist",
+        "build": "tsc",
+        "postbuild": "rimraf dist/jest*",
+        "lint": "eslint . --ext .js,.ts,.tsx --fix",
+        "test": "jest --passWithNoTests ",
+        "test:watch": "yarn test --watchAll",
+        "test:cc": "yarn test --coverage",
+        "test:cc:watch": "yarn test:cc --watchAll"
+    },
+    "dependencies": {
+        "@vf/federated-core": "^0.1.0-alpha.9",
+        "ajv": "^8.11.0",
+        "vue": "^3.2.25"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^2.3.3",
+        "typescript": "^4.5.4",
+        "vite": "^2.9.9",
+        "vue-tsc": "^0.34.7"
+    }
 }

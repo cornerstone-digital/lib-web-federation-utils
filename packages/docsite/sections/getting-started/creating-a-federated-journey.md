@@ -18,7 +18,7 @@ const AcquisitionsMainFederated = createFederatedReact({
   config: {
     scope: 'broadband',
     name: 'acquisitionsMain',
-    type: 'app-module',
+    type: 'journey-module',
     activeWhenPaths: ['/broadband', '/broadband*'],
     exceptWhenPaths: ['/broadband/services/*'],
     domElementId: 'root',

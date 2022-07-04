@@ -48,6 +48,9 @@ const emit = <CustomEvents extends EventData<string, unknown>>(
   if (module?.name) {
     eventType = replaceModuleKey(eventType, module)
   }
+  if (window.__FEDERATED_CORE__.federatedRuntime.debugEnabled) {
+    console.log(`[EventService] Emitted event: ${eventType}`, event.payload)
+  }
 
   window.dispatchEvent(new CustomEvent(eventType, event.payload as object))
 }

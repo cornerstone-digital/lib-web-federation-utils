@@ -1,8 +1,11 @@
 import * as Vue from 'vue'
 import { Component } from 'vue'
-import type {
-  AbstractFederatedRuntime,
+import {
   FederatedModuleTypes,
+  FederatedModuleBaseOptions,
+  FederatedModuleLifecycles,
+  AbstractFederatedRuntime,
+  FederatedRuntime,
 } from '@vf/federated-core'
 import type { ValidateFunction } from 'ajv'
 
@@ -16,15 +19,20 @@ export type CreateFederatedVueOptions<RootComponentProps> = {
     name: string
     type: FederatedModuleTypes
     description?: string
-    domElementId: string
-    rootComponent: Component<RootComponentProps>
+    domElementId?: string
+    rootComponent?: Component<RootComponentProps>
     loadRootComponent?: () => Promise<Component<RootComponentProps>>
     errorBoundary?: Component<unknown>
-    defaultProps?: PropData | null | undefined
+    defaultProps?: RootComponentProps
     propValidationFunction?: ValidateFunction<RootComponentProps>
     activeWhenPaths?: string[]
     exceptWhenPaths?: string[]
   }
   Vue: typeof Vue
-  federatedRuntime: AbstractFederatedRuntime
+  federatedRuntime: AbstractFederatedRuntime | FederatedRuntime
 }
+export type FederatedVueApp<PropsType> = FederatedModuleBaseOptions<PropsType> &
+  FederatedModuleLifecycles<PropsType> & {
+    domElementId: CreateFederatedVueOptions<PropsType>['config']['domElementId']
+    loadRootComponent: CreateFederatedVueOptions<PropsType>['config']['loadRootComponent']
+  }

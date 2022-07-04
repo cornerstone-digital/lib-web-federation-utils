@@ -146,15 +146,15 @@ class FederatedRuntime implements AbstractFederatedRuntime {
       )
       addScriptTag(
         'systemjs-named-exports',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/named-exports.min.js`
+        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/named-exports.min.js`
       )
       addScriptTag(
         'systemjs-amd',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/amd.min.js`
+        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/amd.min.js`
       )
       addScriptTag(
         'systemjs-dynamic-import-maps',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/dynamic-import-maps.min.js`
+        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/dynamic-import-maps.min.js`
       )
 
       this.services.event.emit<EventMap>({
@@ -166,7 +166,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     }
   }
 
-  async fetchImportMapContent(modulePath: string): Promise<ImportMap> {
+  async fetchImportMapContent(modulePath = ''): Promise<ImportMap> {
     const importMapPath = `${modulePath}/entries-import-map.json`
     const importMap = await fetch(importMapPath)
 
@@ -186,23 +186,22 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   ) {
     const { scope, name } = module
     const moduleKey = getModuleKey(scope, name)
+    const moduleInstance: FederatedModule<unknown> = {
+      ...this.modules.get(moduleKey),
+      status: state as FederatedModuleStatuses,
+    } as FederatedModule<unknown>
 
-    Array.from(this.modules.entries()).forEach(([key, moduleEntry]) => {
-      if (key === moduleKey) {
-        moduleEntry.status = state as FederatedModuleStatuses
-        this.modules.set(moduleKey, moduleEntry)
+    this.modules.set(moduleKey, moduleInstance)
 
-        this.services.event.emit<EventMap>(
-          {
-            type: FederatedEvents.MODULE_STATE_CHANGED,
-            payload: {
-              module: moduleEntry,
-            },
-          },
-          module
-        )
-      }
-    })
+    eventService.emit<EventMap>(
+      {
+        type: FederatedEvents.MODULE_STATE_CHANGED,
+        payload: {
+          module,
+        },
+      },
+      module
+    )
   }
 
   setModuleRootComponent<
@@ -307,9 +306,8 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     const { scope, name } = module
     const moduleBaseUrl = window.__FEDERATED_CORE__.moduleBaseUrls[scope]
     const importMap = await this.fetchImportMapContent(moduleBaseUrl)
-    const moduleKey = getModuleKey(scope, name)
 
-    return importMap.imports[moduleKey]
+    return importMap.imports[name]
   }
 
   getModulesByPath(path: string): FederatedModule[] {
@@ -383,14 +381,12 @@ class FederatedRuntime implements AbstractFederatedRuntime {
       let resolvedModule: FederatedModule
 
       // Load stylesheet from manifest
-      if (environmentUtils.isBrowser()) {
-        const moduleBaseUrl = window.__FEDERATED_CORE__.moduleBaseUrls[scope]
-        const importMap = await this.fetchImportMapContent(moduleBaseUrl)
-        const moduleUrl = importMap.imports[`${name}.css`]
+      const moduleBaseUrl = window.__FEDERATED_CORE__.moduleBaseUrls[scope]
+      const importMap = await this.fetchImportMapContent(moduleBaseUrl)
+      const moduleUrl = importMap.imports[`${name}.css`]
 
-        if (moduleUrl) {
-          addLinkTag(`${name}.css`, 'stylesheet', moduleUrl)
-        }
+      if (moduleUrl) {
+        addLinkTag(`${name}.css`, 'stylesheet', moduleUrl)
       }
 
       if (this.useNativeModules) {
@@ -404,9 +400,8 @@ class FederatedRuntime implements AbstractFederatedRuntime {
           module
         )
         const moduleUrl = await this.getModuleUrl({ scope, name })
-        resolvedModule = await import(
-          /* webpackIgnore: true */ /* @vite-ignore */ moduleUrl
-        )
+
+        resolvedModule = await import(/* @vite-ignore */ moduleUrl)
 
         this.services.event.emit<EventMap>(
           {
@@ -688,7 +683,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
         },
       })
 
-      routePaths.forEach((path) => {
+      for (const path of routePaths) {
         this.services.event.emit<EventMap>({
           type: FederatedEvents.RUNTIME_BEFORE_ROUTE_PREFETCH,
           payload: {
@@ -698,12 +693,12 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
         const modules = this.getModulesByPath(path)
 
-        modules.forEach(async (module) => {
+        for (const module of modules) {
           const { name, scope } = module
           if (module?.status !== FederatedModuleStatuses.LOADED) {
             await this.loadModule({ scope, name })
           }
-        })
+        }
 
         this.services.event.emit<EventMap>({
           type: FederatedEvents.RUNTIME_ROUTE_PREFETCHED,
@@ -711,7 +706,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
             path,
           },
         })
-      })
+      }
 
       this.services.event.emit<EventMap>({
         type: FederatedEvents.RUNTIME_ROUTES_PREFETCHED,

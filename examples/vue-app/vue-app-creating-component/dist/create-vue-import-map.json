@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "vue": "https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.25/vue.global.prod.min.js",
+    "FederatedCard": "http://localhost:8002/FederatedCard/FederatedCard.umd.js"
+  }
+}

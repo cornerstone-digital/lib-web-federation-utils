@@ -1,7 +1,8 @@
+import type { FederatedGlobalInfo } from './FederatedCore.types'
+
 export {}
 
 declare global {
-  type FederatedGlobalInfo = import('./FederatedCore.types').FederatedGlobalInfo
   interface Window {
     __FEDERATED_CORE__: FederatedGlobalInfo
     System: {

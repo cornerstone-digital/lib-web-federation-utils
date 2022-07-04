@@ -1,0 +1,454 @@
+{
+    "topBar": {
+        "leftLinks": [{
+                "url": "http://localhost:6069",
+                "title": "Personal",
+                "icon": "members"
+            },
+            {
+                "url": "http://localhost:6069/business",
+                "title": "Business",
+                "icon": "careers"
+            }
+        ],
+        "rightLinks": [{
+                "url": "https://www.vodafone.co.uk",
+                "title": "Find a store",
+                "icon": "location"
+            },
+            {
+                "url": "https://www.vodafone.co.uk",
+                "title": "Network status checker",
+                "icon": "network-signal"
+            }
+        ]
+    },
+    "mainLinks": [{
+            "title": "Shop",
+            "icon": "shopping-checkout",
+            "links": [{
+                    "title": "Deals",
+                    "icon": "clock",
+                    "id": "shop-deals",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "longTitle": "Explore some sick deals!",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Be Unlimited",
+                            "id": "shop-deals-be-unlimited"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Latest offers",
+                            "id": "latest-offers"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Trade in",
+                            "id": "trade-in"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Coming soon",
+                            "id": "coming-soon"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Deals for customers",
+                            "id": "deals-for-customers"
+                        }
+                    ]
+                },
+                {
+                    "title": "Mobile & tablet",
+                    "icon": "mobile",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Pay as you go phones"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Pay monthly phones"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Compare phones"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Brands"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Tablets"
+                        }
+                    ]
+                },
+                {
+                    "title": "Plans",
+                    "icon": "cost-control",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "SIM only"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Pay monthly"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Pay as you go"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "VOXI"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Entertainment"
+                        }
+                    ]
+                },
+                {
+                    "title": "Broadband",
+                    "icon": "broadband-or-wifi",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Switching to us"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Broadband deals"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Broadband + mobile"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Gigafast broadband"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Broadband help"
+                        }
+                    ]
+                },
+                {
+                    "title": "Smart tech",
+                    "icon": "smart-plug",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "V by Vodafone"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Wearables"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "One Number"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Dongles & mobile WiFi"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Gigacube"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "My Vodafone",
+            "icon": "admin",
+            "links": [{
+                    "title": "Billing & payments",
+                    "icon": "bill-or-report",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/r",
+                            "title": "Recent bills"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/r",
+                            "title": "Usage"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/r",
+                            "title": "Make a payment"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/r",
+                            "title": "Manage Direct Debit"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/r",
+                            "title": "Top up"
+                        }
+                    ]
+                },
+                {
+                    "title": "My products",
+                    "icon": "mobile",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Upgrades"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Existing customer offers"
+                        }
+                    ]
+                },
+                {
+                    "title": "Settings",
+                    "icon": "cost-control",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Account settings"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Personal details"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Password & security"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "My account controls"
+                        }
+                    ]
+                },
+                {
+                    "title": "Vodafone apps",
+                    "icon": "broadband-or-wifi",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "My Vodafone app"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Vodafone Start"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "VeryMe Rewards"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Help",
+            "icon": "chat",
+            "links": [{
+                    "title": "Costs & charges",
+                    "icon": "price-tag",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Travelling abroad"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Calling abroad from UK"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "UK call charges"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Data charges"
+                        }
+                    ]
+                },
+                {
+                    "title": "Support",
+                    "icon": "mobile",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Getting started"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Unlocking your phone"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Transfer your number"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Manage data usage"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "SIM swap"
+                        }
+                    ]
+                },
+                {
+                    "title": "Network",
+                    "icon": "cost-control",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "5G"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Network status checker"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Network improvements"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Calling"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Messaging"
+                        }
+                    ]
+                },
+                {
+                    "title": "Delivery",
+                    "icon": "broadband-or-wifi",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Returns"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Accessibility"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Life events"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "5G",
+            "icon": "5g",
+            "links": [{
+                    "title": "Unlimited",
+                    "icon": "clock",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Pay monthly plans"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "SIM only plans"
+                        }
+                    ]
+                },
+                {
+                    "title": "5G phone & devices",
+                    "icon": "mobile",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Samsung Galaxy S10 5G"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Xiaomi Mi MIX 3 5G"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "5G Gigacube"
+                        }
+                    ]
+                },
+                {
+                    "title": "Discover 5G",
+                    "icon": "cost-control",
+                    "longTitle": "Explore some sick deals!",
+                    "url": "#/Components/Organisms/Navigation/Header",
+                    "links": [{
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Check coverage"
+                        },
+                        {
+                            "url": "https://www.vodafone.co.uk/",
+                            "title": "Register interest"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "skipLink": false,
+    "showSearch": true,
+    "showBasket": true,
+    "user": {
+        "name": "John Smith",
+        "links": [{
+                "url": "https://www.vodafone.co.uk",
+                "title": "MyVodafone",
+                "icon": "admin",
+                "confirmationMessage": ""
+            },
+            {
+                "url": "https://www.vodafone.co.uk",
+                "title": "Upgrade your plan",
+                "icon": "upgrade",
+                "confirmationMessage": ""
+            },
+            {
+                "url": "https://www.vodafone.co.uk",
+                "title": "Deals for customers",
+                "icon": "price-tag",
+                "confirmationMessage": ""
+            },
+            {
+                "url": "https://www.vodafone.co.uk",
+                "title": "Switch account",
+                "icon": "switch",
+                "confirmationMessage": ""
+            },
+            {
+                "url": "https://www.vodafone.co.uk",
+                "title": "Logout",
+                "icon": "log-out",
+                "confirmationMessage": "Are you sure you want to log out?"
+            }
+        ]
+    }
+}

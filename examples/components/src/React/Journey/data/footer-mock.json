@@ -1,0 +1,172 @@
+{
+    "social": [{
+            "id": "social-instagram",
+            "srText": "Instagram",
+            "icon": "instagram-inverse",
+            "url": "//vodafone.co.uk"
+        },
+        {
+            "id": "social-youtube",
+            "srText": "Youtube",
+            "icon": "youtube-inverse",
+            "url": "//vodafone.co.uk"
+        },
+        {
+            "id": "social-linkedin",
+            "srText": "Linkedin",
+            "icon": "linkedin-inverse",
+            "url": "//vodafone.co.uk"
+        },
+        {
+            "id": "social-twitter",
+            "srText": "Twitter",
+            "icon": "twitter-inverse",
+            "url": "//vodafone.co.uk"
+        },
+        {
+            "id": "social-facebook",
+            "srText": "Facebook",
+            "icon": "facebook-inverse",
+            "url": "//vodafone.co.uk"
+        }
+    ],
+    "partnerLogo": {
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Apple-logo.png/640px-Apple-logo.png",
+        "srText": "Apple"
+    },
+    "legalLinks": [{
+            "id": "legal-link-1",
+            "text": "VOXI",
+            "url": "//vodafone.co.uk"
+        },
+        {
+            "id": "legal-link-2",
+            "text": "Talkmobile",
+            "url": "//vodafone.co.uk"
+        },
+        {
+            "id": "legal-link-3",
+            "text": "Privacy & cookie policy",
+            "url": "//vodafone.co.uk"
+        },
+        {
+            "id": "legal-link-4",
+            "text": "Site map",
+            "url": "//vodafone.co.uk"
+        },
+        {
+            "id": "legal-link-5",
+            "text": "Modern slavery",
+            "url": "//vodafone.co.uk"
+        },
+        {
+            "id": "legal-link-6",
+            "text": "Terms & conditions",
+            "url": "//vodafone.co.uk"
+        }
+    ],
+    "partnerLinks": [{
+            "id": "partner-link-1",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png",
+            "text": "Samsung",
+            "srText": "Samsung logo",
+            "url": "//vodafone.co.uk"
+        },
+        {
+            "id": "partner-link-2",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png",
+            "text": "Samsung",
+            "srText": "Samsung logo",
+            "url": "//vodafone.co.uk"
+        },
+        {
+            "id": "partner-link-3",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png",
+            "text": "Samsung",
+            "srText": "Samsung logo",
+            "url": "//vodafone.co.uk"
+        },
+        {
+            "id": "partner-link-4",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png",
+            "text": "Samsung",
+            "srText": "Samsung logo",
+            "url": "//vodafone.co.uk"
+        }
+    ],
+    "linkGroups": {
+        "openOnMD": false,
+        "groups": [{
+                "headingText": "About Vodafone",
+                "links": [{
+                        "id": "content-link-1",
+                        "text": "About us",
+                        "srText": "About us",
+                        "url": "https://www.vodafone.co.uk/"
+                    },
+                    {
+                        "id": "content-link-2",
+                        "text": "Accessibility services",
+                        "srText": "Accessibility services",
+                        "url": "https://www.vodafone.co.uk/"
+                    },
+                    {
+                        "id": "content-link-3",
+                        "text": "Careers with Vodafone",
+                        "srText": "Careers with Vodafone",
+                        "url": "https://www.vodafone.co.uk/"
+                    },
+                    {
+                        "id": "content-link-4",
+                        "text": "Coverage checker",
+                        "srText": "Coverage checker",
+                        "url": "https://www.vodafone.co.uk/"
+                    },
+                    {
+                        "id": "content-link-5",
+                        "text": "Essential customer information",
+                        "srText": "Essential customer information",
+                        "url": "https://www.vodafone.co.uk/"
+                    }
+                ]
+            },
+            {
+                "headingText": "Buying online",
+                "links": [{
+                        "id": "content-link-6",
+                        "text": "Broadband deals",
+                        "srText": "Broadband deals",
+                        "url": "https://www.vodafone.co.uk/"
+                    },
+                    {
+                        "id": "content-link-7",
+                        "text": "iPad and tablets",
+                        "srText": "iPad and tablets",
+                        "url": "https://www.vodafone.co.uk/"
+                    },
+                    {
+                        "id": "content-link-8",
+                        "text": "Mobile broadband",
+                        "srText": "Mobile broadband",
+                        "url": "https://www.vodafone.co.uk/"
+                    },
+                    {
+                        "id": "content-link-9",
+                        "text": "Pay as you go bundles",
+                        "srText": "Pay as you go bundles",
+                        "url": "https://www.vodafone.co.uk/"
+                    },
+                    {
+                        "id": "content-link-10",
+                        "text": "Pay monthly bundles",
+                        "srText": "Pay monthly bundles",
+                        "url": "https://www.vodafone.co.uk/"
+                    }
+                ]
+            }
+        ]
+    },
+    "companyInfo": "Vodafone Limited is authorised and regulated by the Financial Conduct Authority for consumer credit lending and insurance distribution activity (Financial Services Register Number 71220) Registered in England and Wales. Company Number 01471587. Registered Office: Vodafone House, The Connection, Newbury, Berkshire, RG14 2FN.",
+    "additionalInfo": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    "copyrightText": "©2022 Vodafone Limited"
+}

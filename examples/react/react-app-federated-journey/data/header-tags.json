@@ -1,0 +1,66 @@
+{
+    "title": "This is in the <head> tag",
+    "description": "This is in the <head> tag",
+    "canonical": "This is in the <head> tag",
+    "ampHtml": "This is in the <head> tag",
+    "robots": "This is in the <head> tag",
+    "openGraphDescription": "This is in the <head> tag",
+    "openGraphType": "This is in the <head> tag",
+    "openGraphTitle": "This is in the <head> tag",
+    "openGraphUrl": "This is in the <head> tag",
+    "openGraphImage": "This is in the <head> tag",
+    "twitterTitle": "This is in the <head> tag",
+    "twitterDescription": "This is in the <head> tag",
+    "twitterImage": "This is in the <head> tag",
+    "twitterSite": "This is in the <head> tag",
+    "twitterCreator": "This is in the <head> tag",
+    "twitterCard": "This is in the <head> tag",
+    "schema": {
+        "schemaOne": "This is in the head tag schema",
+        "schemaTwo": ["This is in the head tag schema"],
+        "schemaThree": [{
+                "one": "This is in the head tag schema",
+                "two": "This is in the head tag schema"
+            },
+            {
+                "three": "This is in the head tag schema",
+                "four": "This is in the head tag schema"
+            }
+        ],
+        "schemaFour": {
+            "one": {
+                "one": "This is in the head tag schema",
+                "two": "This is in the head tag schema"
+            },
+            "two": {
+                "three": "This is in the head tag schema",
+                "four": "This is in the head tag schema"
+            }
+        }
+    },
+    "organisationSchema": {
+        "type": "This is in the head tag schema",
+        "name": "This is in the head tag schema",
+        "foundingDate": "This is in the head tag schema",
+        "url": "This is in the head tag schema",
+        "logo": "This is in the head tag schema",
+        "address": {
+            "type": "This is in the head tag schema",
+            "streetAddress": "This is in the head tag schema",
+            "addressLocality": "This is in the head tag schema",
+            "addressRegion": "This is in the head tag schema",
+            "postalCode": "This is in the head tag schema"
+        },
+        "contactPoint": {
+            "type": "This is in the head tag schema",
+            "telephone": "This is in the head tag schema",
+            "contactType": "This is in the head tag schema",
+            "areaServed": "This is in the head tag schema"
+        },
+        "sameAs": [
+            "This is in the head tag schema",
+            "This is in the head tag schema",
+            "This is in the head tag schema"
+        ]
+    }
+}

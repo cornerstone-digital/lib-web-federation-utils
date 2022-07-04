@@ -29,4 +29,4 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 0.0.2-alpha.0 (2022-06-23)
 
-**Note:** Version bump only for package @vf/example-shell-app
+**Note:** Created Federated React Consume Component Boilerplate
