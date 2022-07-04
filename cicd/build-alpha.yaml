@@ -17,7 +17,7 @@ steps:
     parameters:
       versionScript: lerna:version:alpha
       publishScript: lerna:publish:alpha
-      buildScript: nx:affected:build --base=alpha
-      testScript: nx:affected:test:cc --base=alpha
-      lintScript: nx:affected:lint --base=alpha
+      buildScript: nx:all:build
+      testScript: nx:all:test:cc
+      lintScript: nx:all:lint
       releaseBranch: alpha
