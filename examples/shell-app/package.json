@@ -1,6 +1,6 @@
 {
     "name": "@vf/federated-shell-app",
-    "version": "0.0.2",
+    "version": "0.0.3-alpha.0",
     "scripts": {
         "start": "vite --port 8000"
     },
