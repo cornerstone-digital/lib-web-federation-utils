@@ -11,6 +11,14 @@ parameters:
     displayName: Build Script
     type: string
     default: nx:all:build
+  - name: testScript
+    displayName: Test Script
+    type: string
+    default: 'nx:affected:test:cc'
+  - name: lintScript
+    displayName: Lint Script
+    type: string
+    default: 'nx:affected:lint'
   - name: releaseBranch
     displayName: Release branch
     type: string
@@ -40,12 +48,12 @@ steps:
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Linting'
     inputs:
-      Arguments: 'nx:affected:lint'
+      Arguments: ${{parameters.lintScript}}
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
-    displayName: 'Linting'
+    displayName: 'Tests'
     inputs:
-      Arguments: 'nx:affected:test:cc'
+      Arguments: ${{parameters.testScript}}
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Version'

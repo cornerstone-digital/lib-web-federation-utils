@@ -17,5 +17,7 @@ steps:
     parameters:
       versionScript: lerna:version:beta
       publishScript: lerna:publish:beta
-      buildScript: nx:all:build
+      buildScript: nx:affected:build --base=beta
+      testScript: nx:affected:test:cc --base=beta
+      lintScript: nx:affected:lint --base=beta
       releaseBranch: beta
