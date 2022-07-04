@@ -28,19 +28,10 @@ const testModule: FederatedModule = {
   scope: 'test',
   name: 'module-1',
   type: 'component',
-  mount: async (props, mountId) => handleModuleMount(),
+  mount: async (_props, _mountId) => handleModuleMount(),
   unmount: async () => handleModuleUnmount(),
   update: jest.fn(),
 }
-
-jest.mock('@vf/federated-core', () => {
-  return {
-    ...jest.requireActual('@vf/federated-core'),
-    getFederatedModule: () => {
-      return Promise.resolve(testModule)
-    },
-  }
-})
 
 describe('FederatedModuleLoader', () => {
   beforeEach(() => {
