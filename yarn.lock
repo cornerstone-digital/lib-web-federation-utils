@@ -2770,6 +2770,29 @@
     "@typescript-eslint/types" "5.27.0"
     eslint-visitor-keys "^3.3.0"
 
+"@vf/federated-core@^0.1.0-alpha.10":
+  version "0.1.0-alpha.10"
+  resolved "https://vfuk-digital.pkgs.visualstudio.com/_packaging/Web/npm/registry/@vf/federated-core/-/federated-core-0.1.0-alpha.10.tgz#ec78a3af95c6470994212f8807029c62410ec892"
+  integrity sha1-7Hijr5XGRwmUIS+IBwKcYkEOyJI=
+  dependencies:
+    "@datadog/browser-logs" "^4.11.1"
+    "@swc/helpers" "~0.3.3"
+    systemjs "^6.12.1"
+    ts-node "^10.8.1"
+
+"@vf/federated-react@^0.1.0-alpha.9":
+  version "0.1.0-alpha.10"
+  resolved "https://vfuk-digital.pkgs.visualstudio.com/_packaging/Web/npm/registry/@vf/federated-react/-/federated-react-0.1.0-alpha.10.tgz#e4e68c49cf76604b51b03ba4ecd71f88e4bd53bf"
+  integrity sha1-5OaMSc92YEtRsDuk7NcfiOS9U78=
+  dependencies:
+    "@vf/federated-core" "^0.1.0-alpha.10"
+    lodash "4.17.21"
+    react "17.0.2"
+    react-dom "17.0.2"
+    react-error-boundary "^3.1.4"
+    systemjs "^6.12.1"
+    uuid "^8.3.2"
+
 "@vfuk/brand-hifi-icons@5.1.x":
   version "5.1.0"
   resolved "https://vfuk-digital.pkgs.visualstudio.com/_packaging/Web/npm/registry/@vfuk/brand-hifi-icons/-/brand-hifi-icons-5.1.0.tgz#5d6e1477d8b49ebd28bc930f527e41f4773485b5"
