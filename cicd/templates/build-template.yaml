@@ -10,15 +10,15 @@ parameters:
   - name: buildScript
     displayName: Build Script
     type: string
-    default: nx:all:build
+    default: lerna:build
   - name: testScript
     displayName: Test Script
     type: string
-    default: 'nx:all:test:cc'
+    default: 'lerna:test:cc'
   - name: lintScript
     displayName: Lint Script
     type: string
-    default: 'nx:all:lint'
+    default: 'lerna:lint'
   - name: releaseBranch
     displayName: Release branch
     type: string
