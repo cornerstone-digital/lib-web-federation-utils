@@ -19,7 +19,11 @@
     "declaration": true,
     "declarationDir": "./dist",
     "types": ["node", "jest", "@types/systemjs", "@testing-library/jest-dom"],
-    "typeRoots": ["@node_modules/@types", "../../node_modules/@types", "src/types"],
+    "typeRoots": [
+      "@node_modules/@types",
+      "../../node_modules/@types",
+      "src/types"
+    ]
   },
   "exclude": ["node_modules", "dist"]
 }
