@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0-alpha.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-vue@0.2.2-alpha.1...@vf/federated-vue@0.3.0-alpha.0) (2022-07-05)
+
+
+### Bug Fixes
+
+* clean up lerna and packages ([fc71bce](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/fc71bceea2880b9d479d95903c6eea67fc2ee27f))
+* increased test coverage ([b37d8c2](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/b37d8c2fa7a9df72e5b41e70d574bb7d93770dc5))
+* remove SystemJS mocks from jest.setup files ([2119249](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/21192495bef1e62d85857c2fc8be69401168650c))
+
+
+### Features
+
+* fix yarn.lock on federated-vue ([1bce323](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/1bce32322e9205b4cb8b6a9b1ca8691874261dbe))
+
+
+
+
+
 ## [0.2.2-alpha.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-vue@0.2.2-alpha.0...@vf/federated-vue@0.2.2-alpha.1) (2022-07-04)
 
 

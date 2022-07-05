@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.2-alpha.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react@0.2.2-alpha.0...@vf/federated-react@0.2.2-alpha.1) (2022-07-05)
+
+
+### Bug Fixes
+
+* clean up lerna and packages ([fc71bce](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/fc71bceea2880b9d479d95903c6eea67fc2ee27f))
+* increased test coverage ([2472ea0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/2472ea0ae1288c1250be2230e844eabe8f4df491))
+* remove SystemJS mocks from jest.setup files ([2119249](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/21192495bef1e62d85857c2fc8be69401168650c))
+
+
+
+
+
 ## [0.2.2-alpha.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react@0.2.0...@vf/federated-react@0.2.2-alpha.0) (2022-07-04)
 
 **Note:** Version bump only for package @vf/federated-react
