@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.2-beta.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/standalone-external-app@0.0.2-alpha.1...@vf/standalone-external-app@0.0.2-beta.1) (2022-07-05)
+
+**Note:** Version bump only for package @vf/standalone-external-app
+
+
+
+
+
 ## 0.0.2-beta.0 (2022-07-04)
 
 **Note:** Version bump only for package @vf/standalone-external-app
