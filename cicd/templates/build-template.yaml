@@ -27,8 +27,8 @@ parameters:
 steps:
   - template: init-workspace.yaml
 
-  # - script: git switch ${{parameters.releaseBranch}}
-  #   displayName: Switch branch
+  - script: git switch ${{parameters.releaseBranch}}
+    displayName: Switch branch
 
   - script: git update-index --skip-worktree -- .npmrc
     displayName: Ignore .npmrc
@@ -41,6 +41,11 @@ steps:
     displayName: Set git config
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Clean'
+    inputs:
+      Arguments: 'lerna:clean'
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Bootstrap'
     inputs:
       Arguments: 'lerna:bootstrap'
@@ -49,6 +54,11 @@ steps:
     displayName: 'Linting'
     inputs:
       Arguments: ${{parameters.lintScript}}
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Build'
+    inputs:
+      Arguments: 'lerna:build'
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Tests'
