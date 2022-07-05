@@ -17,7 +17,4 @@ steps:
     parameters:
       versionScript: lerna:version:alpha
       publishScript: lerna:publish:alpha
-      buildScript: lerna:build
-      testScript: lerna:test:cc
-      lintScript: lerna:lint
       releaseBranch: alpha
