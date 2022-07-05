@@ -1,5 +1,22 @@
 var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
@@ -7,92 +24,85 @@ var __publicField = (obj, key, value) => {
 import * as React from "react";
 import React__default, { Suspense } from "react";
 import ReactDOM from "react-dom";
-var UNKNOWN_FUNCTION = "?";
-function computeStackTrace(ex) {
-  var stack = [];
-  var stackProperty = tryToGetString(ex, "stack");
-  if (stackProperty) {
-    stackProperty.split("\n").forEach(function(line) {
-      var stackFrame = parseChromeLine(line) || parseWinLine(line) || parseGeckoLine(line);
-      if (stackFrame) {
-        if (!stackFrame.func && stackFrame.line) {
-          stackFrame.func = UNKNOWN_FUNCTION;
-        }
-        stack.push(stackFrame);
+var ConsoleApiName = {
+  log: "log",
+  debug: "debug",
+  info: "info",
+  warn: "warn",
+  error: "error"
+};
+var display = function(api) {
+  var args = [];
+  for (var _i = 1; _i < arguments.length; _i++) {
+    args[_i - 1] = arguments[_i];
+  }
+  if (!Object.prototype.hasOwnProperty.call(ConsoleApiName, api)) {
+    api = ConsoleApiName.log;
+  }
+  display[api].apply(display, args);
+};
+display.debug = console.debug.bind(console);
+display.log = console.log.bind(console);
+display.info = console.info.bind(console);
+display.warn = console.warn.bind(console);
+display.error = console.error.bind(console);
+var __spreadArray = globalThis && globalThis.__spreadArray || function(to, from, pack) {
+  if (pack || arguments.length === 2)
+    for (var i = 0, l = from.length, ar; i < l; i++) {
+      if (ar || !(i in from)) {
+        if (!ar)
+          ar = Array.prototype.slice.call(from, 0, i);
+        ar[i] = from[i];
       }
-    });
-  }
-  return {
-    message: tryToGetString(ex, "message"),
-    name: tryToGetString(ex, "name"),
-    stack
+    }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+var onMonitorErrorCollected;
+var debugMode = false;
+function startMonitorErrorCollection(newOnMonitorErrorCollected) {
+  onMonitorErrorCollected = newOnMonitorErrorCollected;
+}
+function setDebugMode(newDebugMode) {
+  debugMode = newDebugMode;
+}
+function monitored(_, __, descriptor) {
+  var originalMethod = descriptor.value;
+  descriptor.value = function() {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    }
+    var decorated = onMonitorErrorCollected ? monitor(originalMethod) : originalMethod;
+    return decorated.apply(this, args);
   };
 }
-var CHROME_LINE_RE = /^\s*at (.*?) ?\(((?:file|https?|blob|chrome-extension|native|eval|webpack|<anonymous>|\/).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i;
-var CHROME_EVAL_RE = /\((\S*)(?::(\d+))(?::(\d+))\)/;
-function parseChromeLine(line) {
-  var parts = CHROME_LINE_RE.exec(line);
-  if (!parts) {
-    return;
-  }
-  var isNative = parts[2] && parts[2].indexOf("native") === 0;
-  var isEval = parts[2] && parts[2].indexOf("eval") === 0;
-  var submatch = CHROME_EVAL_RE.exec(parts[2]);
-  if (isEval && submatch) {
-    parts[2] = submatch[1];
-    parts[3] = submatch[2];
-    parts[4] = submatch[3];
-  }
-  return {
-    args: isNative ? [parts[2]] : [],
-    column: parts[4] ? +parts[4] : void 0,
-    func: parts[1] || UNKNOWN_FUNCTION,
-    line: parts[3] ? +parts[3] : void 0,
-    url: !isNative ? parts[2] : void 0
+function monitor(fn) {
+  return function() {
+    return callMonitored(fn, this, arguments);
   };
 }
-var WINJS_LINE_RE = /^\s*at (?:((?:\[object object\])?.+) )?\(?((?:file|ms-appx|https?|webpack|blob):.*?):(\d+)(?::(\d+))?\)?\s*$/i;
-function parseWinLine(line) {
-  var parts = WINJS_LINE_RE.exec(line);
-  if (!parts) {
-    return;
+function callMonitored(fn, context, args) {
+  try {
+    return fn.apply(context, args);
+  } catch (e) {
+    displayIfDebugEnabled(ConsoleApiName.error, e);
+    if (onMonitorErrorCollected) {
+      try {
+        onMonitorErrorCollected(e);
+      } catch (e2) {
+        displayIfDebugEnabled(ConsoleApiName.error, e2);
+      }
+    }
   }
-  return {
-    args: [],
-    column: parts[4] ? +parts[4] : void 0,
-    func: parts[1] || UNKNOWN_FUNCTION,
-    line: +parts[3],
-    url: parts[2]
-  };
 }
-var GECKO_LINE_RE = /^\s*(.*?)(?:\((.*?)\))?(?:^|@)((?:file|https?|blob|chrome|webpack|resource|capacitor|\[native).*?|[^@]*bundle)(?::(\d+))?(?::(\d+))?\s*$/i;
-var GECKO_EVAL_RE = /(\S+) line (\d+)(?: > eval line \d+)* > eval/i;
-function parseGeckoLine(line) {
-  var parts = GECKO_LINE_RE.exec(line);
-  if (!parts) {
-    return;
+function displayIfDebugEnabled(api) {
+  var args = [];
+  for (var _i = 1; _i < arguments.length; _i++) {
+    args[_i - 1] = arguments[_i];
   }
-  var isEval = parts[3] && parts[3].indexOf(" > eval") > -1;
-  var submatch = GECKO_EVAL_RE.exec(parts[3]);
-  if (isEval && submatch) {
-    parts[3] = submatch[1];
-    parts[4] = submatch[2];
-    parts[5] = void 0;
+  if (debugMode) {
+    display.apply(void 0, __spreadArray([api, "[MONITOR]"], args, false));
   }
-  return {
-    args: parts[2] ? parts[2].split(",") : [],
-    column: parts[5] ? +parts[5] : void 0,
-    func: parts[1] || UNKNOWN_FUNCTION,
-    line: parts[4] ? +parts[4] : void 0,
-    url: parts[3]
-  };
-}
-function tryToGetString(candidate, property) {
-  if (typeof candidate !== "object" || !candidate || !(property in candidate)) {
-    return void 0;
-  }
-  var value = candidate[property];
-  return typeof value === "string" ? value : void 0;
 }
 var ONE_SECOND = 1e3;
 var ONE_MINUTE = 60 * ONE_SECOND;
@@ -404,6 +414,380 @@ function removeDuplicates(array) {
   });
   return setToArray(set);
 }
+var COOKIE_ACCESS_DELAY = ONE_SECOND;
+function setCookie(name2, value, expireDelay, options) {
+  var date = new Date();
+  date.setTime(date.getTime() + expireDelay);
+  var expires = "expires=".concat(date.toUTCString());
+  var sameSite = options && options.crossSite ? "none" : "strict";
+  var domain = options && options.domain ? ";domain=".concat(options.domain) : "";
+  var secure = options && options.secure ? ";secure" : "";
+  document.cookie = "".concat(name2, "=").concat(value, ";").concat(expires, ";path=/;samesite=").concat(sameSite).concat(domain).concat(secure);
+}
+function getCookie(name2) {
+  return findCommaSeparatedValue(document.cookie, name2);
+}
+function deleteCookie(name2, options) {
+  setCookie(name2, "", 0, options);
+}
+function areCookiesAuthorized(options) {
+  if (document.cookie === void 0 || document.cookie === null) {
+    return false;
+  }
+  try {
+    var testCookieName = "dd_cookie_test_".concat(generateUUID());
+    var testCookieValue = "test";
+    setCookie(testCookieName, testCookieValue, ONE_SECOND, options);
+    var isCookieCorrectlySet = getCookie(testCookieName) === testCookieValue;
+    deleteCookie(testCookieName, options);
+    return isCookieCorrectlySet;
+  } catch (error) {
+    display.error(error);
+    return false;
+  }
+}
+var getCurrentSiteCache;
+function getCurrentSite() {
+  if (getCurrentSiteCache === void 0) {
+    var testCookieName = "dd_site_test_".concat(generateUUID());
+    var testCookieValue = "test";
+    var domainLevels = window.location.hostname.split(".");
+    var candidateDomain = domainLevels.pop();
+    while (domainLevels.length && !getCookie(testCookieName)) {
+      candidateDomain = "".concat(domainLevels.pop(), ".").concat(candidateDomain);
+      setCookie(testCookieName, testCookieValue, ONE_SECOND, { domain: candidateDomain });
+    }
+    deleteCookie(testCookieName, { domain: candidateDomain });
+    getCurrentSiteCache = candidateDomain;
+  }
+  return getCurrentSiteCache;
+}
+function catchUserErrors(fn, errorMsg) {
+  return function() {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    }
+    try {
+      return fn.apply(void 0, args);
+    } catch (err) {
+      display.error(errorMsg, err);
+    }
+  };
+}
+var enabledExperimentalFeatures;
+function updateExperimentalFeatures(enabledFeatures) {
+  if (!Array.isArray(enabledFeatures)) {
+    return;
+  }
+  if (!enabledExperimentalFeatures) {
+    enabledExperimentalFeatures = new Set(enabledFeatures);
+  }
+  enabledFeatures.filter(function(flag) {
+    return typeof flag === "string";
+  }).forEach(function(flag) {
+    enabledExperimentalFeatures.add(flag);
+  });
+}
+function isExperimentalFeatureEnabled(featureName) {
+  return !!enabledExperimentalFeatures && enabledExperimentalFeatures.has(featureName);
+}
+function dateNow() {
+  return new Date().getTime();
+}
+function timeStampNow() {
+  return dateNow();
+}
+function relativeNow() {
+  return performance.now();
+}
+function clocksNow() {
+  return { relative: relativeNow(), timeStamp: timeStampNow() };
+}
+function clocksOrigin() {
+  return { relative: 0, timeStamp: getNavigationStart() };
+}
+function elapsed(start, end) {
+  return end - start;
+}
+function getRelativeTime(timestamp) {
+  return timestamp - getNavigationStart();
+}
+var navigationStart;
+function getNavigationStart() {
+  if (navigationStart === void 0) {
+    navigationStart = performance.timing.navigationStart;
+  }
+  return navigationStart;
+}
+function normalizeUrl(url) {
+  return buildUrl(url, getLocationOrigin()).href;
+}
+function buildUrl(url, base) {
+  if (checkURLSupported()) {
+    return base !== void 0 ? new URL(url, base) : new URL(url);
+  }
+  if (base === void 0 && !/:/.test(url)) {
+    throw new Error("Invalid URL: '".concat(url, "'"));
+  }
+  var doc = document;
+  var anchorElement = doc.createElement("a");
+  if (base !== void 0) {
+    doc = document.implementation.createHTMLDocument("");
+    var baseElement = doc.createElement("base");
+    baseElement.href = base;
+    doc.head.appendChild(baseElement);
+    doc.body.appendChild(anchorElement);
+  }
+  anchorElement.href = url;
+  return anchorElement;
+}
+var isURLSupported;
+function checkURLSupported() {
+  if (isURLSupported !== void 0) {
+    return isURLSupported;
+  }
+  try {
+    var url = new URL("http://test/path");
+    isURLSupported = url.href === "http://test/path";
+    return isURLSupported;
+  } catch (_a2) {
+    isURLSupported = false;
+  }
+  return isURLSupported;
+}
+var INTAKE_SITE_STAGING = "datad0g.com";
+var INTAKE_SITE_US1 = "datadoghq.com";
+var INTAKE_SITE_US1_FED = "ddog-gov.com";
+var ENDPOINTS = {
+  logs: "logs",
+  rum: "rum",
+  sessionReplay: "session-replay"
+};
+var INTAKE_TRACKS = {
+  logs: "logs",
+  rum: "rum",
+  sessionReplay: "replay"
+};
+function createEndpointBuilder(initConfiguration, endpointType, tags) {
+  var _a2 = initConfiguration.site, site = _a2 === void 0 ? INTAKE_SITE_US1 : _a2, clientToken = initConfiguration.clientToken;
+  var domainParts = site.split(".");
+  var extension = domainParts.pop();
+  var host = "".concat(ENDPOINTS[endpointType], ".browser-intake-").concat(domainParts.join("-"), ".").concat(extension);
+  var baseUrl = "https://".concat(host, "/api/v2/").concat(INTAKE_TRACKS[endpointType]);
+  var proxyUrl = initConfiguration.proxyUrl && normalizeUrl(initConfiguration.proxyUrl);
+  return {
+    build: function() {
+      var parameters = "ddsource=browser" + "&ddtags=".concat(encodeURIComponent(["sdk_version:".concat("4.14.0")].concat(tags).join(","))) + "&dd-api-key=".concat(clientToken) + "&dd-evp-origin-version=".concat(encodeURIComponent("4.14.0")) + "&dd-evp-origin=browser" + "&dd-request-id=".concat(generateUUID());
+      if (endpointType === "rum") {
+        parameters += "&batch_time=".concat(timeStampNow());
+      }
+      var endpointUrl = "".concat(baseUrl, "?").concat(parameters);
+      return proxyUrl ? "".concat(proxyUrl, "?ddforward=").concat(encodeURIComponent(endpointUrl)) : endpointUrl;
+    },
+    buildIntakeUrl: function() {
+      return proxyUrl ? "".concat(proxyUrl, "?ddforward") : baseUrl;
+    },
+    endpointType
+  };
+}
+var TAG_SIZE_LIMIT = 200;
+function buildTags(configuration) {
+  var env = configuration.env, service = configuration.service, version = configuration.version, datacenter = configuration.datacenter;
+  var tags = [];
+  if (env) {
+    tags.push(buildTag("env", env));
+  }
+  if (service) {
+    tags.push(buildTag("service", service));
+  }
+  if (version) {
+    tags.push(buildTag("version", version));
+  }
+  if (datacenter) {
+    tags.push(buildTag("datacenter", datacenter));
+  }
+  return tags;
+}
+var FORBIDDEN_CHARACTERS = /[^a-z0-9_:./-]/;
+function buildTag(key, rawValue) {
+  var valueSizeLimit = TAG_SIZE_LIMIT - key.length - 1;
+  if (rawValue.length > valueSizeLimit || FORBIDDEN_CHARACTERS.test(rawValue)) {
+    display.warn("".concat(key, " value doesn't meet tag requirements and will be sanitized"));
+  }
+  var sanitizedValue = rawValue.replace(/,/g, "_");
+  return "".concat(key, ":").concat(sanitizedValue);
+}
+function computeTransportConfiguration(initConfiguration) {
+  var tags = buildTags(initConfiguration);
+  var endpointBuilders = computeEndpointBuilders(initConfiguration, tags);
+  var intakeEndpoints = objectValues(endpointBuilders).map(function(builder) {
+    return builder.buildIntakeUrl();
+  });
+  var replicaConfiguration = computeReplicaConfiguration(initConfiguration, intakeEndpoints, tags);
+  return assign({
+    isIntakeUrl: function(url) {
+      return intakeEndpoints.some(function(intakeEndpoint) {
+        return url.indexOf(intakeEndpoint) === 0;
+      });
+    },
+    replica: replicaConfiguration,
+    site: initConfiguration.site || INTAKE_SITE_US1
+  }, endpointBuilders);
+}
+function computeEndpointBuilders(initConfiguration, tags) {
+  return {
+    logsEndpointBuilder: createEndpointBuilder(initConfiguration, "logs", tags),
+    rumEndpointBuilder: createEndpointBuilder(initConfiguration, "rum", tags),
+    sessionReplayEndpointBuilder: createEndpointBuilder(initConfiguration, "sessionReplay", tags)
+  };
+}
+function computeReplicaConfiguration(initConfiguration, intakeEndpoints, tags) {
+  if (!initConfiguration.replica) {
+    return;
+  }
+  var replicaConfiguration = assign({}, initConfiguration, {
+    site: INTAKE_SITE_US1,
+    clientToken: initConfiguration.replica.clientToken
+  });
+  var replicaEndpointBuilders = {
+    logsEndpointBuilder: createEndpointBuilder(replicaConfiguration, "logs", tags),
+    rumEndpointBuilder: createEndpointBuilder(replicaConfiguration, "rum", tags)
+  };
+  intakeEndpoints.push.apply(intakeEndpoints, objectValues(replicaEndpointBuilders).map(function(builder) {
+    return builder.buildIntakeUrl();
+  }));
+  return assign({ applicationId: initConfiguration.replica.applicationId }, replicaEndpointBuilders);
+}
+function validateAndBuildConfiguration(initConfiguration) {
+  var _a2, _b;
+  if (!initConfiguration || !initConfiguration.clientToken) {
+    display.error("Client Token is not configured, we will not send any data.");
+    return;
+  }
+  if (initConfiguration.sampleRate !== void 0 && !isPercentage(initConfiguration.sampleRate)) {
+    display.error("Sample Rate should be a number between 0 and 100");
+    return;
+  }
+  if (initConfiguration.telemetrySampleRate !== void 0 && !isPercentage(initConfiguration.telemetrySampleRate)) {
+    display.error("Telemetry Sample Rate should be a number between 0 and 100");
+    return;
+  }
+  updateExperimentalFeatures(initConfiguration.enableExperimentalFeatures);
+  return assign({
+    beforeSend: initConfiguration.beforeSend && catchUserErrors(initConfiguration.beforeSend, "beforeSend threw an error:"),
+    cookieOptions: buildCookieOptions(initConfiguration),
+    sampleRate: (_a2 = initConfiguration.sampleRate) !== null && _a2 !== void 0 ? _a2 : 100,
+    telemetrySampleRate: (_b = initConfiguration.telemetrySampleRate) !== null && _b !== void 0 ? _b : 20,
+    service: initConfiguration.service,
+    silentMultipleInit: !!initConfiguration.silentMultipleInit,
+    batchBytesLimit: isExperimentalFeatureEnabled("lower-batch-size") ? 10 * ONE_KILO_BYTE : 16 * ONE_KILO_BYTE,
+    eventRateLimiterThreshold: 3e3,
+    maxTelemetryEventsPerPage: 15,
+    flushTimeout: 30 * ONE_SECOND,
+    batchMessagesLimit: 50,
+    messageBytesLimit: 256 * ONE_KILO_BYTE
+  }, computeTransportConfiguration(initConfiguration));
+}
+function buildCookieOptions(initConfiguration) {
+  var cookieOptions = {};
+  cookieOptions.secure = mustUseSecureCookie(initConfiguration);
+  cookieOptions.crossSite = !!initConfiguration.useCrossSiteSessionCookie;
+  if (initConfiguration.trackSessionAcrossSubdomains) {
+    cookieOptions.domain = getCurrentSite();
+  }
+  return cookieOptions;
+}
+function mustUseSecureCookie(initConfiguration) {
+  return !!initConfiguration.useSecureSessionCookie || !!initConfiguration.useCrossSiteSessionCookie;
+}
+var UNKNOWN_FUNCTION = "?";
+function computeStackTrace(ex) {
+  var stack = [];
+  var stackProperty = tryToGetString(ex, "stack");
+  if (stackProperty) {
+    stackProperty.split("\n").forEach(function(line) {
+      var stackFrame = parseChromeLine(line) || parseWinLine(line) || parseGeckoLine(line);
+      if (stackFrame) {
+        if (!stackFrame.func && stackFrame.line) {
+          stackFrame.func = UNKNOWN_FUNCTION;
+        }
+        stack.push(stackFrame);
+      }
+    });
+  }
+  return {
+    message: tryToGetString(ex, "message"),
+    name: tryToGetString(ex, "name"),
+    stack
+  };
+}
+var CHROME_LINE_RE = /^\s*at (.*?) ?\(((?:file|https?|blob|chrome-extension|native|eval|webpack|<anonymous>|\/).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i;
+var CHROME_EVAL_RE = /\((\S*)(?::(\d+))(?::(\d+))\)/;
+function parseChromeLine(line) {
+  var parts = CHROME_LINE_RE.exec(line);
+  if (!parts) {
+    return;
+  }
+  var isNative = parts[2] && parts[2].indexOf("native") === 0;
+  var isEval = parts[2] && parts[2].indexOf("eval") === 0;
+  var submatch = CHROME_EVAL_RE.exec(parts[2]);
+  if (isEval && submatch) {
+    parts[2] = submatch[1];
+    parts[3] = submatch[2];
+    parts[4] = submatch[3];
+  }
+  return {
+    args: isNative ? [parts[2]] : [],
+    column: parts[4] ? +parts[4] : void 0,
+    func: parts[1] || UNKNOWN_FUNCTION,
+    line: parts[3] ? +parts[3] : void 0,
+    url: !isNative ? parts[2] : void 0
+  };
+}
+var WINJS_LINE_RE = /^\s*at (?:((?:\[object object\])?.+) )?\(?((?:file|ms-appx|https?|webpack|blob):.*?):(\d+)(?::(\d+))?\)?\s*$/i;
+function parseWinLine(line) {
+  var parts = WINJS_LINE_RE.exec(line);
+  if (!parts) {
+    return;
+  }
+  return {
+    args: [],
+    column: parts[4] ? +parts[4] : void 0,
+    func: parts[1] || UNKNOWN_FUNCTION,
+    line: +parts[3],
+    url: parts[2]
+  };
+}
+var GECKO_LINE_RE = /^\s*(.*?)(?:\((.*?)\))?(?:^|@)((?:file|https?|blob|chrome|webpack|resource|capacitor|\[native).*?|[^@]*bundle)(?::(\d+))?(?::(\d+))?\s*$/i;
+var GECKO_EVAL_RE = /(\S+) line (\d+)(?: > eval line \d+)* > eval/i;
+function parseGeckoLine(line) {
+  var parts = GECKO_LINE_RE.exec(line);
+  if (!parts) {
+    return;
+  }
+  var isEval = parts[3] && parts[3].indexOf(" > eval") > -1;
+  var submatch = GECKO_EVAL_RE.exec(parts[3]);
+  if (isEval && submatch) {
+    parts[3] = submatch[1];
+    parts[4] = submatch[2];
+    parts[5] = void 0;
+  }
+  return {
+    args: parts[2] ? parts[2].split(",") : [],
+    column: parts[5] ? +parts[5] : void 0,
+    func: parts[1] || UNKNOWN_FUNCTION,
+    line: parts[4] ? +parts[4] : void 0,
+    url: parts[3]
+  };
+}
+function tryToGetString(candidate, property) {
+  if (typeof candidate !== "object" || !candidate || !(property in candidate)) {
+    return void 0;
+  }
+  var value = candidate[property];
+  return typeof value === "string" ? value : void 0;
+}
 function instrumentMethod(object, method, instrumentationFactory) {
   var original = object[method];
   var instrumentation = instrumentationFactory(original);
@@ -552,6 +936,44 @@ function createHandlingStack() {
   });
   return formattedStack;
 }
+function trackRuntimeError(errorObservable) {
+  return startUnhandledErrorCollection(function(stackTrace, errorObject) {
+    var _a2 = formatUnknownError(stackTrace, errorObject, "Uncaught"), stack = _a2.stack, message = _a2.message, type2 = _a2.type;
+    errorObservable.notify({
+      message,
+      stack,
+      type: type2,
+      source: ErrorSource.SOURCE,
+      startClocks: clocksNow(),
+      originalError: errorObject,
+      handling: "unhandled"
+    });
+  });
+}
+function makePublicApi(stub) {
+  var publicApi = assign({
+    version: "4.14.0",
+    onReady: function(callback) {
+      callback();
+    }
+  }, stub);
+  Object.defineProperty(publicApi, "_setDebug", {
+    get: function() {
+      return setDebugMode;
+    },
+    enumerable: false
+  });
+  return publicApi;
+}
+function defineGlobal(global, name2, api) {
+  var existingGlobalVariable = global[name2];
+  global[name2] = api;
+  if (existingGlobalVariable && existingGlobalVariable.q) {
+    existingGlobalVariable.q.forEach(function(fn) {
+      return catchUserErrors(fn, "onReady callback threw an error:")();
+    });
+  }
+}
 var Observable = function() {
   function Observable2(onFirstSubscribe) {
     this.onFirstSubscribe = onFirstSubscribe;
@@ -599,548 +1021,6 @@ function mergeObservables() {
     };
   });
   return globalObservable;
-}
-function timeStampNow() {
-  return Date.now();
-}
-function relativeNow() {
-  return performance.now();
-}
-function clocksNow() {
-  return { relative: relativeNow(), timeStamp: timeStampNow() };
-}
-function clocksOrigin() {
-  return { relative: 0, timeStamp: getNavigationStart() };
-}
-function elapsed(start, end) {
-  return end - start;
-}
-function getRelativeTime(timestamp) {
-  return timestamp - getNavigationStart();
-}
-var navigationStart;
-function getNavigationStart() {
-  if (navigationStart === void 0) {
-    navigationStart = performance.timing.navigationStart;
-  }
-  return navigationStart;
-}
-var __spreadArray = globalThis && globalThis.__spreadArray || function(to, from, pack) {
-  if (pack || arguments.length === 2)
-    for (var i = 0, l = from.length, ar; i < l; i++) {
-      if (ar || !(i in from)) {
-        if (!ar)
-          ar = Array.prototype.slice.call(from, 0, i);
-        ar[i] = from[i];
-      }
-    }
-  return to.concat(ar || Array.prototype.slice.call(from));
-};
-var ALLOWED_FRAME_URLS = [
-  "https://www.datadoghq-browser-agent.com",
-  "https://www.datad0g-browser-agent.com",
-  "http://localhost",
-  "<anonymous>"
-];
-var TELEMETRY_EXCLUDED_SITES = [INTAKE_SITE_US1_FED];
-var telemetryConfiguration = { maxEventsPerPage: 0, sentEventCount: 0, telemetryEnabled: false };
-var onRawTelemetryEventCollected;
-function startTelemetry(configuration) {
-  var contextProvider;
-  var observable = new Observable();
-  telemetryConfiguration.telemetryEnabled = performDraw(configuration.telemetrySampleRate);
-  onRawTelemetryEventCollected = function(event) {
-    if (!includes(TELEMETRY_EXCLUDED_SITES, configuration.site) && telemetryConfiguration.telemetryEnabled) {
-      observable.notify(toTelemetryEvent(event));
-    }
-  };
-  assign(telemetryConfiguration, {
-    maxEventsPerPage: configuration.maxTelemetryEventsPerPage,
-    sentEventCount: 0
-  });
-  function toTelemetryEvent(event) {
-    return combine({
-      type: "telemetry",
-      date: timeStampNow(),
-      service: "browser-sdk",
-      version: "4.11.1",
-      source: "browser",
-      _dd: {
-        format_version: 2
-      },
-      telemetry: event
-    }, contextProvider !== void 0 ? contextProvider() : {});
-  }
-  return {
-    setContextProvider: function(provider) {
-      contextProvider = provider;
-    },
-    observable
-  };
-}
-function isTelemetryReplicationAllowed(configuration) {
-  return configuration.site === INTAKE_SITE_STAGING;
-}
-function monitored(_, __, descriptor) {
-  var originalMethod = descriptor.value;
-  descriptor.value = function() {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-      args[_i] = arguments[_i];
-    }
-    var decorated = onRawTelemetryEventCollected ? monitor(originalMethod) : originalMethod;
-    return decorated.apply(this, args);
-  };
-}
-function monitor(fn) {
-  return function() {
-    return callMonitored(fn, this, arguments);
-  };
-}
-function callMonitored(fn, context, args) {
-  try {
-    return fn.apply(context, args);
-  } catch (e) {
-    displayIfDebugEnabled(ConsoleApiName.error, e);
-    try {
-      addTelemetryError(e);
-    } catch (e2) {
-      displayIfDebugEnabled(ConsoleApiName.error, e2);
-    }
-  }
-}
-function addTelemetryDebug(message, context) {
-  displayIfDebugEnabled(ConsoleApiName.debug, message, context);
-  addTelemetry(assign({
-    message,
-    status: "debug"
-  }, context));
-}
-function addTelemetryError(e) {
-  addTelemetry(assign({
-    status: "error"
-  }, formatError(e)));
-}
-function addTelemetry(event) {
-  if (onRawTelemetryEventCollected && telemetryConfiguration.sentEventCount < telemetryConfiguration.maxEventsPerPage) {
-    telemetryConfiguration.sentEventCount += 1;
-    onRawTelemetryEventCollected(event);
-  }
-}
-function formatError(e) {
-  if (e instanceof Error) {
-    var stackTrace = computeStackTrace(e);
-    return {
-      error: {
-        kind: stackTrace.name,
-        stack: toStackTraceString(scrubCustomerFrames(stackTrace))
-      },
-      message: stackTrace.message
-    };
-  }
-  return {
-    error: {
-      stack: "Not an instance of error"
-    },
-    message: "Uncaught ".concat(jsonStringify(e))
-  };
-}
-function scrubCustomerFrames(stackTrace) {
-  stackTrace.stack = stackTrace.stack.filter(function(frame) {
-    return !frame.url || ALLOWED_FRAME_URLS.some(function(allowedFrameUrl) {
-      return startsWith(frame.url, allowedFrameUrl);
-    });
-  });
-  return stackTrace;
-}
-function setDebugMode(debugMode) {
-  telemetryConfiguration.debugMode = debugMode;
-}
-function displayIfDebugEnabled(api) {
-  var args = [];
-  for (var _i = 1; _i < arguments.length; _i++) {
-    args[_i - 1] = arguments[_i];
-  }
-  if (telemetryConfiguration.debugMode) {
-    display.apply(void 0, __spreadArray([api, "[TELEMETRY]"], args, false));
-  }
-}
-var ConsoleApiName = {
-  log: "log",
-  debug: "debug",
-  info: "info",
-  warn: "warn",
-  error: "error"
-};
-var consoleObservablesByApi = {};
-function initConsoleObservable(apis) {
-  var consoleObservables = apis.map(function(api) {
-    if (!consoleObservablesByApi[api]) {
-      consoleObservablesByApi[api] = createConsoleObservable(api);
-    }
-    return consoleObservablesByApi[api];
-  });
-  return mergeObservables.apply(void 0, consoleObservables);
-}
-function createConsoleObservable(api) {
-  var observable = new Observable(function() {
-    var originalConsoleApi = console[api];
-    console[api] = function() {
-      var params = [];
-      for (var _i = 0; _i < arguments.length; _i++) {
-        params[_i] = arguments[_i];
-      }
-      originalConsoleApi.apply(console, params);
-      var handlingStack = createHandlingStack();
-      callMonitored(function() {
-        observable.notify(buildConsoleLog(params, api, handlingStack));
-      });
-    };
-    return function() {
-      console[api] = originalConsoleApi;
-    };
-  });
-  return observable;
-}
-function buildConsoleLog(params, api, handlingStack) {
-  var message = params.map(function(param) {
-    return formatConsoleParameters(param);
-  }).join(" ");
-  var stack;
-  if (api === ConsoleApiName.error) {
-    var firstErrorParam = find(params, function(param) {
-      return param instanceof Error;
-    });
-    stack = firstErrorParam ? toStackTraceString(computeStackTrace(firstErrorParam)) : void 0;
-    message = "console error: ".concat(message);
-  }
-  return {
-    api,
-    message,
-    stack,
-    handlingStack
-  };
-}
-function formatConsoleParameters(param) {
-  if (typeof param === "string") {
-    return param;
-  }
-  if (param instanceof Error) {
-    return formatErrorMessage(computeStackTrace(param));
-  }
-  return jsonStringify(param, void 0, 2);
-}
-var display = function(api) {
-  var args = [];
-  for (var _i = 1; _i < arguments.length; _i++) {
-    args[_i - 1] = arguments[_i];
-  }
-  if (!Object.prototype.hasOwnProperty.call(ConsoleApiName, api)) {
-    api = ConsoleApiName.log;
-  }
-  display[api].apply(display, args);
-};
-display.debug = console.debug.bind(console);
-display.log = console.log.bind(console);
-display.info = console.info.bind(console);
-display.warn = console.warn.bind(console);
-display.error = console.error.bind(console);
-var COOKIE_ACCESS_DELAY = ONE_SECOND;
-function setCookie(name2, value, expireDelay, options) {
-  var date = new Date();
-  date.setTime(date.getTime() + expireDelay);
-  var expires = "expires=".concat(date.toUTCString());
-  var sameSite = options && options.crossSite ? "none" : "strict";
-  var domain = options && options.domain ? ";domain=".concat(options.domain) : "";
-  var secure = options && options.secure ? ";secure" : "";
-  document.cookie = "".concat(name2, "=").concat(value, ";").concat(expires, ";path=/;samesite=").concat(sameSite).concat(domain).concat(secure);
-}
-function getCookie(name2) {
-  return findCommaSeparatedValue(document.cookie, name2);
-}
-function deleteCookie(name2, options) {
-  setCookie(name2, "", 0, options);
-}
-function areCookiesAuthorized(options) {
-  if (document.cookie === void 0 || document.cookie === null) {
-    return false;
-  }
-  try {
-    var testCookieName = "dd_cookie_test_".concat(generateUUID());
-    var testCookieValue = "test";
-    setCookie(testCookieName, testCookieValue, ONE_SECOND, options);
-    var isCookieCorrectlySet = getCookie(testCookieName) === testCookieValue;
-    deleteCookie(testCookieName, options);
-    return isCookieCorrectlySet;
-  } catch (error) {
-    display.error(error);
-    return false;
-  }
-}
-var getCurrentSiteCache;
-function getCurrentSite() {
-  if (getCurrentSiteCache === void 0) {
-    var testCookieName = "dd_site_test_".concat(generateUUID());
-    var testCookieValue = "test";
-    var domainLevels = window.location.hostname.split(".");
-    var candidateDomain = domainLevels.pop();
-    while (domainLevels.length && !getCookie(testCookieName)) {
-      candidateDomain = "".concat(domainLevels.pop(), ".").concat(candidateDomain);
-      setCookie(testCookieName, testCookieValue, ONE_SECOND, { domain: candidateDomain });
-    }
-    deleteCookie(testCookieName, { domain: candidateDomain });
-    getCurrentSiteCache = candidateDomain;
-  }
-  return getCurrentSiteCache;
-}
-function catchUserErrors(fn, errorMsg) {
-  return function() {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-      args[_i] = arguments[_i];
-    }
-    try {
-      return fn.apply(void 0, args);
-    } catch (err) {
-      display.error(errorMsg, err);
-    }
-  };
-}
-var enabledExperimentalFeatures;
-function updateExperimentalFeatures(enabledFeatures) {
-  if (!Array.isArray(enabledFeatures)) {
-    return;
-  }
-  if (!enabledExperimentalFeatures) {
-    enabledExperimentalFeatures = new Set(enabledFeatures);
-  }
-  enabledFeatures.filter(function(flag) {
-    return typeof flag === "string";
-  }).forEach(function(flag) {
-    enabledExperimentalFeatures.add(flag);
-  });
-}
-function isExperimentalFeatureEnabled(featureName) {
-  return !!enabledExperimentalFeatures && enabledExperimentalFeatures.has(featureName);
-}
-function normalizeUrl(url) {
-  return buildUrl(url, getLocationOrigin()).href;
-}
-function buildUrl(url, base) {
-  if (checkURLSupported()) {
-    return base !== void 0 ? new URL(url, base) : new URL(url);
-  }
-  if (base === void 0 && !/:/.test(url)) {
-    throw new Error("Invalid URL: '".concat(url, "'"));
-  }
-  var doc = document;
-  var anchorElement = doc.createElement("a");
-  if (base !== void 0) {
-    doc = document.implementation.createHTMLDocument("");
-    var baseElement = doc.createElement("base");
-    baseElement.href = base;
-    doc.head.appendChild(baseElement);
-    doc.body.appendChild(anchorElement);
-  }
-  anchorElement.href = url;
-  return anchorElement;
-}
-var isURLSupported;
-function checkURLSupported() {
-  if (isURLSupported !== void 0) {
-    return isURLSupported;
-  }
-  try {
-    var url = new URL("http://test/path");
-    isURLSupported = url.href === "http://test/path";
-    return isURLSupported;
-  } catch (_a2) {
-    isURLSupported = false;
-  }
-  return isURLSupported;
-}
-var INTAKE_SITE_STAGING = "datad0g.com";
-var INTAKE_SITE_US1 = "datadoghq.com";
-var INTAKE_SITE_US1_FED = "ddog-gov.com";
-var ENDPOINTS = {
-  logs: "logs",
-  rum: "rum",
-  sessionReplay: "session-replay"
-};
-var INTAKE_TRACKS = {
-  logs: "logs",
-  rum: "rum",
-  sessionReplay: "replay"
-};
-function createEndpointBuilder(initConfiguration, endpointType, tags) {
-  var _a2 = initConfiguration.site, site = _a2 === void 0 ? INTAKE_SITE_US1 : _a2, clientToken = initConfiguration.clientToken;
-  var domainParts = site.split(".");
-  var extension = domainParts.pop();
-  var host = "".concat(ENDPOINTS[endpointType], ".browser-intake-").concat(domainParts.join("-"), ".").concat(extension);
-  var baseUrl = "https://".concat(host, "/api/v2/").concat(INTAKE_TRACKS[endpointType]);
-  var proxyUrl = initConfiguration.proxyUrl && normalizeUrl(initConfiguration.proxyUrl);
-  return {
-    build: function() {
-      var parameters = "ddsource=browser" + "&ddtags=".concat(encodeURIComponent(["sdk_version:".concat("4.11.1")].concat(tags).join(","))) + "&dd-api-key=".concat(clientToken) + "&dd-evp-origin-version=".concat(encodeURIComponent("4.11.1")) + "&dd-evp-origin=browser" + "&dd-request-id=".concat(generateUUID());
-      if (endpointType === "rum") {
-        parameters += "&batch_time=".concat(timeStampNow());
-      }
-      var endpointUrl = "".concat(baseUrl, "?").concat(parameters);
-      return proxyUrl ? "".concat(proxyUrl, "?ddforward=").concat(encodeURIComponent(endpointUrl)) : endpointUrl;
-    },
-    buildIntakeUrl: function() {
-      return proxyUrl ? "".concat(proxyUrl, "?ddforward") : baseUrl;
-    },
-    endpointType
-  };
-}
-var TAG_SIZE_LIMIT = 200;
-function buildTags(configuration) {
-  var env = configuration.env, service = configuration.service, version = configuration.version, datacenter = configuration.datacenter;
-  var tags = [];
-  if (env) {
-    tags.push(buildTag("env", env));
-  }
-  if (service) {
-    tags.push(buildTag("service", service));
-  }
-  if (version) {
-    tags.push(buildTag("version", version));
-  }
-  if (datacenter) {
-    tags.push(buildTag("datacenter", datacenter));
-  }
-  return tags;
-}
-var FORBIDDEN_CHARACTERS = /[^a-z0-9_:./-]/;
-function buildTag(key, rawValue) {
-  var valueSizeLimit = TAG_SIZE_LIMIT - key.length - 1;
-  if (rawValue.length > valueSizeLimit || FORBIDDEN_CHARACTERS.test(rawValue)) {
-    display.warn("".concat(key, " value doesn't meet tag requirements and will be sanitized"));
-  }
-  var sanitizedValue = rawValue.replace(/,/g, "_");
-  return "".concat(key, ":").concat(sanitizedValue);
-}
-function computeTransportConfiguration(initConfiguration) {
-  var tags = buildTags(initConfiguration);
-  var endpointBuilders = computeEndpointBuilders(initConfiguration, tags);
-  var intakeEndpoints = objectValues(endpointBuilders).map(function(builder) {
-    return builder.buildIntakeUrl();
-  });
-  var replicaConfiguration = computeReplicaConfiguration(initConfiguration, intakeEndpoints, tags);
-  return assign({
-    isIntakeUrl: function(url) {
-      return intakeEndpoints.some(function(intakeEndpoint) {
-        return url.indexOf(intakeEndpoint) === 0;
-      });
-    },
-    replica: replicaConfiguration,
-    site: initConfiguration.site || INTAKE_SITE_US1
-  }, endpointBuilders);
-}
-function computeEndpointBuilders(initConfiguration, tags) {
-  return {
-    logsEndpointBuilder: createEndpointBuilder(initConfiguration, "logs", tags),
-    rumEndpointBuilder: createEndpointBuilder(initConfiguration, "rum", tags),
-    sessionReplayEndpointBuilder: createEndpointBuilder(initConfiguration, "sessionReplay", tags)
-  };
-}
-function computeReplicaConfiguration(initConfiguration, intakeEndpoints, tags) {
-  if (!initConfiguration.replica) {
-    return;
-  }
-  var replicaConfiguration = assign({}, initConfiguration, {
-    site: INTAKE_SITE_US1,
-    clientToken: initConfiguration.replica.clientToken
-  });
-  var replicaEndpointBuilders = {
-    logsEndpointBuilder: createEndpointBuilder(replicaConfiguration, "logs", tags),
-    rumEndpointBuilder: createEndpointBuilder(replicaConfiguration, "rum", tags)
-  };
-  intakeEndpoints.push.apply(intakeEndpoints, objectValues(replicaEndpointBuilders).map(function(builder) {
-    return builder.buildIntakeUrl();
-  }));
-  return assign({ applicationId: initConfiguration.replica.applicationId }, replicaEndpointBuilders);
-}
-function validateAndBuildConfiguration(initConfiguration) {
-  var _a2, _b;
-  if (!initConfiguration || !initConfiguration.clientToken) {
-    display.error("Client Token is not configured, we will not send any data.");
-    return;
-  }
-  if (initConfiguration.sampleRate !== void 0 && !isPercentage(initConfiguration.sampleRate)) {
-    display.error("Sample Rate should be a number between 0 and 100");
-    return;
-  }
-  if (initConfiguration.telemetrySampleRate !== void 0 && !isPercentage(initConfiguration.telemetrySampleRate)) {
-    display.error("Telemetry Sample Rate should be a number between 0 and 100");
-    return;
-  }
-  updateExperimentalFeatures(initConfiguration.enableExperimentalFeatures);
-  return assign({
-    beforeSend: initConfiguration.beforeSend && catchUserErrors(initConfiguration.beforeSend, "beforeSend threw an error:"),
-    cookieOptions: buildCookieOptions(initConfiguration),
-    sampleRate: (_a2 = initConfiguration.sampleRate) !== null && _a2 !== void 0 ? _a2 : 100,
-    telemetrySampleRate: (_b = initConfiguration.telemetrySampleRate) !== null && _b !== void 0 ? _b : 20,
-    service: initConfiguration.service,
-    silentMultipleInit: !!initConfiguration.silentMultipleInit,
-    batchBytesLimit: isExperimentalFeatureEnabled("lower-batch-size") ? 10 * ONE_KILO_BYTE : 16 * ONE_KILO_BYTE,
-    eventRateLimiterThreshold: 3e3,
-    maxTelemetryEventsPerPage: 15,
-    flushTimeout: 30 * ONE_SECOND,
-    batchMessagesLimit: 50,
-    messageBytesLimit: 256 * ONE_KILO_BYTE
-  }, computeTransportConfiguration(initConfiguration));
-}
-function buildCookieOptions(initConfiguration) {
-  var cookieOptions = {};
-  cookieOptions.secure = mustUseSecureCookie(initConfiguration);
-  cookieOptions.crossSite = !!initConfiguration.useCrossSiteSessionCookie;
-  if (initConfiguration.trackSessionAcrossSubdomains) {
-    cookieOptions.domain = getCurrentSite();
-  }
-  return cookieOptions;
-}
-function mustUseSecureCookie(initConfiguration) {
-  return !!initConfiguration.useSecureSessionCookie || !!initConfiguration.useCrossSiteSessionCookie;
-}
-function trackRuntimeError(errorObservable) {
-  return startUnhandledErrorCollection(function(stackTrace, errorObject) {
-    var _a2 = formatUnknownError(stackTrace, errorObject, "Uncaught"), stack = _a2.stack, message = _a2.message, type2 = _a2.type;
-    errorObservable.notify({
-      message,
-      stack,
-      type: type2,
-      source: ErrorSource.SOURCE,
-      startClocks: clocksNow(),
-      originalError: errorObject,
-      handling: "unhandled"
-    });
-  });
-}
-function makePublicApi(stub) {
-  var publicApi = assign({
-    version: "4.11.1",
-    onReady: function(callback) {
-      callback();
-    }
-  }, stub);
-  Object.defineProperty(publicApi, "_setDebug", {
-    get: function() {
-      return setDebugMode;
-    },
-    enumerable: false
-  });
-  return publicApi;
-}
-function defineGlobal(global, name2, api) {
-  var existingGlobalVariable = global[name2];
-  global[name2] = api;
-  if (existingGlobalVariable && existingGlobalVariable.q) {
-    existingGlobalVariable.q.forEach(function(fn) {
-      return catchUserErrors(fn, "onReady callback threw an error:")();
-    });
-  }
 }
 var RawReportType = {
   intervention: "intervention",
@@ -1223,6 +1103,96 @@ function buildStack(name2, message, sourceFile, lineNumber, columnNumber) {
       }
     ]
   });
+}
+var ALLOWED_FRAME_URLS = [
+  "https://www.datadoghq-browser-agent.com",
+  "https://www.datad0g-browser-agent.com",
+  "http://localhost",
+  "<anonymous>"
+];
+var TELEMETRY_EXCLUDED_SITES = [INTAKE_SITE_US1_FED];
+var telemetryConfiguration = { maxEventsPerPage: 0, sentEventCount: 0, telemetryEnabled: false };
+var onRawTelemetryEventCollected;
+function startTelemetry(configuration) {
+  var contextProvider;
+  var observable = new Observable();
+  telemetryConfiguration.telemetryEnabled = performDraw(configuration.telemetrySampleRate);
+  onRawTelemetryEventCollected = function(event) {
+    if (!includes(TELEMETRY_EXCLUDED_SITES, configuration.site) && telemetryConfiguration.telemetryEnabled) {
+      observable.notify(toTelemetryEvent(event));
+    }
+  };
+  startMonitorErrorCollection(addTelemetryError);
+  assign(telemetryConfiguration, {
+    maxEventsPerPage: configuration.maxTelemetryEventsPerPage,
+    sentEventCount: 0
+  });
+  function toTelemetryEvent(event) {
+    return combine({
+      type: "telemetry",
+      date: timeStampNow(),
+      service: "browser-sdk",
+      version: "4.14.0",
+      source: "browser",
+      _dd: {
+        format_version: 2
+      },
+      telemetry: event
+    }, contextProvider !== void 0 ? contextProvider() : {});
+  }
+  return {
+    setContextProvider: function(provider) {
+      contextProvider = provider;
+    },
+    observable
+  };
+}
+function isTelemetryReplicationAllowed(configuration) {
+  return configuration.site === INTAKE_SITE_STAGING;
+}
+function addTelemetryDebug(message, context) {
+  displayIfDebugEnabled(ConsoleApiName.debug, message, context);
+  addTelemetry(assign({
+    message,
+    status: "debug"
+  }, context));
+}
+function addTelemetryError(e) {
+  addTelemetry(assign({
+    status: "error"
+  }, formatError(e)));
+}
+function addTelemetry(event) {
+  if (onRawTelemetryEventCollected && telemetryConfiguration.sentEventCount < telemetryConfiguration.maxEventsPerPage) {
+    telemetryConfiguration.sentEventCount += 1;
+    onRawTelemetryEventCollected(event);
+  }
+}
+function formatError(e) {
+  if (e instanceof Error) {
+    var stackTrace = computeStackTrace(e);
+    return {
+      error: {
+        kind: stackTrace.name,
+        stack: toStackTraceString(scrubCustomerFrames(stackTrace))
+      },
+      message: stackTrace.message
+    };
+  }
+  return {
+    error: {
+      stack: "Not an instance of error"
+    },
+    message: "Uncaught ".concat(jsonStringify(e))
+  };
+}
+function scrubCustomerFrames(stackTrace) {
+  stackTrace.stack = stackTrace.stack.filter(function(frame) {
+    return !frame.url || ALLOWED_FRAME_URLS.some(function(allowedFrameUrl) {
+      return startsWith(frame.url, allowedFrameUrl);
+    });
+  });
+  return stackTrace;
 }
 var END_OF_TIMES = Infinity;
 var CLEAR_OLD_CONTEXTS_INTERVAL = ONE_MINUTE;
@@ -1388,7 +1358,7 @@ function persistSession(session, options) {
     clearSession(options);
     return;
   }
-  session.expire = String(Date.now() + SESSION_EXPIRATION_DELAY);
+  session.expire = String(dateNow() + SESSION_EXPIRATION_DELAY);
   setSession(session, options);
 }
 function setSession(session, options) {
@@ -1504,7 +1474,7 @@ function startSessionStore(options, productKey, computeSessionState2) {
     cookieSession[productKey] = trackingType;
     if (isTracked && !cookieSession.id) {
       cookieSession.id = generateUUID();
-      cookieSession.created = String(Date.now());
+      cookieSession.created = String(dateNow());
     }
     return isTracked;
   }
@@ -1530,7 +1500,7 @@ function startSessionStore(options, productKey, computeSessionState2) {
     return {};
   }
   function isActiveSession(session) {
-    return (session.created === void 0 || Date.now() - Number(session.created) < SESSION_TIME_OUT_DELAY) && (session.expire === void 0 || Date.now() < Number(session.expire));
+    return (session.created === void 0 || dateNow() - Number(session.created) < SESSION_TIME_OUT_DELAY) && (session.expire === void 0 || dateNow() < Number(session.expire));
   }
   return {
     expandOrRenewSession: throttle(monitor(expandOrRenewSession), COOKIE_ACCESS_DELAY).throttled,
@@ -1593,12 +1563,12 @@ function trackVisibility(expandSession) {
 }
 var LOCAL_STORAGE_KEY = "datadog-browser-sdk-failed-send-beacon";
 function addFailedSendBeacon(endpointType, size, reason) {
-  if (!isExperimentalFeatureEnabled("lower-batch-size"))
+  if (!isExperimentalFeatureEnabled("failed-sendbeacon"))
     return;
   var failSendBeaconLog = {
     reason,
     endpointType,
-    version: "4.11.1",
+    version: "4.14.0",
     connection: navigator.connection ? navigator.connection.effectiveType : void 0,
     onLine: navigator.onLine,
     size
@@ -1614,7 +1584,7 @@ var HttpRequest = function() {
     this.endpointBuilder = endpointBuilder;
     this.bytesLimit = bytesLimit;
   }
-  HttpRequest2.prototype.send = function(data, bytesCount, reason) {
+  HttpRequest2.prototype.send = function(data, bytesCount, flushReason) {
     var url = this.endpointBuilder.build();
     var canUseBeacon = !!navigator.sendBeacon && bytesCount < this.bytesLimit;
     if (canUseBeacon) {
@@ -1623,7 +1593,7 @@ var HttpRequest = function() {
         if (isQueued) {
           return;
         }
-        addFailedSendBeacon(this.endpointBuilder.endpointType, bytesCount, reason);
+        addFailedSendBeacon(this.endpointBuilder.endpointType, bytesCount, flushReason);
       } catch (e) {
         reportBeaconError(e);
       }
@@ -1669,11 +1639,12 @@ var Batch = function() {
   Batch2.prototype.flush = function(reason) {
     if (this.bufferMessagesCount !== 0) {
       var messages = this.pushOnlyBuffer.concat(objectValues(this.upsertBuffer));
-      this.request.send(messages.join("\n"), this.bufferBytesCount, reason);
+      var bytesCount = this.bufferBytesCount;
       this.pushOnlyBuffer = [];
       this.upsertBuffer = {};
       this.bufferBytesCount = 0;
       this.bufferMessagesCount = 0;
+      this.request.send(messages.join("\n"), bytesCount, reason);
     }
   };
   Batch2.prototype.computeBytesCount = function(candidate) {
@@ -1983,6 +1954,64 @@ function afterSend(observable, responsePromise, startContext) {
     }
   };
   responsePromise.then(monitor(reportFetch), monitor(reportFetch));
+}
+var consoleObservablesByApi = {};
+function initConsoleObservable(apis) {
+  var consoleObservables = apis.map(function(api) {
+    if (!consoleObservablesByApi[api]) {
+      consoleObservablesByApi[api] = createConsoleObservable(api);
+    }
+    return consoleObservablesByApi[api];
+  });
+  return mergeObservables.apply(void 0, consoleObservables);
+}
+function createConsoleObservable(api) {
+  var observable = new Observable(function() {
+    var originalConsoleApi = console[api];
+    console[api] = function() {
+      var params = [];
+      for (var _i = 0; _i < arguments.length; _i++) {
+        params[_i] = arguments[_i];
+      }
+      originalConsoleApi.apply(console, params);
+      var handlingStack = createHandlingStack();
+      callMonitored(function() {
+        observable.notify(buildConsoleLog(params, api, handlingStack));
+      });
+    };
+    return function() {
+      console[api] = originalConsoleApi;
+    };
+  });
+  return observable;
+}
+function buildConsoleLog(params, api, handlingStack) {
+  var message = params.map(function(param) {
+    return formatConsoleParameters(param);
+  }).join(" ");
+  var stack;
+  if (api === ConsoleApiName.error) {
+    var firstErrorParam = find(params, function(param) {
+      return param instanceof Error;
+    });
+    stack = firstErrorParam ? toStackTraceString(computeStackTrace(firstErrorParam)) : void 0;
+    message = "console error: ".concat(message);
+  }
+  return {
+    api,
+    message,
+    stack,
+    handlingStack
+  };
+}
+function formatConsoleParameters(param) {
+  if (typeof param === "string") {
+    return param;
+  }
+  if (param instanceof Error) {
+    return formatErrorMessage(computeStackTrace(param));
+  }
+  return jsonStringify(param, void 0, 2);
 }
 var BUFFER_LIMIT = 500;
 var BoundedBuffer = function() {
@@ -2398,6 +2427,9 @@ function startReportCollection(configuration, lifeCycle) {
   };
 }
 function startNetworkErrorCollection(configuration, lifeCycle) {
+  if (!configuration.forwardErrorsToLogs) {
+    return { stop: noop };
+  }
   var xhrSubscription = initXhrObservable().subscribe(function(context) {
     if (context.state === "complete") {
       handleCompleteRequest("xhr", context);
@@ -2543,13 +2575,12 @@ function readLimitedAmountOfBytes(stream, limit, callback) {
     callback(void 0, completeBuffer.slice(0, limit), completeBuffer.length > limit);
   }
 }
-function startRuntimeErrorCollection(configuration, lifeCycle, rawErrorObservable) {
-  if (rawErrorObservable === void 0) {
-    rawErrorObservable = new Observable();
+function startRuntimeErrorCollection(configuration, lifeCycle) {
+  if (!configuration.forwardErrorsToLogs) {
+    return { stop: noop };
   }
-  if (configuration.forwardErrorsToLogs) {
-    trackRuntimeError(rawErrorObservable);
-  }
+  var rawErrorObservable = new Observable();
+  var stopRuntimeErrorTracking = trackRuntimeError(rawErrorObservable).stop;
   var rawErrorSubscription = rawErrorObservable.subscribe(function(rawError) {
     lifeCycle.notify(0, {
       rawLogsEvent: {
@@ -2567,6 +2598,7 @@ function startRuntimeErrorCollection(configuration, lifeCycle, rawErrorObservabl
   });
   return {
     stop: function() {
+      stopRuntimeErrorTracking();
       rawErrorSubscription.unsubscribe();
     }
   };
@@ -2680,7 +2712,7 @@ class BrowserLogger {
     __publicField(this, "service", "federated-core");
     __publicField(this, "options");
     __publicField(this, "namespace", "browser");
-    datadogLogs.init({ ...options.config, service });
+    datadogLogs.init(__spreadProps(__spreadValues({}, options.config), { service }));
     datadogLogs.logger.setLevel(logLevel);
     this.options = options;
     this.service = service;
@@ -2697,7 +2729,7 @@ class BrowserLogger {
     const messageToLog = isObject ? JSON.stringify({ data: message }) : message;
     if (this.isLevelEnabled(level)) {
       this.instance[level](`[${this.namespace}] - ${messageToLog}`, {
-        logContext: { componentName, ...logContext }
+        logContext: __spreadValues({ componentName }, logContext)
       });
     }
   }
@@ -3961,7 +3993,7 @@ function createFederatedReact(options) {
     unmount: async () => unmountLifecycle(moduleData, federatedRuntime, options),
     update: async (props) => updateLifecycle(moduleData, federatedRuntime, options)(props)
   };
-  return {
+  return __spreadValues({
     domElementId: domElementId2,
     rootComponent: rootComponent2,
     loadRootComponent,
@@ -3976,9 +4008,8 @@ function createFederatedReact(options) {
         return propValidationFunction(props);
       }
       return true;
-    },
-    ...lifecycles
-  };
+    }
+  }, lifecycles);
 }
 const App = () => {
   return /* @__PURE__ */ jsx(Fragment, {
