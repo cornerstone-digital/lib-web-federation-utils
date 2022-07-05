@@ -12,7 +12,7 @@
     "lerna:test:cc": "lerna run test:cc --stream",
     "lerna:test:cc:watch": "lerna run test:cc:watch --stream",
     "lerna:lint": "lerna run lint --stream",
-    "lerna:build": "lerna run build --stream",
+    "lerna:build": "lerna run build",
     "lerna:version": "lerna version --no-push --conventional-commits --conventional-graduate --force-publish --yes",
     "lerna:version:alpha": "lerna version --no-push --conventional-commits --conventional-prerelease --preid alpha --force-publish --yes",
     "lerna:version:beta": "lerna version --no-push --conventional-commits --conventional-prerelease --preid beta --force-publish --yes",

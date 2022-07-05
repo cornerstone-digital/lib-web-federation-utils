@@ -16,18 +16,6 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@datadog/browser-core@4.14.0":
-  version "4.14.0"
-  resolved "https://registry.npmjs.org/@datadog/browser-core/-/browser-core-4.14.0.tgz#52c4505338b333b0f27c834563bfa0318a136132"
-  integrity sha512-ogtZSxHCi/Uh2V4fe88rlXHPeHy4oYbAzuCjDGn60gVECL4US6xYJ4AVi4nPAvkQun8KaxUQdYMfeohcGBMrYQ==
-
-"@datadog/browser-logs@^4.11.1":
-  version "4.14.0"
-  resolved "https://registry.npmjs.org/@datadog/browser-logs/-/browser-logs-4.14.0.tgz#82a1fe7280973851fb7ee70221717bd1f37abc14"
-  integrity sha512-WBLPVltDcaKF/sgT6LZif5uS1kZ12jkB9s/rx3NZScRgABpNZtY+pmsuLUKFS3Hjb4CmNt8X2vPfd2kxy18y/g==
-  dependencies:
-    "@datadog/browser-core" "4.14.0"
-
 "@jridgewell/resolve-uri@^3.0.3":
   version "3.0.8"
   resolved "https://registry.npmjs.org/@jridgewell/resolve-uri/-/resolve-uri-3.0.8.tgz#687cc2bbf243f4e9a868ecf2262318e2658873a1"
@@ -45,13 +33,6 @@
   dependencies:
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
-
-"@swc/helpers@~0.3.3":
-  version "0.3.17"
-  resolved "https://registry.npmjs.org/@swc/helpers/-/helpers-0.3.17.tgz#7c1b91f43c77e2bba99492162a498d465ef253d5"
-  integrity sha512-tb7Iu+oZ+zWJZ3HJqwx8oNwSDIU440hmVMDPhpACWQWnrZHK99Bxs70gT1L2dnr5Hg50ZRWEFkQCAnOVVV0z1Q==
-  dependencies:
-    tslib "^2.4.0"
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
@@ -102,16 +83,6 @@
   version "8.3.4"
   resolved "https://registry.npmjs.org/@types/uuid/-/uuid-8.3.4.tgz#bd86a43617df0594787d38b735f55c805becf1bc"
   integrity sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==
-
-"@vf/federated-core@^0.4.0-alpha.1":
-  version "0.4.0"
-  resolved "https://vfuk-digital.pkgs.visualstudio.com/_packaging/Web/npm/registry/@vf/federated-core/-/federated-core-0.4.0.tgz#a62a93308da140f54e49be4c768961309a337aea"
-  integrity sha1-piqTMI2hQPVOSb5MdolhMJozeuo=
-  dependencies:
-    "@datadog/browser-logs" "^4.11.1"
-    "@swc/helpers" "~0.3.3"
-    systemjs "^6.12.1"
-    ts-node "^10.8.1"
 
 acorn-walk@^8.1.1:
   version "8.2.0"
@@ -286,7 +257,7 @@ systemjs@^6.12.1:
   resolved "https://registry.npmjs.org/systemjs/-/systemjs-6.12.1.tgz#47cdd23a6ec9f1b01cf5b5f70562c8550da229d3"
   integrity sha512-hqTN6kW+pN6/qro6G9OZ7ceDQOcYno020zBQKpZQLsJhYTDMCMNfXi/Y8duF5iW+4WWZr42ry0MMkcRGpbwG2A==
 
-ts-node@^10.8.0, ts-node@^10.8.1:
+ts-node@^10.8.0:
   version "10.8.2"
   resolved "https://registry.npmjs.org/ts-node/-/ts-node-10.8.2.tgz#3185b75228cef116bf82ffe8762594f54b2a23f2"
   integrity sha512-LYdGnoGddf1D6v8REPtIH+5iq/gTDuZqv2/UJUU7tKjuEU8xVZorBM+buCGNjj+pGEud+sOoM4CX3/YzINpENA==
@@ -304,11 +275,6 @@ ts-node@^10.8.0, ts-node@^10.8.1:
     make-error "^1.1.1"
     v8-compile-cache-lib "^3.0.1"
     yn "3.1.1"
-
-tslib@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
-  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
 
 typescript@^4.7.2:
   version "4.7.4"
