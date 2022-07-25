@@ -98,7 +98,6 @@ export type FederatedPayloadMap = {
   [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: {
     bootstrapTime: string
     modules: Map<string, FederatedModuleParams>
-    modulesBaseUrls: Record<string, string>
     useNativeModules: boolean
     importMapOverridesEnabled: boolean
   }
@@ -599,10 +598,8 @@ export abstract class AbstractFederatedRuntime {
   abstract addImportMapOverridesUi(): void
   abstract ensureSystemJs(): void
   abstract fetchImportMapContent(modulePath: string): Promise<ImportMap>
-  abstract addBaseUrl(scope: string, baseUrl: string): this
 
   // Module Methods
-
   abstract setModuleState(
     module: FederatedModuleParams,
     state: FederatedModuleStatuses

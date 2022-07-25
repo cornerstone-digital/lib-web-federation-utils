@@ -36,7 +36,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   _importMapOverridesEnabled = false
   _debugEnabled = false
   _sharedDependencyBaseUrl = ''
-  _cdnUrl = ''
+  _cdnUrl = process.env['SHARED_CDN_DOMAIN'] || ''
   _modules: Map<string, FederatedModule> = new Map()
   _services: ExposedServicesType = ExposedServices
 
@@ -166,17 +166,11 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     }
   }
 
-  async fetchImportMapContent(modulePath = ''): Promise<ImportMap> {
-    const importMapPath = `${modulePath}/entries-import-map.json`
+  async fetchImportMapContent(): Promise<ImportMap> {
+    const importMapPath = `${this.cdnUrl}/entries-import-map.json`
     const importMap = await fetch(importMapPath)
 
     return importMap.json()
-  }
-
-  addBaseUrl(scope: string, baseUrl: string) {
-    window.__FEDERATED_CORE__.moduleBaseUrls[scope] = baseUrl
-
-    return this
   }
 
   // Module Methods
@@ -303,9 +297,8 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   }
 
   async getModuleUrl(module: FederatedModuleParams): Promise<string> {
-    const { scope, name } = module
-    const moduleBaseUrl = window.__FEDERATED_CORE__.moduleBaseUrls[scope]
-    const importMap = await this.fetchImportMapContent(moduleBaseUrl)
+    const { name } = module
+    const importMap = await this.fetchImportMapContent()
 
     return importMap.imports[name]
   }
@@ -381,8 +374,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
       let resolvedModule: FederatedModule
 
       // Load stylesheet from manifest
-      const moduleBaseUrl = window.__FEDERATED_CORE__.moduleBaseUrls[scope]
-      const importMap = await this.fetchImportMapContent(moduleBaseUrl)
+      const importMap = await this.fetchImportMapContent()
       const moduleUrl = importMap.imports[`${name}.css`]
 
       if (moduleUrl) {
@@ -597,7 +589,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
     for (const module of modulesToMount) {
       try {
-        const { scope, name } = module
+        const { scope, name, props } = module
         const loadedModule = await this.loadModule({ scope, name })
 
         if (loadedModule?.mount) {
@@ -610,7 +602,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
             },
             module
           )
-          await loadedModule.mount()
+          await loadedModule.mount(props)
           this.services.event.emit<EventMap>(
             {
               type: FederatedEvents.MODULE_MOUNTED,
@@ -736,7 +728,6 @@ class FederatedRuntime implements AbstractFederatedRuntime {
       payload: {
         bootstrapTime: new Date().toDateString(),
         modules: this.modules,
-        modulesBaseUrls: window.__FEDERATED_CORE__.moduleBaseUrls,
         useNativeModules: this.useNativeModules,
         importMapOverridesEnabled: this.importMapOverridesEnabled,
       },
@@ -842,12 +833,20 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   }
 }
 
-export const getFederatedRuntime = () => {
+type RuntimeInitConfig = {
+  useNativeModules?: boolean
+  addImportMapOverridesUi?: boolean
+  importMapOverridesEnabled?: boolean
+  debugEnabled?: boolean
+  sharedDependencyBaseUrl?: string
+  cdnUrl?: string
+}
+
+export const getFederatedRuntime = (initConfig?: RuntimeInitConfig) => {
   if (environmentUtils.isBrowser()) {
     if (!window.__FEDERATED_CORE__) {
       window.__FEDERATED_CORE__ = {
         federatedRuntime: new FederatedRuntime(),
-        moduleBaseUrls: {},
       }
     }
 
@@ -855,7 +854,29 @@ export const getFederatedRuntime = () => {
       window.__FEDERATED_CORE__.federatedRuntime = new FederatedRuntime()
     }
 
-    return window.__FEDERATED_CORE__.federatedRuntime
+    const runtime = window.__FEDERATED_CORE__.federatedRuntime
+
+    runtime.useNativeModules =
+      initConfig?.useNativeModules || runtime.useNativeModules || false
+
+    if (
+      initConfig?.importMapOverridesEnabled ||
+      runtime.importMapOverridesEnabled
+    ) {
+      runtime.importMapOverridesEnabled =
+        initConfig?.importMapOverridesEnabled ||
+        runtime.importMapOverridesEnabled ||
+        false
+      runtime.addImportMapOverridesUi()
+    }
+
+    runtime.debugEnabled = initConfig?.debugEnabled || false
+    runtime.sharedDependencyBaseUrl = initConfig?.sharedDependencyBaseUrl || ''
+    runtime.cdnUrl = initConfig?.cdnUrl || runtime.cdnUrl || ''
+
+    window.__FEDERATED_CORE__.federatedRuntime = runtime
+
+    return runtime
   }
 
   return new FederatedRuntime()

@@ -19,7 +19,7 @@ interface StandardPageProps {
 const AppChildren: React.FC = ({ children }: { children: ReactNode }) => {
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+      <Suspense fallback={<div>Loading....</div>}>{children}</Suspense>
     </div>
   )
 }

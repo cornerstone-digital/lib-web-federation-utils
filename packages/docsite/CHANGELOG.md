@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.2-beta.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federation-utils-docsite@1.3.1-alpha.0...@vf/federation-utils-docsite@1.3.2-beta.1) (2022-07-25)
+
+**Note:** Version bump only for package @vf/federation-utils-docsite
+
+
+
+
+
+## [1.3.1-alpha.1](https://dev.azure.com/vfuk-digital/Digital/_git/lib-web-federation-utils/compare/@vf/federation-utils-docsite@1.3.1-alpha.0...@vf/federation-utils-docsite@1.3.1-alpha.1) (2022-07-25)
+
+**Note:** Version bump only for package @vf/federation-utils-docsite
+
+
+
+
+
 ## [1.3.1-alpha.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federation-utils-docsite@1.3.0...@vf/federation-utils-docsite@1.3.1-alpha.0) (2022-07-05)
 
 

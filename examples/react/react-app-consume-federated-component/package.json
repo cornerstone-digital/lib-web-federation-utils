@@ -1,15 +1,22 @@
 {
     "name": "@vf/federated-react-app-consume-component",
-    "version": "0.0.1-alpha.2",
+    "version": "0.0.2-beta.1",
     "scripts": {
         "start": "vite --port 8000"
     },
     "dependencies": {
-        "@vf/federated-react": "^0.1.0-alpha.9",
+        "@vf/federated-core": "^0.4.1-beta.1",
+        "@vf/federated-react": "^0.2.3-beta.1",
+        "@vfuk/brand-lofi-icons": "^1.0.0",
         "@vfuk/core-functional-banner": "1.0.x",
         "@vfuk/core-inline-link": "^3.1.0",
         "@vfuk/core-interactive-fifty-fifty-banner": "12.0.x",
         "@vfuk/core-standard-banner": "1.0.x",
+        "@vfuk/core-theme-ws10": "^14.2.0",
+        "@vfuk/source-social-icons": "^8.1.0",
+        "@vfuk/source-state-icons": "^8.1.0",
+        "@vfuk/source-system-icons": "^7.2.0",
+        "@vfuk/uk-legacy-icons": "^7.1.0",
         "react": "17.0.2",
         "react-dom": "17.0.2",
         "styled-components": "^5.3.5",

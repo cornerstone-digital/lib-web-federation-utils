@@ -1,44 +1,47 @@
 {
-  "name": "@vf/federated-react",
-  "version": "0.2.2-alpha.1",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "tsc",
-    "postbuild": "rimraf dist/jest*",
-    "lint": "eslint . --ext .js,.ts,.tsx --fix",
-    "test": "jest --passWithNoTests ",
-    "test:watch": "yarn test --watchAll",
-    "test:cc": "yarn test --coverage",
-    "test:cc:watch": "yarn test:cc --watchAll"
-  },
-  "dependencies": {
-    "@vf/federated-core": "^0.4.0-alpha.1",
-    "lodash": "4.17.21",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "react-error-boundary": "^3.1.4",
-    "systemjs": "^6.12.1",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "@types/react": "17.0.2",
-    "@types/react-dom": "17.0.2",
-    "@types/systemjs": "^6.1.1",
-    "@types/uuid": "^8.3.4",
-    "rimraf": "^3.0.2",
-    "ts-node": "^10.8.0",
-    "typescript": "^4.7.2"
-  },
-  "resolutions": {
-    "@types/react": "17.0.2",
-    "@types/react-dom": "17.0.2",
-    "@types/systemjs": "^6.1.1",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
-  }
+    "name": "@vf/federated-react",
+    "version": "0.2.3-beta.1",
+    "main": "dist/federated-react.es.js",
+    "types": "dist/federated-react/src/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "prebuild": "rimraf dist",
+        "build": "vite build",
+        "postbuild": "rimraf dist/jest*",
+        "lint": "eslint . --ext .js,.ts,.tsx --fix",
+        "test": "jest --passWithNoTests ",
+        "test:watch": "yarn test --watchAll",
+        "test:cc": "yarn test --coverage",
+        "test:cc:watch": "yarn test:cc --watchAll"
+    },
+    "dependencies": {
+        "@vf/federated-core": "^0.4.1-beta.1",
+        "lodash": "4.17.21",
+        "react": "17.0.2",
+        "react-dom": "17.0.2",
+        "react-error-boundary": "^3.1.4",
+        "systemjs": "^6.12.1",
+        "uuid": "^8.3.2"
+    },
+    "devDependencies": {
+        "@types/react": "17.0.2",
+        "@types/react-dom": "17.0.2",
+        "@types/systemjs": "^6.1.1",
+        "@types/uuid": "^8.3.4",
+        "@vitejs/plugin-react": "^1.3.2",
+        "rimraf": "^3.0.2",
+        "ts-node": "^10.8.0",
+        "typescript": "^4.7.2",
+        "vite": "^2.9.13",
+        "vite-plugin-dts": "^1.2.1"
+    },
+    "resolutions": {
+        "@types/react": "17.0.2",
+        "@types/react-dom": "17.0.2",
+        "@types/systemjs": "^6.1.1",
+        "react": "17.0.2",
+        "react-dom": "17.0.2"
+    }
 }

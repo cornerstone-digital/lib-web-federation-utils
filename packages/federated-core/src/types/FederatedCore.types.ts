@@ -56,6 +56,7 @@ export type FederatedModuleBaseOptions<PropsType> = {
   scope: string
   name: string
   type: FederatedModuleTypes
+  props?: PropsType
   description?: string
   activeWhenPaths?: string[]
   exceptWhenPaths?: string[]
@@ -69,6 +70,5 @@ export type FederatedModule<PropsType = unknown> =
     Partial<FederatedModuleLifecycles<PropsType>>
 
 export type FederatedGlobalInfo = {
-  moduleBaseUrls: Record<string, string>
   federatedRuntime: AbstractFederatedRuntime
 }

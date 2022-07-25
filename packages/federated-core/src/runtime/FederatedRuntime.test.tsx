@@ -360,26 +360,15 @@ describe('FederatedRuntime', () => {
           const fetchPromise = Promise.resolve({
             json: () => Promise.resolve(importMapContent),
           })
+          federatedRuntime.cdnUrl = modulePath
           // @ts-ignore
           global.fetch = jest.fn(() => fetchPromise)
 
-          const result = await federatedRuntime.fetchImportMapContent(
-            modulePath
-          )
+          const result = await federatedRuntime.fetchImportMapContent()
           expect(global.fetch).toHaveBeenCalledWith(
             `${modulePath}/entries-import-map.json`
           )
           expect(result).toEqual(importMapContent)
-        })
-      })
-
-      describe('addBaseUrl', () => {
-        it('should add base url to window.__FEDERATED_CORE__.moduleBaseUrls', () => {
-          const baseUrl = 'https://cdn.vodafone.co.uk/federated/scope/name'
-          federatedRuntime.addBaseUrl('scope/name', baseUrl)
-          expect(window.__FEDERATED_CORE__.moduleBaseUrls).toEqual({
-            'scope/name': baseUrl,
-          })
         })
       })
 
@@ -1551,6 +1540,16 @@ describe('FederatedRuntime', () => {
 
     describe('getFederatedRuntime', () => {
       it('should return the same instance', () => {
+        expect(getFederatedRuntime()).toBe(federatedRuntime)
+      })
+
+      it('should return the instance with importmapoverrides enabled', () => {
+        expect(
+          getFederatedRuntime({
+            importMapOverridesEnabled: true,
+          })
+        ).toBe(federatedRuntime)
+        federatedRuntime.importMapOverridesEnabled = true
         expect(getFederatedRuntime()).toBe(federatedRuntime)
       })
 

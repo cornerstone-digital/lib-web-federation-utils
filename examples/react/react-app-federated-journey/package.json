@@ -1,6 +1,6 @@
 {
   "name": "@vf/federated-react-app-journey",
-  "version": "0.1.0-beta.0",
+  "version": "0.1.1-beta.1",
   "scripts": {
     "build": "ts-node --project ./tsconfig.json ./tools/compile.ts",
     "start": "yarn build && npx http-server ./dist --port 8001 --cors"

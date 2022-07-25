@@ -1,13 +1,13 @@
 {
-  "npmClient": "yarn",
-  "useNxt": true,
-  "command": {
-    "publish": {
-      "ignoreChanges": ["ignored-file", "*.md"],
-      "message": "chore(release): publish",
-      "registry": "https://vfuk-digital.pkgs.visualstudio.com/_packaging/Web/npm/registry/"
-    }
-  },
-  "packages": ["packages/**", "examples/**"],
-  "version": "independent"
+    "npmClient": "yarn",
+    "useNxt": true,
+    "command": {
+        "publish": {
+            "ignoreChanges": ["ignored-file", "*.md"],
+            "message": "chore(release): publish",
+            "registry": "https://vfuk-digital.pkgs.visualstudio.com/_packaging/Web/npm/registry/"
+        }
+    },
+    "packages": ["packages/**", "examples/**"],
+    "version": "independent"
 }

@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1-beta.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-vue@0.3.0-alpha.1...@vf/federated-vue@0.3.1-beta.1) (2022-07-25)
+
+**Note:** Version bump only for package @vf/federated-vue
+
+
+
+
+
+# [0.3.0-alpha.2](https://dev.azure.com/vfuk-digital/Digital/_git/lib-web-federation-utils/compare/@vf/federated-vue@0.3.0-alpha.1...@vf/federated-vue@0.3.0-alpha.2) (2022-07-25)
+
+**Note:** Version bump only for package @vf/federated-vue
+
+
+
+
+
+# [0.3.0-alpha.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-vue@0.3.0-alpha.0...@vf/federated-vue@0.3.0-alpha.1) (2022-07-07)
+
+**Note:** Version bump only for package @vf/federated-vue
+
+
+
+
+
 # [0.3.0-alpha.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-vue@0.2.2-alpha.1...@vf/federated-vue@0.3.0-alpha.0) (2022-07-05)
 
 
