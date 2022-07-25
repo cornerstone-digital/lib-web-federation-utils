@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.4.0-alpha.1...@vf/federated-core@0.4.1) (2022-07-25)
+
+
+### Bug Fixes
+
+* change module type to CommonJS for core library ([844b102](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/844b102775bcc533a3049f2a3dc987de63a278d9))
+
+
+
+
+
 ## [0.4.1-beta.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.4.0-alpha.2...@vf/federated-core@0.4.1-beta.1) (2022-07-25)
 
 **Note:** Version bump only for package @vf/federated-core

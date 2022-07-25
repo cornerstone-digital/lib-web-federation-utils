@@ -1,6 +1,6 @@
 {
     "name": "@vf/federated-vue",
-    "version": "0.3.1-beta.1",
+    "version": "0.3.1",
     "main": "dist/federated-vue.cjs.js",
     "module": "dist/federated-vue.es.js",
     "exports": {
@@ -24,7 +24,7 @@
         "test:cc:watch": "yarn test:cc --watchAll"
     },
     "dependencies": {
-        "@vf/federated-core": "^0.4.1-beta.1",
+        "@vf/federated-core": "^0.4.1",
         "ajv": "^8.11.0",
         "systemjs": "^6.12.1",
         "vue": "^3.2.25"
