@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.4.1...@vf/federated-core@0.5.0) (2022-08-24)
+
+
+### Features
+
+* update loadModule to support passing basePath - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([dc600d3](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/dc600d3318c8d2de11f5886b0e99d9a8604bc3da))
+
+
+
+
+
 ## [0.4.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.4.0-alpha.1...@vf/federated-core@0.4.1) (2022-07-25)
 
 

@@ -1,12 +1,12 @@
 {
     "name": "@vf/federated-react-app-consume-component",
-    "version": "0.0.2",
+    "version": "0.1.0",
     "scripts": {
         "start": "vite --port 8000"
     },
     "dependencies": {
-        "@vf/federated-core": "^0.4.1",
-        "@vf/federated-react": "^0.2.3",
+        "@vf/federated-core": "^0.5.0",
+        "@vf/federated-react": "^0.3.0",
         "@vfuk/brand-lofi-icons": "^1.0.0",
         "@vfuk/core-functional-banner": "1.0.x",
         "@vfuk/core-inline-link": "^3.1.0",
