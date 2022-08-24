@@ -1,5 +1,5 @@
 import React from 'react'
-import { getFederatedRuntime } from '@vf/federated-core'
+import { initFederatedRuntime } from '@vf/federated-core'
 import { createFederatedReact } from '@vf/federated-react'
 import ReactDOM from 'react-dom'
 import App from './App'
@@ -20,7 +20,7 @@ const {
 } = createFederatedReact({
   React,
   ReactDOM,
-  federatedRuntime: getFederatedRuntime(),
+  federatedRuntime: initFederatedRuntime(),
   config: {
     scope: 'vfuk-federated-component-example',
     name: 'FederatedJourney',

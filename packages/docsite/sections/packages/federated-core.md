@@ -10,16 +10,16 @@ This library contains all the core functionality for the [Federated Runtime Engi
 
 2. Run `yarn add @vf/federated-core`
 
-### getFederatedRuntime()
+### initFederatedRuntime()
 
 This function returns (or creates) an instance of the [Federated Runtime Engine]() which is the engine room of a [Federated Application]().
 
 Example usage:
 
 ```typescript
-import { getFederatedRuntime } from '@vf/federated-core'
+import { initFederatedRuntime } from '@vf/federated-core'
 
-const federatedRuntime = getFederatedRuntime()
+const federatedRuntime = initFederatedRuntime()
 ```
 
 Once imported and executed as well as returning an instance of the runtime, it also exposes a global variable on the window scope `__FEDERATED_CORE__` which the runtime uses to keep track of it's state and registered components.

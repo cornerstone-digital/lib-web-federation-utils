@@ -1,7 +1,7 @@
 # Creating your Federated Entry Point
 
 ```typescript
-import { getFederatedRuntime } from '@vf/federated-core'
+import { initFederatedRuntime } from '@vf/federated-core'
 import authService from '@vfuk/shop-utils-auth-service'
 import { datadogRum } from '@datadog/browser-rum'
 
@@ -9,7 +9,7 @@ import { datadogRum } from '@datadog/browser-rum'
 import * as AcquisitionsMainFederated from '@federated/entry-point/journeys/acquisitions'
 import * as UpgradesMainFederated from '@federated/entry-point/journeys/upgrades'
 
-const federatedRuntime = getFederatedRuntime()
+const federatedRuntime = initFederatedRuntime()
 
 // Set this from environment variables
 const enableImportMapsOverrides = true

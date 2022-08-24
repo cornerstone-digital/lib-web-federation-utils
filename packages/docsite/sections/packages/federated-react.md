@@ -20,13 +20,13 @@ Example usage:
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { createFederatedReact } from '@vf/federated-react'
-import { getFederatedRuntime } from '@vf/federated-core'
+import { initFederatedRuntime } from '@vf/federated-core'
 
 export const { name, scope, mount, unmount, bootstrap, update } =
   createFederatedReact({
     React,
     ReactDOM,
-    federatedRuntime: getFederatedRuntime(),
+    federatedRuntime: initFederatedRuntime(),
     config: {
       scope: 'broadband',
       name: 'AvailabilityChecker',

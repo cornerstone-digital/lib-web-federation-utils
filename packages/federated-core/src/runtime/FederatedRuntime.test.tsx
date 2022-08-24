@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import FederatedRuntime, { getFederatedRuntime } from './FederatedRuntime'
+import FederatedRuntime, { initFederatedRuntime } from './FederatedRuntime'
 import LoggerService from './services/logger'
 import EventService from './services/event'
 
@@ -57,7 +57,6 @@ describe('FederatedRuntime', () => {
       const originalWindow = window
 
       window.__FEDERATED_CORE__ = {
-        moduleBaseUrls: {},
         federatedRuntime,
       }
 
@@ -367,6 +366,23 @@ describe('FederatedRuntime', () => {
           const result = await federatedRuntime.fetchImportMapContent()
           expect(global.fetch).toHaveBeenCalledWith(
             `${modulePath}/entries-import-map.json`
+          )
+          expect(result).toEqual(importMapContent)
+        })
+
+        it('should use basePath to fetch import map if provided', async () => {
+          const basePath = '/basket/federated'
+          const modulePath = `${basePath}/scope/name`
+          const importMapContent = `{"imports": {"scope/name": "${modulePath}/scope/name.js"}}`
+          const fetchPromise = Promise.resolve({
+            json: () => Promise.resolve(importMapContent),
+          })
+          federatedRuntime.cdnUrl = modulePath
+          // @ts-ignore
+          global.fetch = jest.fn(() => fetchPromise)
+          const result = await federatedRuntime.fetchImportMapContent(basePath)
+          expect(global.fetch).toHaveBeenCalledWith(
+            `${basePath}/entries-import-map.json`
           )
           expect(result).toEqual(importMapContent)
         })
@@ -1538,27 +1554,27 @@ describe('FederatedRuntime', () => {
       })
     })
 
-    describe('getFederatedRuntime', () => {
+    describe('initFederatedRuntime', () => {
       it('should return the same instance', () => {
-        expect(getFederatedRuntime()).toBe(federatedRuntime)
+        expect(initFederatedRuntime()).toBe(federatedRuntime)
       })
 
       it('should return the instance with importmapoverrides enabled', () => {
         expect(
-          getFederatedRuntime({
+          initFederatedRuntime({
             importMapOverridesEnabled: true,
           })
         ).toBe(federatedRuntime)
         federatedRuntime.importMapOverridesEnabled = true
-        expect(getFederatedRuntime()).toBe(federatedRuntime)
+        expect(initFederatedRuntime()).toBe(federatedRuntime)
       })
 
       it('should create new global window object if not present', () => {
         // @ts-ignore
         delete window.__FEDERATED_CORE__.federatedRuntime
         expect(window.__FEDERATED_CORE__.federatedRuntime).toBeUndefined()
-        const runtime = getFederatedRuntime()
-        expect(getFederatedRuntime()).not.toBe(federatedRuntime)
+        const runtime = initFederatedRuntime()
+        expect(initFederatedRuntime()).not.toBe(federatedRuntime)
         expect(window.__FEDERATED_CORE__.federatedRuntime).toBe(runtime)
       })
     })

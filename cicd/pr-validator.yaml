@@ -1,0 +1,42 @@
+resources:
+  repositories:
+    - repository: yaml-pipeline-templates
+      type: git
+      name: dx-yaml-pipeline-templates
+      ref: master
+    - repository: tools
+      type: git
+      name: CICD-new-world-tools
+      ref: refs/heads/master
+steps:
+  - template: init-workspace.yaml
+
+  - script: git update-index --skip-worktree -- .npmrc
+    displayName: Ignore .npmrc
+
+  - script: |
+      git config --global user.email "azuredevops_build_agent@vodafone.com"
+      git config --global user.name "Azure DevOps Build Agent"
+      echo "git-tag-version = false" >> .npmrc
+      git update-index --assume-unchanged .npmrc
+    displayName: Set git config
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Clean'
+    inputs:
+      Arguments: 'lerna:clean'
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Lerna Bootstrap'
+    inputs:
+      Arguments: 'lerna:bootstrap'
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Linting'
+    inputs:
+      Arguments: 'lerna:lint'
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Tests'
+    inputs:
+      Arguments: 'lerna:test:cc'

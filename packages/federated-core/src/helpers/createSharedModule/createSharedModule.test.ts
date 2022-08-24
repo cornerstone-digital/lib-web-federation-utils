@@ -5,6 +5,7 @@ describe('createSharedModule', () => {
     const data = {
       name: 'test-module',
       scope: 'test-scope',
+      basePath: '/test-base-path',
       methods: {
         testMethod: () => {
           return 'test'

@@ -2,6 +2,9 @@
   "name": "lib-web-federation-utils",
   "license": "MIT",
   "private": true,
+  "workspaces": [
+    "packages/**", "examples/**"
+  ],
   "scripts": {
     "prepare": "husky install",
     "merge-test": "nyc merge ./.testresults ./.testresults/coverage.json",

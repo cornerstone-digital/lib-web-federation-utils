@@ -1,10 +1,12 @@
 import React from 'react'
-import { FederatedModule, getFederatedModule } from '@vf/federated-core'
+import {
+  FederatedModule,
+  getFederatedModule,
+  FederatedModuleParams,
+} from '@vf/federated-core'
 import { v4 } from 'uuid'
 
-type FederatedModuleLoaderProps<PropTypes> = {
-  scope: string
-  name: string
+type FederatedModuleLoaderProps<PropTypes> = FederatedModuleParams & {
   props: PropTypes
   mountId?: string
 }
@@ -12,10 +14,11 @@ type FederatedModuleLoaderProps<PropTypes> = {
 function FederatedModuleLoader<PropTypes>({
   scope,
   name,
+  basePath,
   props,
   mountId = `${scope}-${name}-${v4()}`,
 }: FederatedModuleLoaderProps<PropTypes>) {
-  const module = getFederatedModule({ scope, name })
+  const module = getFederatedModule({ scope, name, basePath })
 
   module.then((module: FederatedModule | undefined) => {
     if (module?.mount) {

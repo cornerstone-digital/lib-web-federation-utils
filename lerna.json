@@ -1,5 +1,6 @@
 {
     "npmClient": "yarn",
+    "useWorkspaces": true,
     "useNxt": true,
     "command": {
         "publish": {
@@ -8,6 +9,5 @@
             "registry": "https://vfuk-digital.pkgs.visualstudio.com/_packaging/Web/npm/registry/"
         }
     },
-    "packages": ["packages/**", "examples/**"],
     "version": "independent"
 }

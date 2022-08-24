@@ -26,7 +26,10 @@ export enum FederatedModuleStatuses {
 
 export type FederatedModuleStatusValues = `${FederatedModuleStatuses}`
 
-export type FederatedModuleParams = Pick<FederatedModule, 'scope' | 'name'>
+export type FederatedModuleParams = Pick<
+  FederatedModule,
+  'scope' | 'name' | 'basePath'
+>
 
 export type ExposedServicesType = {
   event: typeof eventService
@@ -55,6 +58,7 @@ export type RootComponentType<RootComponentTypes, PropsType> =
 export type FederatedModuleBaseOptions<PropsType> = {
   scope: string
   name: string
+  basePath?: string
   type: FederatedModuleTypes
   props?: PropsType
   description?: string

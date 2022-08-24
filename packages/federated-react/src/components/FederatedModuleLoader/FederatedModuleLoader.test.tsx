@@ -5,7 +5,7 @@ import { render, waitFor } from '@testing-library/react'
 import {
   FederatedEvents,
   FederatedModule,
-  getFederatedRuntime,
+  initFederatedRuntime,
 } from '@vf/federated-core'
 
 const TestComponent = () => {
@@ -37,12 +37,11 @@ describe('FederatedModuleLoader', () => {
   beforeEach(() => {
     jest.resetAllMocks()
 
-    const federatedRuntime = getFederatedRuntime()
+    const federatedRuntime = initFederatedRuntime()
 
     federatedRuntime.registerModule(testModule)
 
     window.__FEDERATED_CORE__ = {
-      moduleBaseUrls: {},
       federatedRuntime,
     }
   })
@@ -116,7 +115,7 @@ describe('FederatedModuleLoader', () => {
   })
 
   it('should call unmount on module', () => {
-    const federatedRuntime = getFederatedRuntime()
+    const federatedRuntime = initFederatedRuntime()
     const reactUnmountSpy = jest.spyOn(ReactDOM, 'unmountComponentAtNode')
     const { unmount } = render(
       <FederatedModuleLoader

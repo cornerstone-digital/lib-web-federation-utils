@@ -6,7 +6,6 @@ describe('getFederatedModule', () => {
   beforeEach(() => {
     jest.resetAllMocks()
     window.__FEDERATED_CORE__ = {
-      moduleBaseUrls: {},
       federatedRuntime: new FederatedRuntime(),
     }
   })
@@ -44,6 +43,11 @@ describe('getFederatedModule', () => {
   it('should log an error if the module fails to load', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error')
     const error = new Error('Module failed to load')
+    const moduleParams = {
+      scope: 'broadband',
+      name: 'test-module',
+      basePath: '/test-path',
+    }
 
     jest
       .spyOn(window.__FEDERATED_CORE__.federatedRuntime, 'loadModule')
@@ -51,12 +55,14 @@ describe('getFederatedModule', () => {
         return Promise.reject(error)
       })
 
-    const module = await getFederatedModule({
-      scope: 'broadband',
-      name: 'test-module',
-    })
+    const module = await getFederatedModule(moduleParams)
 
     expect(module).toBe(undefined)
-    expect(consoleErrorSpy).toHaveBeenCalledWith(error)
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      moduleParams.name,
+      moduleParams.scope,
+      moduleParams.basePath,
+      error
+    )
   })
 })

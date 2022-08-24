@@ -166,8 +166,8 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     }
   }
 
-  async fetchImportMapContent(): Promise<ImportMap> {
-    const importMapPath = `${this.cdnUrl}/entries-import-map.json`
+  async fetchImportMapContent(basePath?: string): Promise<ImportMap> {
+    const importMapPath = `${basePath || this.cdnUrl}/entries-import-map.json`
     const importMap = await fetch(importMapPath)
 
     return importMap.json()
@@ -297,8 +297,8 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   }
 
   async getModuleUrl(module: FederatedModuleParams): Promise<string> {
-    const { name } = module
-    const importMap = await this.fetchImportMapContent()
+    const { name, basePath } = module
+    const importMap = await this.fetchImportMapContent(basePath)
 
     return importMap.imports[name]
   }
@@ -317,7 +317,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   async loadModule(
     module: FederatedModuleParams
   ): Promise<FederatedModule | undefined> {
-    const { scope, name } = module
+    const { scope, name, basePath } = module
 
     try {
       const moduleKey = getModuleKey(scope, name)
@@ -374,7 +374,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
       let resolvedModule: FederatedModule
 
       // Load stylesheet from manifest
-      const importMap = await this.fetchImportMapContent()
+      const importMap = await this.fetchImportMapContent(basePath)
       const moduleUrl = importMap.imports[`${name}.css`]
 
       if (moduleUrl) {
@@ -842,7 +842,7 @@ type RuntimeInitConfig = {
   cdnUrl?: string
 }
 
-export const getFederatedRuntime = (initConfig?: RuntimeInitConfig) => {
+export const initFederatedRuntime = (initConfig?: RuntimeInitConfig) => {
   if (environmentUtils.isBrowser()) {
     if (!window.__FEDERATED_CORE__) {
       window.__FEDERATED_CORE__ = {

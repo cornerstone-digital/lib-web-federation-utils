@@ -1,6 +1,6 @@
 export {
   default as FederatedRuntime,
-  getFederatedRuntime,
+  initFederatedRuntime,
 } from './FederatedRuntime'
 
 export * from './FederatedRuntime.types'

@@ -1,12 +1,11 @@
-import { getFederatedRuntime } from './src/runtime'
+import { initFederatedRuntime } from './src/runtime'
 
 // @ts-ignore
 const isBrowser = typeof window !== 'undefined'
 
 if (isBrowser) {
   window.__FEDERATED_CORE__ = {
-    federatedRuntime: getFederatedRuntime(),
-    moduleBaseUrls: {},
+    federatedRuntime: initFederatedRuntime(),
   }
   window.System = {
     import: jest.fn(),

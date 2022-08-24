@@ -11,11 +11,11 @@ Click here to see a working example from repo.
 ```typescript
 // src/index.tsx
 import React from 'react'
-import { getFederatedRuntime } from '@vf/federated-core'
+import { initFederatedRuntime } from '@vf/federated-core'
 import { render } from 'react-dom'
 import App from './App'
 
-const runtime = getFederatedRuntime()
+const runtime = initFederatedRuntime()
 // replace localhost with the CDN URL for the relevant module URL
 runtime.addBaseUrl('vfuk-federated-component-example', 'http://localhost:8001')
 render(<App />, document.getElementById('root'))

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { render } from '@testing-library/react'
 
 import createErrorBoundary from './createErrorBoundary'
-import { getFederatedRuntime } from '@vf/federated-core'
+import { initFederatedRuntime } from '@vf/federated-core'
 
 let consoleErrorMock: jest.SpyInstance
 
@@ -32,7 +32,7 @@ describe('createErrorBoundary', () => {
         name: 'test',
       },
       enableSystemJs: true,
-      federatedRuntime: getFederatedRuntime(),
+      federatedRuntime: initFederatedRuntime(),
     })
 
     expect(ErrorBoundary).toBeInstanceOf(Function)
@@ -48,7 +48,7 @@ describe('createErrorBoundary', () => {
         name: 'test',
       },
       enableSystemJs: true,
-      federatedRuntime: getFederatedRuntime(),
+      federatedRuntime: initFederatedRuntime(),
     })
 
     const ErroredComponent = () => {
@@ -88,7 +88,7 @@ describe('createErrorBoundary', () => {
         },
       },
       enableSystemJs: true,
-      federatedRuntime: getFederatedRuntime(),
+      federatedRuntime: initFederatedRuntime(),
     })
 
     const ErroredComponent = () => {

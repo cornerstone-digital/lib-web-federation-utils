@@ -2,14 +2,14 @@
  * @jest-environment node
  */
 
-import { getFederatedRuntime } from './FederatedRuntime'
+import { initFederatedRuntime } from './FederatedRuntime'
 
 describe('In NodeJS', () => {
-  describe('getFederatedRuntime', () => {
+  describe('initFederatedRuntime', () => {
     it('should return new instance if window is undefined', () => {
       expect(global.window).toBeUndefined()
 
-      const runtime = getFederatedRuntime()
+      const runtime = initFederatedRuntime()
 
       expect(runtime).toBeDefined()
     })

@@ -13,17 +13,18 @@ Click here to see a working example from repo.
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { createFederatedReact } from '@vf/federated-react'
-import { getFederatedRuntime } from '@vf/federated-core'
+import { initFederatedRuntime } from '@vf/federated-core'
 import FederatedInteractiveFiftyFiftyBanner from './InteractiveFiftyFiftyBanner'
 
 const { name, scope, mount, unmount, bootstrap, update } = createFederatedReact(
   {
     React,
     ReactDOM,
-    federatedRuntime: getFederatedRuntime(),
+    federatedRuntime: initFederatedRuntime(),
     config: {
       name: 'FederatedInteractiveFiftyFiftyBannerBanner',
       scope: 'vfuk-federated-component-example',
+      basePath: '/example/federated',
       rootComponent: FederatedInteractiveFiftyFiftyBanner,
       type: 'component',
     },
@@ -42,14 +43,14 @@ If you want to lazy load your Federated Component use the below script instead!
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { createFederatedReact } from '@vf/federated-react'
-import { getFederatedRuntime } from '@vf/federated-core'
+import { initFederatedRuntime } from '@vf/federated-core'
 import FederatedInteractiveFiftyFiftyBanner from './InteractiveFiftyFiftyBanner'
 
 const { name, scope, mount, unmount, bootstrap, update } = createFederatedReact(
   {
     React,
     ReactDOM,
-    federatedRuntime: getFederatedRuntime(),
+    federatedRuntime: initFederatedRuntime(),
     config: {
       name: 'FederatedInteractiveFiftyFiftyBannerBanner',
       scope: 'vfuk-federated-component-example',
