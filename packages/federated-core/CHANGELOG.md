@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.5.0...@vf/federated-core@0.6.0) (2022-08-26)
+
+
+### Features
+
+* update tests and add new logic for adding import maps - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([15c654f](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/15c654f0800139b0bddbbc212f701a61d2d69858))
+
+
+
+
+
 # [0.5.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.4.1...@vf/federated-core@0.5.0) (2022-08-24)
 
 

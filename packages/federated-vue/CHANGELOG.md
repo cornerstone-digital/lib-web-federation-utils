@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-vue@0.3.2...@vf/federated-vue@0.4.0) (2022-08-26)
+
+
+### Features
+
+* update tests and add new logic for adding import maps - [#000000](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/000000) ([15c654f](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/15c654f0800139b0bddbbc212f701a61d2d69858))
+
+
+
+
+
 ## [0.3.2](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-vue@0.3.1...@vf/federated-vue@0.3.2) (2022-08-24)
 
 **Note:** Version bump only for package @vf/federated-vue
