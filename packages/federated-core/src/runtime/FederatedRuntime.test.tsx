@@ -363,7 +363,10 @@ describe('FederatedRuntime', () => {
           // @ts-ignore
           global.fetch = jest.fn(() => fetchPromise)
 
-          const result = await federatedRuntime.fetchImportMapContent()
+          const result = await federatedRuntime.fetchImportMapContent({
+            name: 'name',
+            scope: 'scope',
+          })
           expect(global.fetch).toHaveBeenCalledWith(
             `${modulePath}/entries-import-map.json`
           )
@@ -380,7 +383,10 @@ describe('FederatedRuntime', () => {
           federatedRuntime.cdnUrl = modulePath
           // @ts-ignore
           global.fetch = jest.fn(() => fetchPromise)
-          const result = await federatedRuntime.fetchImportMapContent(basePath)
+          const result = await federatedRuntime.fetchImportMapContent(
+            { name: 'name', scope: 'scope' },
+            basePath
+          )
           expect(global.fetch).toHaveBeenCalledWith(
             `${basePath}/entries-import-map.json`
           )

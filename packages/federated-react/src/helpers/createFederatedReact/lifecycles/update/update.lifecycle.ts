@@ -31,21 +31,6 @@ const updateLifecycle = <PropsType>(
         module
       )
 
-      if (!loadedModule) {
-        eventService.emit<EventMap>(
-          {
-            type: FederatedEvents.MODULE_UPDATE_ERROR,
-            payload: {
-              module,
-              error: new Error(`Could not find module with key ${moduleKey}`),
-            },
-          },
-          module
-        )
-
-        return
-      }
-
       if (loadedModule?.unmount) {
         await loadedModule.unmount()
       }

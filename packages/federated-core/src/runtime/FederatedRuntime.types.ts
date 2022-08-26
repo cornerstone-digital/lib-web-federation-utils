@@ -597,7 +597,11 @@ export abstract class AbstractFederatedRuntime {
   // Helper Methods
   abstract addImportMapOverridesUi(): void
   abstract ensureSystemJs(): void
-  abstract fetchImportMapContent(modulePath: string): Promise<ImportMap>
+  abstract ensureImportMapHtmlElement(id: string, url: string): Promise<void>
+  abstract fetchImportMapContent(
+    module: FederatedModuleParams,
+    basePath?: string
+  ): Promise<ImportMap>
 
   // Module Methods
   abstract setModuleState(

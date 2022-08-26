@@ -166,9 +166,29 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     }
   }
 
-  async fetchImportMapContent(basePath?: string): Promise<ImportMap> {
+  async ensureImportMapHtmlElement(id: string, url: string): Promise<void> {
+    const importMapHtmlElement = document.createElement('script')
+    importMapHtmlElement.id = id
+    importMapHtmlElement.src = url
+    importMapHtmlElement.crossOrigin = 'anonymous'
+    importMapHtmlElement.type = this._useNativeModules
+      ? 'importmap'
+      : 'systemjs-importmap'
+
+    document.head.appendChild(importMapHtmlElement)
+  }
+
+  async fetchImportMapContent(
+    module: FederatedModuleParams,
+    basePath?: string
+  ): Promise<ImportMap> {
     const importMapPath = `${basePath || this.cdnUrl}/entries-import-map.json`
     const importMap = await fetch(importMapPath)
+    const importMapId = `${module.scope}-${module.name}-imports`
+
+    if (!document.getElementById(importMapId)) {
+      await this.ensureImportMapHtmlElement(importMapId, importMapPath)
+    }
 
     return importMap.json()
   }
@@ -180,10 +200,10 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   ) {
     const { scope, name } = module
     const moduleKey = getModuleKey(scope, name)
-    const moduleInstance: FederatedModule<unknown> = {
+    const moduleInstance: FederatedModule = {
       ...this.modules.get(moduleKey),
       status: state as FederatedModuleStatuses,
-    } as FederatedModule<unknown>
+    } as FederatedModule
 
     this.modules.set(moduleKey, moduleInstance)
 
@@ -298,7 +318,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
   async getModuleUrl(module: FederatedModuleParams): Promise<string> {
     const { name, basePath } = module
-    const importMap = await this.fetchImportMapContent(basePath)
+    const importMap = await this.fetchImportMapContent(module, basePath)
 
     return importMap.imports[name]
   }
@@ -374,7 +394,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
       let resolvedModule: FederatedModule
 
       // Load stylesheet from manifest
-      const importMap = await this.fetchImportMapContent(basePath)
+      const importMap = await this.fetchImportMapContent(module, basePath)
       const moduleUrl = importMap.imports[`${name}.css`]
 
       if (moduleUrl) {
