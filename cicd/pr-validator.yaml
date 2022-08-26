@@ -9,7 +9,7 @@ resources:
       name: CICD-new-world-tools
       ref: refs/heads/master
 steps:
-  - template: init-workspace.yaml
+  - template: templates/init-workspace.yaml
 
   - script: git update-index --skip-worktree -- .npmrc
     displayName: Ignore .npmrc

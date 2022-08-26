@@ -1,15 +1,8 @@
 {
     "name": "@vf/federated-vue",
     "version": "0.3.2",
-    "main": "dist/federated-vue.cjs.js",
-    "module": "dist/federated-vue.es.js",
-    "exports": {
-        ".": {
-            "require": "./dist/federated-vue.cjs.js",
-            "default": "./dist/federated-vue.es.js"
-        }
-    },
-    "types": "dist/src/index.d.ts",
+    "main": "dist/federated-vue.es.js",
+    "types": "dist/federated-vue/src/index.d.ts",
     "files": [
         "dist"
     ],

@@ -131,4 +131,21 @@ describe('eventService', () => {
       })
     })
   })
+
+  it('should log with console.log when debug is enabled', () => {
+    const originalValue =
+      window.__FEDERATED_CORE__.federatedRuntime.debugEnabled
+    window.__FEDERATED_CORE__.federatedRuntime.debugEnabled = true
+    const consoleLogSpy = jest.spyOn(console, 'log')
+    eventService.emit<EventMap>({
+      type: FederatedEvents.RUNTIME_STARTED,
+      payload: {
+        startTime: Date.now(),
+        startEndTime: Date.now() + 1000,
+        startDuration: 1000,
+      },
+    })
+    window.__FEDERATED_CORE__.federatedRuntime.debugEnabled = originalValue
+    expect(consoleLogSpy).toHaveBeenCalledTimes(1)
+  })
 })

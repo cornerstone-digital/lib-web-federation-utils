@@ -44,6 +44,12 @@ describe('FederatedModuleLoader', () => {
     window.__FEDERATED_CORE__ = {
       federatedRuntime,
     }
+
+    jest
+      .spyOn(window.__FEDERATED_CORE__.federatedRuntime, 'loadModule')
+      .mockImplementation(() => {
+        return Promise.resolve(testModule)
+      })
   })
 
   it('should mount without crashing', () => {
