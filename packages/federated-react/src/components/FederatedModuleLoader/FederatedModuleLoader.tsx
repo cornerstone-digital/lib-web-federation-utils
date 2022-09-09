@@ -1,9 +1,6 @@
 import React from 'react'
-import {
-  FederatedModule,
-  getFederatedModule,
-  FederatedModuleParams,
-} from '@vf/federated-core'
+import type { FederatedModule, FederatedModuleParams } from '@vf/federated-core'
+import { getFederatedModule } from '@vf/federated-core'
 import { v4 } from 'uuid'
 
 type FederatedModuleLoaderProps<PropTypes> = FederatedModuleParams & {
@@ -18,13 +15,15 @@ function FederatedModuleLoader<PropTypes>({
   props,
   mountId = `${scope}-${name}-${v4()}`,
 }: FederatedModuleLoaderProps<PropTypes>) {
-  const module = getFederatedModule({ scope, name, basePath })
+  if (typeof window !== 'undefined') {
+    const module = getFederatedModule({ scope, name, basePath })
 
-  module.then((module: FederatedModule | undefined) => {
-    if (module?.mount) {
-      module?.mount(props, mountId)
-    }
-  })
+    module.then((module: FederatedModule | undefined) => {
+      if (module?.mount) {
+        module?.mount(props, mountId)
+      }
+    })
+  }
 
   return <div id={mountId} />
 }
