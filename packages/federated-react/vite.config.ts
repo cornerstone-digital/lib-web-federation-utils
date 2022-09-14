@@ -8,11 +8,11 @@ const viteConfig: UserConfig = {
     outDir: './dist',
     lib: {
       entry: './src/index.ts',
-      name: 'index',
-      formats: ['es'],
+      name: 'federated-react',
+      formats: ['cjs', 'es'],
     },
   },
-  plugins: [react(), dts()],
+  plugins: [dts(), react()],
 }
 
 export default viteConfig

@@ -17,9 +17,8 @@
     "scripts": {
         "prebuild": "rimraf dist",
         "build": "vite build",
-        "postbuild": "yarn clean:dist && yarn copy:shared-modules",
+        "postbuild": "yarn clean:dist",
         "clean:dist": "rimraf dist/jest*",
-        "copy:shared-modules": "ncp src/shared-modules dist/shared-modules",
         "lint": "eslint . --ext .js,.ts,.tsx --fix",
         "test": "jest --config jest.config.ts",
         "test:watch": "yarn test --watchAll",
