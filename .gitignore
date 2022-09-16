@@ -2,6 +2,7 @@
 
 # compiled output
 dist
+!./packages/federated-core/src/helpers/compileFederated/dist/.gitkeep
 /tmp
 /out-tsc
 

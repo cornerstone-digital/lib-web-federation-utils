@@ -8,6 +8,9 @@ declare global {
     System: {
       import: (module: string) => Promise<unknown>
     }
+    VFUK?: {
+      [key: string]: unknown
+    }
   }
 
   namespace NodeJS {

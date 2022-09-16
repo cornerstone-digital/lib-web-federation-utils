@@ -9,7 +9,6 @@ export * from './helpers'
 if (environmentUtils.isBrowser() && !window.__FEDERATED_CORE__) {
   // eslint-disable-next-line no-console
   window.__FEDERATED_CORE__ = {
-    moduleBaseUrls: {},
     federatedRuntime: new FederatedRuntime(),
   }
 }

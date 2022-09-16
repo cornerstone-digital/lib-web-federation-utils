@@ -1,0 +1,10 @@
+{
+  "imports": {
+    "vfde-component1": "/path/to/base/federated/components/component1/component1-l8a6h1zm.umd.js",
+    "vfde-component2": "/path/to/base/federated/components/component2/component2-l8a6h1zm.umd.js",
+    "react": "/path/to/base/federated/shared/react/17.0.2/umd/react.production.min.js",
+    "react-dom": "/path/to/base/federated/shared/react-dom/17.0.2/umd/react-dom.production.min.js",
+    "react-is": "/path/to/base/federated/shared/react-is/17.0.2/umd/react-is.production.min.js",
+    "styled-components": "/path/to/base/federated/shared/styled-components/5.3.5/umd/styled-components.js"
+  }
+}

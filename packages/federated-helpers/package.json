@@ -1,0 +1,30 @@
+{
+  "name": "@vf/federated-helpers",
+  "version": "0.0.0",
+  "type": "commonjs",
+  "main": "dist/federated-helpers.cjs.js",
+  "module": "dist/federated-helpers.mjs",
+  "typings": "dist/federated-helpers.d.ts",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "rollup -c",
+    "lint": "eslint . --ext .ts,.tsx --fix",
+    "test": "jest --config jest.config.ts",
+    "test:watch": "yarn test --watchAll",
+    "test:cc": "yarn test --coverage",
+    "test:cc:watch": "yarn test:cc --watchAll"
+  },
+  "dependencies": {
+    "fs-extra": "^10.1.0",
+    "ts-node": "^10.8.1",
+    "vite": "^2.9.15"
+  },
+  "devDependencies": {
+    "@types/node": "16.11.59",
+    "esbuild": "^0.15.8",
+    "rollup": "^2.79.0",
+    "rollup-plugin-dts": "^4.2.2",
+    "rollup-plugin-esbuild": "^4.10.1",
+    "typescript": "^4.7.2"
+  }
+}

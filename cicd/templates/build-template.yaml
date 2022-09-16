@@ -58,7 +58,7 @@ steps:
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Lerna Build'
     inputs:
-      Arguments: 'lerna:build'
+      Arguments: ${{parameters.buildScript}}
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Tests'

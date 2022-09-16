@@ -3,5 +3,5 @@
   "globals": {
     "System": true
   },
-  "ignorePatterns": ["**/src/shared-modules/**"]
+  "ignorePatterns": []
 }

@@ -1,6 +1,5 @@
 import {
   FederatedModule,
-  ImportMap,
   FederatedModuleParams,
   ExposedServicesType,
   FederatedModuleStatuses,

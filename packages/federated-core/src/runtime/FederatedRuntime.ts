@@ -169,6 +169,10 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     url?: string,
     content?: string
   ): Promise<void> {
+    if (document.getElementById(id)) {
+      return
+    }
+
     const importMapHtmlElement = document.createElement('script')
     importMapHtmlElement.id = id
 
@@ -414,11 +418,9 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
       const importModule = async (name: string) => {
         if (this.useNativeModules) {
-          console.log('Loading native module', name)
           return import(name)
         }
 
-        console.log('Loading systemjs module', name)
         return System.import(name)
       }
 
@@ -449,7 +451,6 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
       return resolvedModule
     } catch (error) {
-      console.log('error', error)
       this.services.event.emit<EventMap>(
         {
           type: FederatedEvents.MODULE_LOAD_ERROR,

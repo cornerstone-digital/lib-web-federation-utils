@@ -37,6 +37,11 @@ steps:
       Arguments: 'lerna:lint'
 
   - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
+    displayName: 'Build'
+    inputs:
+      Arguments: 'lerna:build'
+
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2
     displayName: 'Tests'
     inputs:
       Arguments: 'lerna:test:cc'

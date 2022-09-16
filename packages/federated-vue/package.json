@@ -10,7 +10,7 @@
         "prebuild": "rimraf dist",
         "build": "vite build",
         "postbuild": "rimraf dist/jest*",
-        "lint": "eslint . --ext .js,.ts,.tsx --fix",
+        "lint": "eslint . --ext .ts,.tsx --fix",
         "test": "jest --passWithNoTests --config ./jest.config.ts",
         "test:watch": "yarn test --watchAll",
         "test:cc": "yarn test --coverage",

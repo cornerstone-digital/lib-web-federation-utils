@@ -8,7 +8,7 @@
     "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/recommended"
   ],
-  "ignorePatterns": ["**/dist/*", "**/*.d.ts"],
+  "ignorePatterns": ["**/dist/*", "**/*.d.ts", "packages/federated-core/src/helpers/compileFederated/federated/shared/**/*"],
   "env": {
     "es6": true,
     "jest": true,

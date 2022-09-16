@@ -11,6 +11,9 @@ const viteConfig: UserConfig = {
       formats: ['cjs', 'es'],
     },
   },
+  esbuild: {
+    exclude: ['**/vite/**'],
+  },
   plugins: [dts()],
 }
 

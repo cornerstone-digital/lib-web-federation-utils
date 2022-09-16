@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS",
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./",
+    "declarationDir": "dist",
+    "rootDir": "./",
+    "outDir": "dist",
+    "strict": true,
+    "declaration": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "types": ["node", "jest"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "../../node_modules/@types"
+    ]
+  },
+  "exclude": ["node_modules", "dist"]
+}
