@@ -3,7 +3,6 @@ import {
   FederatedModule,
   FederatedModuleParams,
   FederatedModuleStatuses,
-  ImportMap,
   RootComponentType,
   RootComponentTypes,
 } from '../types'
@@ -17,7 +16,6 @@ import { environmentUtils } from '../utils'
 import { eventService, loggerService } from './services'
 import {
   addHtmlElementWithAttrs,
-  addLinkTag,
   addMetaTag,
   addScriptTag,
   getModuleKey,
@@ -125,7 +123,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
       addScriptTag(
         importMapOverridesKey,
-        'https://cdn.jsdelivr.net/npm/import-map-overrides/dist/import-map-overrides.js'
+        `${this.sharedDependencyBaseUrl}/mobile/shared-assets/import-map-overrides.js`
       )
 
       this.services.event.emit<EventMap>({
@@ -166,10 +164,19 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     }
   }
 
-  async ensureImportMapHtmlElement(id: string, url: string): Promise<void> {
+  async ensureImportMapHtmlElement(
+    id: string,
+    url?: string,
+    content?: string
+  ): Promise<void> {
     const importMapHtmlElement = document.createElement('script')
     importMapHtmlElement.id = id
-    importMapHtmlElement.src = url
+
+    if (url && !content) {
+      importMapHtmlElement.src = url
+    } else if (content) {
+      importMapHtmlElement.innerHTML = content
+    }
     importMapHtmlElement.crossOrigin = 'anonymous'
     importMapHtmlElement.type = this._useNativeModules
       ? 'importmap'
@@ -178,19 +185,27 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     document.head.appendChild(importMapHtmlElement)
   }
 
-  async fetchImportMapContent(
+  ensureEsModuleShims(): void {
+    const esModuleShimsId = 'es-module-shims'
+    if (this._useNativeModules && !document.getElementById(esModuleShimsId)) {
+      // Add es-module-shims to the page
+      addScriptTag(
+        esModuleShimsId,
+        `${this.sharedDependencyBaseUrl}/es-module-shims/1.5.18/es-module-shims.js`
+      )
+    }
+  }
+
+  async ensureImportImapExists(
     module: FederatedModuleParams,
     basePath?: string
-  ): Promise<ImportMap> {
+  ): Promise<void> {
     const importMapPath = `${basePath || this.cdnUrl}/entries-import-map.json`
-    const importMap = await fetch(importMapPath)
     const importMapId = `${module.scope}-${module.name}-imports`
 
     if (!document.getElementById(importMapId)) {
       await this.ensureImportMapHtmlElement(importMapId, importMapPath)
     }
-
-    return importMap.json()
   }
 
   // Module Methods
@@ -316,13 +331,6 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     return this
   }
 
-  async getModuleUrl(module: FederatedModuleParams): Promise<string> {
-    const { name, basePath } = module
-    const importMap = await this.fetchImportMapContent(module, basePath)
-
-    return importMap.imports[name]
-  }
-
   getModulesByPath(path: string): FederatedModule[] {
     const modules: FederatedModule[] = []
     this.modules.forEach((module) => {
@@ -337,9 +345,10 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   async loadModule(
     module: FederatedModuleParams
   ): Promise<FederatedModule | undefined> {
-    const { scope, name, basePath } = module
+    const { scope, name } = module
 
     try {
+      await this.ensureImportImapExists(module)
       const moduleKey = getModuleKey(scope, name)
 
       if (this.modules.has(moduleKey)) {
@@ -391,62 +400,41 @@ class FederatedRuntime implements AbstractFederatedRuntime {
         module
       )
 
-      let resolvedModule: FederatedModule
+      this.services.event.emit<EventMap>(
+        {
+          type: this.useNativeModules
+            ? FederatedEvents.NATIVE_MODULE_LOADING
+            : FederatedEvents.SYSTEMJS_MODULE_LOADING,
+          payload: {
+            module,
+          },
+        },
+        module
+      )
 
-      // Load stylesheet from manifest
-      const importMap = await this.fetchImportMapContent(module, basePath)
-      const moduleUrl = importMap.imports[`${name}.css`]
+      const importModule = async (name: string) => {
+        if (this.useNativeModules) {
+          console.log('Loading native module', name)
+          return import(name)
+        }
 
-      if (moduleUrl) {
-        addLinkTag(`${name}.css`, 'stylesheet', moduleUrl)
+        console.log('Loading systemjs module', name)
+        return System.import(name)
       }
 
-      if (this.useNativeModules) {
-        this.services.event.emit<EventMap>(
-          {
-            type: FederatedEvents.NATIVE_MODULE_LOADING,
-            payload: {
-              module,
-            },
-          },
-          module
-        )
-        const moduleUrl = await this.getModuleUrl({ scope, name })
+      const resolvedModule: FederatedModule = await importModule(name)
 
-        resolvedModule = await import(/* @vite-ignore */ moduleUrl)
-
-        this.services.event.emit<EventMap>(
-          {
-            type: FederatedEvents.NATIVE_MODULE_LOADED,
-            payload: {
-              loadedTime: new Date().getTime(),
-              module: resolvedModule,
-            },
+      this.services.event.emit<EventMap>(
+        {
+          type: this.useNativeModules
+            ? FederatedEvents.NATIVE_MODULE_LOADED
+            : FederatedEvents.SYSTEMJS_MODULE_LOADED,
+          payload: {
+            module: resolvedModule,
           },
-          module
-        )
-      } else {
-        this.services.event.emit<EventMap>(
-          {
-            type: FederatedEvents.SYSTEMJS_MODULE_LOADING,
-            payload: {
-              module,
-            },
-          },
-          module
-        )
-        resolvedModule = await System.import(name)
-
-        this.services.event.emit<EventMap>(
-          {
-            type: FederatedEvents.SYSTEMJS_MODULE_LOADED,
-            payload: {
-              module: resolvedModule,
-            },
-          },
-          module
-        )
-      }
+        },
+        module
+      )
 
       if (!this.modules.has(moduleKey) && !resolvedModule.status) {
         await this.registerModule(resolvedModule)
@@ -461,6 +449,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
       return resolvedModule
     } catch (error) {
+      console.log('error', error)
       this.services.event.emit<EventMap>(
         {
           type: FederatedEvents.MODULE_LOAD_ERROR,
@@ -764,6 +753,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
       await this.reroute()
     })
 
+    this.ensureEsModuleShims()
     this.ensureSystemJs()
     this.addImportMapOverridesUi()
 

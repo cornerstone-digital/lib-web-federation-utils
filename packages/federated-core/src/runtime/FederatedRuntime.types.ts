@@ -598,10 +598,7 @@ export abstract class AbstractFederatedRuntime {
   abstract addImportMapOverridesUi(): void
   abstract ensureSystemJs(): void
   abstract ensureImportMapHtmlElement(id: string, url: string): Promise<void>
-  abstract fetchImportMapContent(
-    module: FederatedModuleParams,
-    basePath?: string
-  ): Promise<ImportMap>
+  abstract ensureImportImapExists(module: FederatedModuleParams): Promise<void>
 
   // Module Methods
   abstract setModuleState(
@@ -622,7 +619,6 @@ export abstract class AbstractFederatedRuntime {
     module: FederatedModuleParams
   ): RootComponentType<ModuleComponentType, PropsType> | undefined | void
   abstract registerModule(module: FederatedModule): Promise<this>
-  abstract getModuleUrl(module: FederatedModuleParams): Promise<string>
   abstract getModulesByPath(path: string): FederatedModule[]
   abstract loadModule(
     module: FederatedModuleParams

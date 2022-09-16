@@ -76,8 +76,9 @@ describe('FederatedRuntime', () => {
         update: 0,
       }
 
-      // @ts-ignore
-      global.System.import = jest.fn(() => Promise.resolve(resolvedModule))
+      global.window.System.import = jest.fn(() =>
+        Promise.resolve(resolvedModule)
+      )
 
       // @ts-ignore
       global.window = Object.create(window)
@@ -351,49 +352,6 @@ describe('FederatedRuntime', () => {
         })
       })
 
-      describe('fetchImportMapContent', () => {
-        it('should fetch import map content', async () => {
-          const modulePath = 'https://cdn.vodafone.co.uk/federated/scope/name'
-          const importMapContent =
-            '{"imports": {"scope/name": "https://cdn.vodafone.co.uk/federated/scope/name.js"}}'
-          const fetchPromise = Promise.resolve({
-            json: () => Promise.resolve(importMapContent),
-          })
-          federatedRuntime.cdnUrl = modulePath
-          // @ts-ignore
-          global.fetch = jest.fn(() => fetchPromise)
-
-          const result = await federatedRuntime.fetchImportMapContent({
-            name: 'name',
-            scope: 'scope',
-          })
-          expect(global.fetch).toHaveBeenCalledWith(
-            `${modulePath}/entries-import-map.json`
-          )
-          expect(result).toEqual(importMapContent)
-        })
-
-        it('should use basePath to fetch import map if provided', async () => {
-          const basePath = '/basket/federated'
-          const modulePath = `${basePath}/scope/name`
-          const importMapContent = `{"imports": {"scope/name": "${modulePath}/scope/name.js"}}`
-          const fetchPromise = Promise.resolve({
-            json: () => Promise.resolve(importMapContent),
-          })
-          federatedRuntime.cdnUrl = modulePath
-          // @ts-ignore
-          global.fetch = jest.fn(() => fetchPromise)
-          const result = await federatedRuntime.fetchImportMapContent(
-            { name: 'name', scope: 'scope' },
-            basePath
-          )
-          expect(global.fetch).toHaveBeenCalledWith(
-            `${basePath}/entries-import-map.json`
-          )
-          expect(result).toEqual(importMapContent)
-        })
-      })
-
       describe('setModuleState', () => {
         it('should set module state', () => {
           const module: FederatedModule = {
@@ -548,50 +506,6 @@ describe('FederatedRuntime', () => {
         })
       })
 
-      describe('getModuleUrl', () => {
-        it('should call fetchImportMapContent', async () => {
-          const fetchImportMapContentSpy = jest.spyOn(
-            federatedRuntime,
-            'fetchImportMapContent'
-          )
-          const importMapContent = {
-            imports: {
-              'scope:name':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
-            },
-          }
-          const fetchPromise = Promise.resolve({
-            json: () => Promise.resolve(importMapContent),
-          })
-          // @ts-ignore
-          global.fetch = jest.fn(() => fetchPromise)
-
-          await federatedRuntime.getModuleUrl({ scope: 'scope', name: 'name' })
-          expect(fetchImportMapContentSpy).toHaveBeenCalled()
-        })
-
-        it('should return module url', async () => {
-          const importMapContent = {
-            imports: {
-              name: 'https://cdn.vodafone.co.uk/federated/scope/name.js',
-            },
-          }
-          const fetchPromise = Promise.resolve({
-            json: () => Promise.resolve(importMapContent),
-          })
-          // @ts-ignore
-          global.fetch = jest.fn(() => fetchPromise)
-
-          const result = await federatedRuntime.getModuleUrl({
-            scope: 'scope',
-            name: 'name',
-          })
-          expect(result).toEqual(
-            'https://cdn.vodafone.co.uk/federated/scope/name.js'
-          )
-        })
-      })
-
       describe('getModulesByPath', () => {
         it('should return modules by path', () => {
           const module1: FederatedModule = {
@@ -708,38 +622,6 @@ describe('FederatedRuntime', () => {
           })
         })
 
-        it('should add stylesheet to head if one defined in importmap', async () => {
-          const module: FederatedModule = {
-            scope: 'scope',
-            name: 'module-1',
-            type: 'journey-module',
-            status: FederatedModuleStatuses.NOT_LOADED,
-          }
-
-          const importMapContent = {
-            imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
-              'module-1.css':
-                'https://cdn.vodafone.co.uk/federated/scope/module-1.css',
-            },
-          }
-          const fetchPromise = Promise.resolve({
-            json: () => Promise.resolve(importMapContent),
-          })
-          // @ts-ignore
-          global.fetch = jest.fn(() => fetchPromise)
-
-          federatedRuntime.ensureSystemJs()
-
-          await federatedRuntime.registerModule(module)
-          await federatedRuntime.loadModule(module)
-
-          expect(global.document.head.innerHTML).toContain(
-            '<link id="module-1.css" rel="stylesheet" href="https://cdn.vodafone.co.uk/federated/scope/module-1.css">'
-          )
-        })
-
         it('should use native modules if useNativeModules is true', async () => {
           const module: FederatedModule = {
             scope: 'scope',
@@ -750,10 +632,10 @@ describe('FederatedRuntime', () => {
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': './__mocks__/module-mock.js',
             },
           }
+
           const fetchPromise = Promise.resolve({
             json: () => Promise.resolve(importMapContent),
           })
@@ -761,22 +643,18 @@ describe('FederatedRuntime', () => {
           // @ts-ignore
           global.fetch = jest.fn(() => fetchPromise)
 
-          jest
-            .spyOn(federatedRuntime, 'getModuleUrl')
-            .mockResolvedValue('./__mocks__/module-mock.js')
-
           federatedRuntime.useNativeModules = true
-          await federatedRuntime.registerModule(module)
+          await federatedRuntime.ensureImportMapHtmlElement(
+            'scope-module-1-import-map',
+            undefined,
+            JSON.stringify(importMapContent, null, 2)
+          )
+
           await federatedRuntime.loadModule(module)
 
-          expect(dispatchedEventCount).toEqual({
-            'federated-core:module:scope:module-1:before-load': 1,
-            'federated-core:module:scope:module-1:before-register': 1,
-            'federated-core:module:scope:module-1:registered': 1,
-            'federated-core:module:scope:module-1:state-changed': 2,
-            [FederatedEvents.NATIVE_MODULE_LOADING]: 1,
-            [FederatedEvents.NATIVE_MODULE_LOADED]: 1,
-          })
+          expect(
+            dispatchedEventCount[FederatedEvents.NATIVE_MODULE_LOADING]
+          ).toBe(1)
         })
 
         it('should call registerModule if module is not registered or module status is not set', async () => {
