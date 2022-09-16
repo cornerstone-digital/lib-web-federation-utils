@@ -3,7 +3,9 @@ import getGlobalEnvVar from './getGlobalEnvVar'
 describe('getGlobalEnvVar', () => {
   it('should return the value of the global variable', () => {
     window.VFUK = {
-      test: 'test',
+      env: {
+        test: 'test',
+      },
     }
 
     expect(getGlobalEnvVar('test')).toEqual('test')
@@ -11,8 +13,10 @@ describe('getGlobalEnvVar', () => {
 
   it('should return the value of the global variable in the namespace', () => {
     window.VFUK = {
-      test: {
-        test: 'test',
+      env: {
+        test: {
+          test: 'test',
+        },
       },
     }
 
@@ -27,13 +31,25 @@ describe('getGlobalEnvVar', () => {
     )
   })
 
+  it('should throw an error if the VFUK.env is not defined', () => {
+    window.VFUK = {
+      env: undefined,
+    }
+
+    expect(() => getGlobalEnvVar('test')).toThrowError(
+      'window.VFUK.env is not defined'
+    )
+  })
+
   it('should throw an error if the global variable in the namespace is not defined', () => {
     window.VFUK = {
-      test: undefined,
+      env: {
+        test: undefined,
+      },
     }
 
     expect(() => getGlobalEnvVar('test', 'test')).toThrowError(
-      'window.VFUK.test is not defined'
+      'window.VFUK.env.test is not defined'
     )
   })
 })
