@@ -38,7 +38,7 @@
         "jest-fetch-mock": "^3.0.3",
         "ncp": "^2.0.0",
         "typescript": "^4.7.2",
-        "vite": "^2.9.13",
+        "vite": "2.9.6",
         "vite-plugin-dts": "^1.2.1"
     }
 }

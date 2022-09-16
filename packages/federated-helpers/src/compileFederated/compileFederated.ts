@@ -33,8 +33,6 @@ const compileFederatedModules = async ({
   const imports: Record<string, string> = {}
   const modulesDir = resolve(federatedFolder, `./modules`)
 
-  console.log(viteOptions)
-
   for (const module of fs.readdirSync(modulesDir)) {
     try {
       const componentsDir = resolve(federatedFolder, `modules/${module}`)
