@@ -8,7 +8,7 @@ const addScriptTag = (id: string, src: string, onload?: () => void): void => {
   script.src = src
   script.crossOrigin = 'anonymous'
   if (onload) script.onload = onload
-  document.body.appendChild(script)
+  document.head.appendChild(script)
 }
 
 export default addScriptTag

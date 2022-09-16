@@ -3,6 +3,8 @@ const addHtmlElementWithAttrs = (
   tagName: string,
   attrs: { [key: string]: string }
 ): void => {
+  if (document.getElementById(id)) return
+
   const element = document.createElement(tagName)
   element.id = id
   Object.keys(attrs).forEach((key) => {

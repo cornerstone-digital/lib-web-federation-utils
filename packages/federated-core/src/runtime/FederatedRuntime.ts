@@ -111,6 +111,11 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   addImportMapOverridesUi(): void {
     const importMapOverridesKey = 'import-map-overrides'
     if (this.importMapOverridesEnabled) {
+      addScriptTag(
+        importMapOverridesKey,
+        `${this.sharedDependencyBaseUrl}/import-map-overrides/3.0.0/import-map-overrides.min.js`
+      )
+
       addHtmlElementWithAttrs(
         'import-map-overrides-ui',
         'import-map-overrides-full',
@@ -120,11 +125,6 @@ class FederatedRuntime implements AbstractFederatedRuntime {
       )
 
       localStorage.setItem(importMapOverridesKey, 'true')
-
-      addScriptTag(
-        importMapOverridesKey,
-        `${this.sharedDependencyBaseUrl}/mobile/shared-assets/import-map-overrides.js`
-      )
 
       this.services.event.emit<EventMap>({
         type: FederatedEvents.IMPORT_MAP_OVERRIDES_LOADED,
@@ -136,6 +136,8 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   }
 
   ensureSystemJs(): void {
+    this.addImportMapOverridesUi()
+
     if (!this.useNativeModules) {
       addMetaTag('importmap-type', 'importmap-type', 'systemjs-importmap')
       addScriptTag(
@@ -200,11 +202,10 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     }
   }
 
-  async ensureImportImapExists(
-    module: FederatedModuleParams,
-    basePath?: string
-  ): Promise<void> {
-    const importMapPath = `${basePath || this.cdnUrl}/entries-import-map.json`
+  async ensureImportImapExists(module: FederatedModuleParams): Promise<void> {
+    const importMapPath = `${
+      module.basePath || this.cdnUrl
+    }/entries-import-map.json`
     const importMapId = `${module.scope}-${module.name}-imports`
 
     if (!document.getElementById(importMapId)) {
@@ -756,7 +757,6 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
     this.ensureEsModuleShims()
     this.ensureSystemJs()
-    this.addImportMapOverridesUi()
 
     for (const entry of this.modules) {
       const moduleData = entry[1]
@@ -870,6 +870,10 @@ export const initFederatedRuntime = (initConfig?: RuntimeInitConfig) => {
     runtime.useNativeModules =
       initConfig?.useNativeModules || runtime.useNativeModules || false
 
+    runtime.debugEnabled = initConfig?.debugEnabled || false
+    runtime.sharedDependencyBaseUrl = initConfig?.sharedDependencyBaseUrl || ''
+    runtime.cdnUrl = initConfig?.cdnUrl || runtime.cdnUrl || ''
+
     if (
       initConfig?.importMapOverridesEnabled ||
       runtime.importMapOverridesEnabled
@@ -880,10 +884,6 @@ export const initFederatedRuntime = (initConfig?: RuntimeInitConfig) => {
         false
       runtime.addImportMapOverridesUi()
     }
-
-    runtime.debugEnabled = initConfig?.debugEnabled || false
-    runtime.sharedDependencyBaseUrl = initConfig?.sharedDependencyBaseUrl || ''
-    runtime.cdnUrl = initConfig?.cdnUrl || runtime.cdnUrl || ''
 
     window.__FEDERATED_CORE__.federatedRuntime = runtime
 
