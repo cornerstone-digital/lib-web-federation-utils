@@ -418,10 +418,10 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
       const importModule = async (name: string) => {
         if (this.useNativeModules) {
-          return import(name)
+          return import(/* @vite-ignore */ name)
         }
 
-        return System.import(name)
+        return System.import(/* @vite-ignore */ name)
       }
 
       const resolvedModule: FederatedModule = await importModule(name)
