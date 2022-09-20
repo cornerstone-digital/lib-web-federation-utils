@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.4](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react-app-consume-component@0.1.3...@vf/federated-react-app-consume-component@0.1.4) (2022-09-20)
+
+**Note:** Version bump only for package @vf/federated-react-app-consume-component
+
+
+
+
+
 ## [0.1.3](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react-app-consume-component@0.1.2...@vf/federated-react-app-consume-component@0.1.3) (2022-09-14)
 
 **Note:** Version bump only for package @vf/federated-react-app-consume-component

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.6.1...@vf/federated-core@0.7.0) (2022-09-20)
+
+
+### Features
+
+* general cleanup ([07eca90](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/07eca9049e7bc93d3ba56ceebf7588b6f8f70bee))
+* general cleanup and new helpers ([7b6e599](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/7b6e59944c3fa9c3b69a3bf843b181876aa5ed50))
+
+
+
+
+
 ## [0.6.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.6.0...@vf/federated-core@0.6.1) (2022-09-14)
 
 **Note:** Version bump only for package @vf/federated-core
