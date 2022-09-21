@@ -1,6 +1,6 @@
 {
   "name": "@vf/federated-helpers",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "commonjs",
   "main": "dist/federated-helpers.cjs.js",
   "module": "dist/federated-helpers.mjs",
