@@ -1,13 +1,13 @@
 {
   "name": "@vf/fedetated-vue-app-consumer",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scripts": {
     "start": "yarn build && npx http-server ./dist --port 8001 --cors"
   },
   "dependencies": {
-    "@vf/federated-core": "^0.8.0",
-    "@vf/federated-vue": "^0.6.0",
+    "@vf/federated-core": "^0.9.0",
+    "@vf/federated-vue": "^0.6.1",
     "styled-components": "^5.3.5",
     "vue": "^3.2.25"
   },
