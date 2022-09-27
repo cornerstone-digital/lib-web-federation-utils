@@ -1,13 +1,13 @@
 {
     "name": "@vf/federated-app-creating-components",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "scripts": {
         "build": "ts-node --project ./tsconfig.json ./tools/compile.ts",
         "start": "npx http-server ./dist --port 8001 --cors"
     },
     "dependencies": {
         "@vf/federated-core": "^0.12.0",
-        "@vf/federated-react": "^0.6.4",
+        "@vf/federated-react": "^0.7.0",
         "@vf/federated-vue": "^0.6.4",
         "@vfuk/core-button": "^13.1.0",
         "@vfuk/core-footer": "^13.1.0",
