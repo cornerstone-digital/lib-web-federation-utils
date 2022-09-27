@@ -6,6 +6,7 @@ import { v4 } from 'uuid'
 type FederatedModuleLoaderProps<PropTypes> = FederatedModuleParams & {
   props: PropTypes
   mountId?: string
+  loadingComponent?: React.ReactNode
 }
 
 function FederatedModuleLoader<PropTypes>({
@@ -14,18 +15,19 @@ function FederatedModuleLoader<PropTypes>({
   basePath,
   props,
   mountId = `${scope}-${name}-${v4()}`,
+  loadingComponent = <div>Loading...</div>,
 }: FederatedModuleLoaderProps<PropTypes>) {
   if (typeof window !== 'undefined') {
     const module = getFederatedModule({ scope, name, basePath })
 
     module.then((module: FederatedModule | undefined) => {
       if (module?.mount) {
-        module?.mount(props, mountId)
+        void module.mount(props, mountId)
       }
     })
   }
 
-  return <div id={mountId} />
+  return <div id={mountId}>{loadingComponent}</div>
 }
 
 export default FederatedModuleLoader
