@@ -3,7 +3,8 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "packages/**", "examples/**"
+    "packages/**",
+    "examples/**"
   ],
   "scripts": {
     "prepare": "husky install",
@@ -26,7 +27,9 @@
     "build:example:components": "cd examples/components && yarn build",
     "start:example:consumer": "cd examples/react/react-app-consume-federated-component && yarn start",
     "start:example:components": "cd examples/components && yarn start",
-    "start:example:app": "yarn build:example:components && concurrently \"yarn start:example:components\" \"yarn start:example:consumer\""
+    "start:example:app": "yarn build:example:components && concurrently \"yarn start:example:components\" \"yarn start:example:consumer\"",
+    "// Tools": "==============================================================",
+    "vf-link": "node ./node_modules/.bin/vf-link"
   },
   "dependencies": {
     "@swc/helpers": "~0.3.3",
@@ -59,6 +62,7 @@
     "@types/react-dom": "17.0.2",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
+    "@vfuk/web-config-link": "^6.0.0",
     "babel-jest": "27.5.1",
     "concurrently": "^7.2.2",
     "eslint": "~8.12.0",
