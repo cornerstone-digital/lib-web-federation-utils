@@ -24,9 +24,6 @@ export type CreateFederatedReactOptions<RootComponentProps> = {
     description?: string
     domElementId?: string
     rootComponent?: React.ComponentType<RootComponentProps>
-    loadRootComponent?: () => Promise<
-      React.ComponentClass<unknown, unknown> | React.FunctionComponent<unknown>
-    >
     errorBoundary?: (
       error: Error
     ) => React.ReactElement<
@@ -49,5 +46,4 @@ export type FederatedReactApp<PropsType> =
   FederatedModuleBaseOptions<PropsType> &
     FederatedModuleLifecycles<PropsType> & {
       domElementId: CreateFederatedReactOptions<PropsType>['config']['domElementId']
-      loadRootComponent: CreateFederatedReactOptions<PropsType>['config']['loadRootComponent']
     }

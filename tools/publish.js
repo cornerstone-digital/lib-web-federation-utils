@@ -1,41 +1,35 @@
-const path = require('path');
-const fs = require('fs');
+const path = require('path')
+const fs = require('fs')
 
 const copyNpmrcToPackage = (packageDir) => {
-  const npmrcPath = path.join(process.cwd(), '.npmrc');
+  const npmrcPath = path.join(process.cwd(), '.npmrc')
 
   if (fs.existsSync(npmrcPath)) {
-    fs.copyFileSync(npmrcPath, path.join(packageDir, '.npmrc'));
+    fs.copyFileSync(npmrcPath, path.join(packageDir, '.npmrc'))
   }
 }
 
 // Loop through all the packages in {root}/dist/packages and npm publish them
 const publishPackages = () => {
-  const root = path.join(process.cwd(), 'dist', 'packages');
+  const root = path.join(process.cwd(), 'dist', 'packages')
 
-  fs.readdirSync(root).forEach(packageName => {
-    const packageDir = path.join(root, packageName);
-    const packageJson = require(path.join(packageDir, 'package.json'));
-    let channel = 'latest';
-
-    // is package alpha?
-    if (packageJson.version.indexOf('-alpha') > -1) {
-      channel = 'alpha';
-    }
-
-    // is package beta?
-    if (packageJson.version.indexOf('-beta') > -1) {
-      channel = 'beta';
-    }
+  fs.readdirSync(root).forEach((packageName) => {
+    const packageDir = path.join(root, packageName)
+    const packageJson = require(path.join(packageDir, 'package.json'))
+    let channel = 'latest'
 
     if (packageJson.private) {
-      return;
+      return
     }
 
-    copyNpmrcToPackage(packageDir);
+    copyNpmrcToPackage(packageDir)
 
-    console.log(`Publishing ${packageName}@${packageJson.version} to --tag=${channel}`);
-    require('child_process').execSync(`npm publish ${packageDir} --tag ${channel}`);
+    console.log(
+      `Publishing ${packageName}@${packageJson.version} to --tag=${channel}`
+    )
+    require('child_process').execSync(
+      `npm publish ${packageDir} --tag ${channel}`
+    )
   })
 }
 

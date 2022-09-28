@@ -1,6 +1,6 @@
 module.exports = {
   branch: 'main',
-  branches: [{ name: 'main' }, { name: 'alpha', prerelease: true }, { name: 'beta', prerelease: true }],
+  branches: [{ name: 'main' }],
   plugins: [
     '@semantic-release/changelog',
     [
@@ -23,7 +23,8 @@ module.exports = {
     [
       '@semantic-release/git',
       {
-        message: 'chore(release): ${nextRelease.version}\n\n${nextRelease.notes}',
+        message:
+          'chore(release): ${nextRelease.version}\n\n${nextRelease.notes}',
       },
     ],
   ],

@@ -29,12 +29,8 @@ function validateModuleOptions<PropsType>(
     throw new Error('Missing scope')
   }
 
-  if (!options.config.rootComponent && !options.config.loadRootComponent) {
-    throw new Error('Missing rootComponent or loadRootComponent')
-  }
-
-  if (options.config.rootComponent && options.config.loadRootComponent) {
-    throw new Error('Cannot have both rootComponent and loadRootComponent')
+  if (!options.config.rootComponent) {
+    throw new Error('Missing rootComponent')
   }
 }
 
@@ -48,7 +44,6 @@ function createFederatedVue<PropsType>(
 
   const {
     domElementId = `${config.scope}-${config.name}`,
-    loadRootComponent,
     defaultProps,
     name,
     scope,
@@ -79,7 +74,6 @@ function createFederatedVue<PropsType>(
   return {
     domElementId,
     rootComponent,
-    loadRootComponent,
     activeWhenPaths: activeWhenPaths || [],
     exceptWhenPaths: exceptWhenPaths || [],
     description,

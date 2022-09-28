@@ -21,7 +21,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { createFederatedReact } from '@vf/federated-react'
 import { initFederatedRuntime } from '@vf/federated-core'
-
+import AvailabilityChecker from './frontend/AvailabilityChecker'
 export const { name, scope, mount, unmount, bootstrap, update } =
   createFederatedReact({
     React,
@@ -30,13 +30,7 @@ export const { name, scope, mount, unmount, bootstrap, update } =
     config: {
       scope: 'broadband',
       name: 'AvailabilityChecker',
-      loadRootComponent: async () =>
-        React.lazy(
-          () =>
-            import(
-              /* webpackChunkName: "availability-checker" */ './frontend/AvailabilityChecker'
-            )
-        ),
+      rootComponent: <AvailabilityChecker />,
       type: 'component',
     },
   })

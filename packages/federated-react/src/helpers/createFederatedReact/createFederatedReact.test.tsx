@@ -133,7 +133,7 @@ describe('createFederatedReact', () => {
       }).toThrowError('Missing scope')
     })
 
-    it('missing rootComponent or loadRootComponent', () => {
+    it('missing rootComponent', () => {
       expect(() => {
         createFederatedReact({
           ...defaultOptions,
@@ -141,26 +141,9 @@ describe('createFederatedReact', () => {
             ...defaultOptions.config,
             // @ts-ignore
             rootComponent: undefined,
-            // @ts-ignore
-            loadRootComponent: undefined,
           },
         })
-      }).toThrowError('Missing rootComponent or loadRootComponent')
-    })
-
-    it('both rootComponent and loadRootComponent are passed', () => {
-      expect(() => {
-        createFederatedReact({
-          ...defaultOptions,
-          config: {
-            ...defaultOptions.config,
-            // @ts-ignore
-            rootComponent: TestComponent,
-            // @ts-ignore
-            loadRootComponent: async () => TestComponent,
-          },
-        })
-      }).toThrowError('Cannot have both rootComponent and loadRootComponent')
+      }).toThrowError('Missing rootComponent')
     })
   })
 
@@ -239,25 +222,6 @@ describe('createFederatedReact', () => {
       expect(moduleInstance.mount()).toBeInstanceOf(Promise)
     })
 
-    it('should render lazy component is passed lazyComponent in config and registered with runtime', async () => {
-      const options: CreateFederatedReactOptions<unknown> = {
-        ...defaultOptions,
-        config: {
-          ...defaultOptions.config,
-          rootComponent: undefined,
-          loadRootComponent: async () =>
-            React.lazy(() => import('./__mocks__/module-component')),
-        },
-      }
-
-      const moduleInstance = createFederatedReact(options)
-
-      await federatedRuntime.registerModule(moduleInstance)
-      await moduleInstance.mount({}, domElementId)
-      const lazyElement = await screen.findByText(/i am lazy/i)
-      expect(lazyElement).toBeInTheDocument()
-    })
-
     it('should fire correct events', async () => {
       const moduleInstance = createFederatedReact(defaultOptions)
       await federatedRuntime.registerModule(moduleInstance)
@@ -325,10 +289,8 @@ describe('createFederatedReact', () => {
         ...defaultOptions,
         config: {
           ...defaultOptions.config,
-          rootComponent: undefined,
-          loadRootComponent: () => {
-            throw new Error('Error loading module component')
-          },
+          // @ts-ignore
+          rootComponent: new Error('Error loading module component'),
         },
       })
       await federatedRuntime.registerModule(moduleInstance)

@@ -62,21 +62,6 @@ const mountLifecycle = <PropsType>(
       const propsToUse = props || defaultProps
       federatedRuntime?.validateProps(module, propsToUse)
 
-      let loadedRootComponent
-      let useSuspense = false
-
-      if (opts.config.loadRootComponent) {
-        loadedRootComponent = await opts.config.loadRootComponent()
-        rootComponent = loadedRootComponent as ComponentType<PropsType>
-
-        federatedRuntime.setModuleRootComponent<'react', PropsType>(
-          module,
-          rootComponent
-        )
-
-        useSuspense = true
-      }
-
       if (rootComponent) {
         const rootComponentElement = React.createElement(
           rootComponent,
@@ -85,19 +70,11 @@ const mountLifecycle = <PropsType>(
 
         const errorBoundary = createdErrorBoundary(opts)
 
-        let elementToRender: ReactElement = React.createElement(
+        const elementToRender: ReactElement = React.createElement(
           errorBoundary,
           {} as PropsType,
           rootComponentElement
         )
-
-        if (useSuspense) {
-          elementToRender = React.createElement(
-            Suspense,
-            { fallback: React.createElement('div', null, 'Loading...') },
-            elementToRender
-          )
-        }
 
         eventService.emit<EventMap>(
           {

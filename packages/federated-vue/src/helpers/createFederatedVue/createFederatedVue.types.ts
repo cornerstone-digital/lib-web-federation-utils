@@ -21,7 +21,6 @@ export type CreateFederatedVueOptions<RootComponentProps> = {
     description?: string
     domElementId?: string
     rootComponent?: Component<RootComponentProps>
-    loadRootComponent?: () => Promise<Component<RootComponentProps>>
     errorBoundary?: Component<unknown>
     defaultProps?: RootComponentProps
     propValidationFunction?: ValidateFunction<RootComponentProps>
@@ -34,5 +33,4 @@ export type CreateFederatedVueOptions<RootComponentProps> = {
 export type FederatedVueApp<PropsType> = FederatedModuleBaseOptions<PropsType> &
   FederatedModuleLifecycles<PropsType> & {
     domElementId: CreateFederatedVueOptions<PropsType>['config']['domElementId']
-    loadRootComponent: CreateFederatedVueOptions<PropsType>['config']['loadRootComponent']
   }

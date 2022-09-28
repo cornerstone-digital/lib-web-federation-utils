@@ -54,13 +54,7 @@ const { name, scope, mount, unmount, bootstrap, update } = createFederatedReact(
     config: {
       name: 'FederatedInteractiveFiftyFiftyBannerBanner',
       scope: 'vfuk-federated-component-example',
-      loadRootComponent: async () =>
-        React.lazy(
-          () =>
-            import(
-              /* webpackChunkName: "InteractiveFiftyFiftyBanner" */ './src/InteractiveFiftyFiftyBanner/index.tsx'
-            )
-        ),
+      rootComponent: FederatedInteractiveFiftyFiftyBanner,
       type: 'component',
     },
   }

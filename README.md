@@ -12,11 +12,11 @@ lib-web-federation-utils is a collection of helpers function and build tools tha
 ## Installation process
 Dev Dependencies
 
-`yarn add @vf/federated-web-build-core@alpha @vf/federated-web-build-types@alpha @vf/federated-web-build-webpack@alpha --dev`
+`yarn add @vf/federated-web-build-core @vf/federated-web-build-types @vf/federated-web-build-webpack --dev`
 
 Dependencies
 
-`yarn add @vf/federated-web-frontend-react@alpha`
+`yarn add @vf/federated-web-frontend-react`
 
 # Build tools (built MFE)
 

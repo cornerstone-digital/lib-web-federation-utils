@@ -36,12 +36,8 @@ function validateModuleOptions<PropsType>(
     throw new Error('Missing scope')
   }
 
-  if (!options.config.rootComponent && !options.config.loadRootComponent) {
-    throw new Error('Missing rootComponent or loadRootComponent')
-  }
-
-  if (options.config.rootComponent && options.config.loadRootComponent) {
-    throw new Error('Cannot have both rootComponent and loadRootComponent')
+  if (!options.config.rootComponent) {
+    throw new Error('Missing rootComponent')
   }
 }
 
@@ -54,7 +50,6 @@ function createFederatedReact<PropsType>(
   const { rootComponent } = config
   const {
     domElementId = `${config.scope}-${config.name}`,
-    loadRootComponent,
     defaultProps,
     name,
     scope,
@@ -84,7 +79,6 @@ function createFederatedReact<PropsType>(
   return {
     domElementId,
     rootComponent,
-    loadRootComponent,
     activeWhenPaths: activeWhenPaths || [],
     exceptWhenPaths: exceptWhenPaths || [],
     status: FederatedModuleStatuses.NOT_LOADED,

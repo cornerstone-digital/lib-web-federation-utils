@@ -55,18 +55,6 @@ const mountLifecycle = <PropsType>(
         )
       }
 
-      let loadedRootComponent
-
-      if (opts.config.loadRootComponent) {
-        loadedRootComponent = await opts.config.loadRootComponent()
-        rootComponent = loadedRootComponent as Component<PropsType>
-
-        federatedRuntime.setModuleRootComponent<'vue', PropsType>(
-          module,
-          rootComponent
-        )
-      }
-
       if (savedModule?.bootstrap) {
         await savedModule.bootstrap()
       }
