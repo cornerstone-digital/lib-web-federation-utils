@@ -1,6 +1,6 @@
 {
     "name": "@vf/federated-react",
-    "version": "0.7.0",
+    "version": "0.7.1",
     "main": "dist/federated-react.es.js",
     "types": "dist/packages/federated-react/src/index.d.ts",
     "files": [

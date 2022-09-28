@@ -1,6 +1,6 @@
 {
     "name": "@vf/federated-vue",
-    "version": "0.6.4",
+    "version": "0.6.5",
     "main": "dist/federated-vue.es.js",
     "types": "dist/federated-vue/src/index.d.ts",
     "files": [
