@@ -1,11 +1,11 @@
 {
     "name": "@vf/federated-shell-app",
-    "version": "0.2.7",
+    "version": "0.2.8",
     "scripts": {
         "start": "vite --port 8000"
     },
     "dependencies": {
-        "@vf/federated-react": "^0.8.0",
+        "@vf/federated-react": "^0.9.0",
         "@vfuk/core-functional-banner": "1.0.x",
         "@vfuk/core-inline-link": "^3.1.0",
         "@vfuk/core-interactive-fifty-fifty-banner": "12.0.x",

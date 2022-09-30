@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react-app-consume-component@0.2.7...@vf/federated-react-app-consume-component@0.3.0) (2022-09-30)
+
+
+### Features
+
+* removed scope requirement ([b99ffb0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/b99ffb00171f44e1c3a97c6806decff6f11b4af1))
+
+
+
+
+
 ## [0.2.7](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react-app-consume-component@0.2.6...@vf/federated-react-app-consume-component@0.2.7) (2022-09-30)
 
 **Note:** Version bump only for package @vf/federated-react-app-consume-component

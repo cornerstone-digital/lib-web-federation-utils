@@ -1,6 +1,6 @@
 {
     "name": "@vf/federated-vue",
-    "version": "0.6.5",
+    "version": "0.7.0",
     "main": "dist/federated-vue.es.js",
     "types": "dist/federated-vue/src/index.d.ts",
     "files": [
@@ -17,7 +17,7 @@
         "test:cc:watch": "yarn test:cc --watchAll"
     },
     "dependencies": {
-        "@vf/federated-core": "^0.12.0",
+        "@vf/federated-core": "^0.13.0",
         "ajv": "^8.11.0",
         "systemjs": "^6.12.1",
         "vue": "^3.2.25"
