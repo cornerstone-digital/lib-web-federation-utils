@@ -18,17 +18,17 @@ const mountLifecycle = <PropsType>(
   opts: CreateFederatedReactOptions<PropsType>,
   defaultProps: PropsType
 ) => {
-  const defaultMountId = `${module.scope}-${module.name}`
+  const defaultMountId = `${module.name}`
   return async (
     props: PropsType = defaultProps as PropsType,
     mountId?: string
   ) => {
     const {
       React,
-      config: { scope, name, domElementId },
+      config: { name, domElementId },
     } = opts
     let { rootComponent } = opts.config
-    const moduleKey = getModuleKey(scope, name)
+    const moduleKey = getModuleKey(name)
     const savedModule = federatedRuntime.modules.get(moduleKey)
     const elementId = mountId || domElementId || defaultMountId
     const domContainer: HTMLElement | null = document.getElementById(elementId)
@@ -101,7 +101,7 @@ const mountLifecycle = <PropsType>(
         )
 
         federatedRuntime?.setModuleState(
-          { scope, name },
+          { name },
           FederatedModuleStatuses.MOUNTED
         )
       }
@@ -118,7 +118,7 @@ const mountLifecycle = <PropsType>(
       )
 
       federatedRuntime?.setModuleState(
-        { scope, name },
+        { name },
         FederatedModuleStatuses.LOAD_ERROR
       )
     }

@@ -22,18 +22,18 @@ import ReactDOM from 'react-dom'
 import { createFederatedReact } from '@vf/federated-react'
 import { initFederatedRuntime } from '@vf/federated-core'
 import AvailabilityChecker from './frontend/AvailabilityChecker'
-export const { name, scope, mount, unmount, bootstrap, update } =
-  createFederatedReact({
+export const { name, mount, unmount, bootstrap, update } = createFederatedReact(
+  {
     React,
     ReactDOM,
     federatedRuntime: initFederatedRuntime(),
     config: {
-      scope: 'broadband',
-      name: 'AvailabilityChecker',
+      name: 'vfuk-AvailabilityChecker',
       rootComponent: <AvailabilityChecker />,
       type: 'component',
     },
-  })
+  }
+)
 ```
 
 ### FederatedModuleLoader
@@ -46,8 +46,7 @@ import { FederatedModuleLoader } from '@vf/federated-react'
 const MyComponent = () => {
   return (
     <FederatedModuleLoader
-      scope="broadband"
-      name="AvailabilityChecker"
+      name="vfuk-AvailabilityChecker"
       props={{
         someProp: 'someValue',
       }}

@@ -11,8 +11,7 @@ const App = () => {
   return (
     <>
       <FederatedModuleLoader
-        scope="vfuk-federated-component-example"
-        name="FederatedPageTemplate"
+        name="vfuk-federated-component-example"
         props={{
           headerData,
           footerData,

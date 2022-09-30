@@ -15,7 +15,6 @@ type PropData = {
 
 export type CreateFederatedVueOptions<RootComponentProps> = {
   config: {
-    scope: string
     name: string
     type: FederatedModuleTypes
     description?: string

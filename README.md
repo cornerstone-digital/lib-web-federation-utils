@@ -5,11 +5,13 @@
 </div>
 
 # Introduction
+
 lib-web-federation-utils is a collection of helpers function and build tools that construct the frame work for micro frontend architecture within web applications for Vodafone
 
 # Getting started
 
 ## Installation process
+
 Dev Dependencies
 
 `yarn add @vf/federated-web-build-core @vf/federated-web-build-types @vf/federated-web-build-webpack --dev`
@@ -21,6 +23,7 @@ Dependencies
 # Build tools (built MFE)
 
 ## Webpack build
+
 use `import { compileFederatedModules } from '@vf/federated-web-build-webpack/dist/helpers'`
 
 `compileFederatedModules` Takes 1 parameter [options]
@@ -29,7 +32,7 @@ use `import { compileFederatedModules } from '@vf/federated-web-build-webpack/di
 const options = {
 
   Points at the directory where your micro components are located that you want compiled as micro components.
-  federatedModuleDir: path.resolve(process.cwd(), 'micro-component'), 
+  federatedModuleDir: path.resolve(process.cwd(), 'micro-component'),
 
 
   Points at the assest folder of your main apps build folder, would normally output to a sub folder micro-components.
@@ -44,7 +47,7 @@ const options = {
   isDev: settings.isDev,
 
 
-  Passes in your webpack client config to in ensure all requires rules and dependancies are part of the micro components build. 
+  Passes in your webpack client config to in ensure all requires rules and dependancies are part of the micro components build.
   webpackConfig: clientConfig,
 
 
@@ -66,8 +69,7 @@ This will build the micro components to the required folders within your build f
 
 ## Vite build (Coming soon)
 
-
-## App configurations 
+## App configurations
 
 All micro components will be built and exported as SystemJS modules. Your web application bundle will need to be a SystemJS bundle when it is built to be able to support the micro component architecture. This is so that your app and the micro component can use the same shared modules like `react` and `react-dom`.
 
@@ -89,7 +91,7 @@ const clientConfig: Configuration = {
 
   externals: {
     Set the shared modules in the externals
-    react: 'react', 
+    react: 'react',
     'react-dom': 'react-dom',
   },
 }
@@ -142,10 +144,7 @@ Use `import FederatedModule from '@vf/federated-web-frontend-react/components/Fe
 <Suspense fallback='loading'>
   <FederatedModule
     module={{
-      Scope is picked up from the window object `VFUK['@vfuk/basePaths']` internally within the `FederatedModule` component
-      scope: 'broadband',
-
-      References the name of the component within the scoped domain
+      References the name of the component which needs to be imported from the micro component
       name: 'AvailabilityChecker',
     }}
 
@@ -165,10 +164,11 @@ Use `import FederatedModule from '@vf/federated-web-frontend-react/components/Fe
 ```
 
 # Contribute
+
 For support on implementation and design approach into your application contact:
 
 Martin Egan
 
 Kiran Earle
 
-Christophe Lamarliere 
+Christophe Lamarliere

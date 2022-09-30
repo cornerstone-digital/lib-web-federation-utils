@@ -18,8 +18,7 @@ const unmountLifecycle = <PropsType>(
 
     federatedRuntime?.setModuleState(module, FederatedModuleStatuses.UNMOUNTING)
 
-    const domElementId =
-      opts.config.domElementId || `${module.scope}-${module.name}`
+    const domElementId = opts.config.domElementId || `${module.name}`
     const domContainer: HTMLElement | null =
       document.getElementById(domElementId)
 

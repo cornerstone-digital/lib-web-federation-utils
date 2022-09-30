@@ -40,8 +40,7 @@ const App = () => {
   return (
     <>
       <FederatedModuleLoader
-        scope="vfuk-federated-component-example"
-        name="FederatedPageTemplate"
+        name="vfuk-FederatedPageTemplate"
         props={{
           headerData,
           footerData,
@@ -69,8 +68,7 @@ const AppComponent = (name: string) => {
       <h2>Hi {name}, This is a sample child component</h2>
       {/* Using the FederatedInteractiveFiftyFiftyBannerBanner we exposed before*/}
       <FederatedModuleLoader
-        scope="vfuk-federated-component-example"
-        name="FederatedInteractiveFiftyFiftyBannerBanner"
+        name="vfuk-FederatedInteractiveFiftyFiftyBannerBanner"
         props={{
           bannerData,
         }}

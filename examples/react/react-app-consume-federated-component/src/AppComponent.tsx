@@ -7,15 +7,13 @@ const AppComponent = () => {
   return (
     <>
       <FederatedModuleLoader
-        scope="vfuk-federated-component-example"
-        name="FederatedStandardBanner"
+        name="vfuk-federated-component-example"
         props={{
           bannerData,
         }}
       />
       <FederatedModuleLoader
-        scope="vfuk-federated-component-example"
-        name="FederatedCard"
+        name="vfuk-federated-component-example"
         props={{
           headerData,
         }}

@@ -13,7 +13,7 @@ module.exports = {
   yarnInstall: false,
   enableSourceCleanup: false,
   enableTargetCleanup: false,
-  compileYarnCmd: 'tsc',
+  compileYarnCmd: 'build',
   keepOutputDirNameWhenLink: false,
   // whitelist list of the projects that can be linked to
   // by defining a whitelisted prefixes eg
@@ -34,7 +34,7 @@ module.exports = {
   //   'package.json',
   // ],
   nodemonWatch: {
-    ext: 'js json ts jsx',
+    ext: 'js json ts jsx tsx',
     watch: ['./packages'],
     ignore: ['lib/*', 'node_modules/*', 'dist/*', 'bin/*'],
     script: '.linkrc.js',

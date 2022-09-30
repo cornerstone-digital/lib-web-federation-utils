@@ -4,15 +4,14 @@ import Card from './Card.vue'
 
 import * as Vue from 'vue'
 
-const { name, scope, mount, unmount, bootstrap, update } = createFederatedVue({
+const { name, mount, unmount, bootstrap, update } = createFederatedVue({
   Vue: Vue,
   federatedRuntime: initFederatedRuntime(),
   config: {
-    name: 'FederatedCard',
     rootComponent: Card,
-    scope: 'vfuk-federated-component-example',
+    name: 'vfuk-federated-component-example',
     type: 'component',
   },
 })
 
-export { name, scope, mount, unmount, bootstrap, update }
+export { name, mount, unmount, bootstrap, update }

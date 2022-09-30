@@ -48,7 +48,6 @@ describe('createFederatedReact', () => {
       enableSystemJs: true,
       config: {
         type: 'journey-module',
-        scope: 'test',
         name: 'app-module',
         rootComponent: TestComponent,
         domElementId,
@@ -120,19 +119,6 @@ describe('createFederatedReact', () => {
       }).toThrowError('Missing name')
     })
 
-    it('missing scope', () => {
-      expect(() => {
-        createFederatedReact({
-          ...defaultOptions,
-          config: {
-            ...defaultOptions.config,
-            // @ts-ignore
-            scope: undefined,
-          },
-        })
-      }).toThrowError('Missing scope')
-    })
-
     it('missing rootComponent', () => {
       expect(() => {
         createFederatedReact({
@@ -171,9 +157,7 @@ describe('createFederatedReact', () => {
           domElementId: undefined,
         },
       })
-      expect(moduleInstance.domElementId).toBe(
-        `${defaultOptions.config.scope}-${defaultOptions.config.name}`
-      )
+      expect(moduleInstance.domElementId).toBe(`${defaultOptions.config.name}`)
     })
   })
 
@@ -188,9 +172,9 @@ describe('createFederatedReact', () => {
       await moduleInstance.bootstrap()
 
       expect(dispatchedEventCount).toEqual({
-        'federated-core:module:test:app-module:before-bootstrap': 1,
-        'federated-core:module:test:app-module:bootstrapped': 1,
-        'federated-core:module:test:app-module:state-changed': 2,
+        'federated-core:module:app-module:before-bootstrap': 1,
+        'federated-core:module:app-module:bootstrapped': 1,
+        'federated-core:module:app-module:state-changed': 2,
       })
     })
 
@@ -207,11 +191,11 @@ describe('createFederatedReact', () => {
       await moduleInstance.bootstrap()
 
       expect(dispatchedEventCount).toEqual({
-        'federated-core:module:test:app-module:registered': 1,
-        'federated-core:module:test:app-module:before-bootstrap': 1,
-        'federated-core:module:test:app-module:before-register': 1,
-        'federated-core:module:test:app-module:bootstrap:error': 1,
-        'federated-core:module:test:app-module:state-changed': 1,
+        'federated-core:module:app-module:registered': 1,
+        'federated-core:module:app-module:before-bootstrap': 1,
+        'federated-core:module:app-module:before-register': 1,
+        'federated-core:module:app-module:bootstrap:error': 1,
+        'federated-core:module:app-module:state-changed': 1,
       })
     })
   })
@@ -229,14 +213,14 @@ describe('createFederatedReact', () => {
       await moduleInstance.mount({}, domElementId)
 
       expect(dispatchedEventCount).toEqual({
-        'federated-core:module:test:app-module:before-bootstrap': 1,
-        'federated-core:module:test:app-module:before-mount': 1,
-        'federated-core:module:test:app-module:bootstrapped': 1,
-        'federated-core:module:test:app-module:before-register': 1,
-        'federated-core:module:test:app-module:registered': 1,
-        'federated-core:module:test:app-module:mounted': 1,
-        'federated-core:module:test:app-module:validate-props': 1,
-        'federated-core:module:test:app-module:state-changed': 5,
+        'federated-core:module:app-module:before-bootstrap': 1,
+        'federated-core:module:app-module:before-mount': 1,
+        'federated-core:module:app-module:bootstrapped': 1,
+        'federated-core:module:app-module:before-register': 1,
+        'federated-core:module:app-module:registered': 1,
+        'federated-core:module:app-module:mounted': 1,
+        'federated-core:module:app-module:validate-props': 1,
+        'federated-core:module:app-module:state-changed': 5,
       })
     })
 
@@ -278,9 +262,7 @@ describe('createFederatedReact', () => {
       await moduleInstance.mount({}, incorrectDomElementId)
 
       expect(
-        dispatchedEventCount[
-          'federated-core:module:test:app-module:mount:error'
-        ]
+        dispatchedEventCount['federated-core:module:app-module:mount:error']
       ).toBe(1)
     })
 
@@ -297,9 +279,7 @@ describe('createFederatedReact', () => {
       await moduleInstance.mount({}, domElementId)
 
       expect(
-        dispatchedEventCount[
-          'federated-core:module:test:app-module:mount:error'
-        ]
+        dispatchedEventCount['federated-core:module:app-module:mount:error']
       ).toBe(1)
     })
 
@@ -315,9 +295,7 @@ describe('createFederatedReact', () => {
       await moduleInstance.mount({}, domElementId)
 
       expect(
-        dispatchedEventCount[
-          'federated-core:module:test:app-module:mount:error'
-        ]
+        dispatchedEventCount['federated-core:module:app-module:mount:error']
       ).toBe(1)
     })
 
@@ -343,9 +321,7 @@ describe('createFederatedReact', () => {
       await federatedRuntime.registerModule(moduleInstance)
       await moduleInstance.mount({}, undefined)
 
-      expect(moduleInstance.domElementId).toBe(
-        `${moduleInstance.scope}-${moduleInstance.name}`
-      )
+      expect(moduleInstance.domElementId).toBe(`${moduleInstance.name}`)
     })
 
     it('should use default props if no props are passed', async () => {
@@ -365,7 +341,6 @@ describe('createFederatedReact', () => {
       expect(validatePropsSpy).toHaveBeenCalledWith(
         {
           name: moduleInstance.name,
-          scope: moduleInstance.scope,
         },
         {
           prop1: 'prop1',
@@ -403,15 +378,15 @@ describe('createFederatedReact', () => {
       await moduleInstance.unmount()
 
       expect(dispatchedEventCount).toEqual({
-        'federated-core:module:test:app-module:before-register': 1,
-        'federated-core:module:test:app-module:registered': 1,
-        'federated-core:module:test:app-module:before-bootstrap': 1,
-        'federated-core:module:test:app-module:bootstrapped': 1,
-        'federated-core:module:test:app-module:before-mount': 1,
-        'federated-core:module:test:app-module:mounted': 1,
-        'federated-core:module:test:app-module:unmounted': 1,
-        'federated-core:module:test:app-module:validate-props': 1,
-        'federated-core:module:test:app-module:state-changed': 7,
+        'federated-core:module:app-module:before-register': 1,
+        'federated-core:module:app-module:registered': 1,
+        'federated-core:module:app-module:before-bootstrap': 1,
+        'federated-core:module:app-module:bootstrapped': 1,
+        'federated-core:module:app-module:before-mount': 1,
+        'federated-core:module:app-module:mounted': 1,
+        'federated-core:module:app-module:unmounted': 1,
+        'federated-core:module:app-module:validate-props': 1,
+        'federated-core:module:app-module:state-changed': 7,
       })
     })
 
@@ -441,9 +416,7 @@ describe('createFederatedReact', () => {
       await moduleInstance.unmount()
 
       expect(
-        dispatchedEventCount[
-          'federated-core:module:test:app-module:unmount:error'
-        ]
+        dispatchedEventCount['federated-core:module:app-module:unmount:error']
       ).toBe(1)
     })
 
@@ -459,9 +432,7 @@ describe('createFederatedReact', () => {
       await moduleInstance.mount({}, undefined)
       await moduleInstance.unmount()
 
-      expect(moduleInstance.domElementId).toBe(
-        `${moduleInstance.scope}-${moduleInstance.name}`
-      )
+      expect(moduleInstance.domElementId).toBe(`${moduleInstance.name}`)
     })
   })
 
@@ -492,17 +463,17 @@ describe('createFederatedReact', () => {
       await moduleInstance.update()
 
       expect(dispatchedEventCount).toEqual({
-        'federated-core:module:test:app-module:before-bootstrap': 2,
-        'federated-core:module:test:app-module:before-mount': 2,
-        'federated-core:module:test:app-module:before-register': 1,
-        'federated-core:module:test:app-module:before-update': 1,
-        'federated-core:module:test:app-module:bootstrapped': 2,
-        'federated-core:module:test:app-module:mounted': 2,
-        'federated-core:module:test:app-module:registered': 1,
-        'federated-core:module:test:app-module:state-changed': 12,
-        'federated-core:module:test:app-module:unmounted': 1,
-        'federated-core:module:test:app-module:updated': 1,
-        'federated-core:module:test:app-module:validate-props': 2,
+        'federated-core:module:app-module:before-bootstrap': 2,
+        'federated-core:module:app-module:before-mount': 2,
+        'federated-core:module:app-module:before-register': 1,
+        'federated-core:module:app-module:before-update': 1,
+        'federated-core:module:app-module:bootstrapped': 2,
+        'federated-core:module:app-module:mounted': 2,
+        'federated-core:module:app-module:registered': 1,
+        'federated-core:module:app-module:state-changed': 12,
+        'federated-core:module:app-module:unmounted': 1,
+        'federated-core:module:app-module:updated': 1,
+        'federated-core:module:app-module:validate-props': 2,
       })
     })
 
@@ -522,9 +493,7 @@ describe('createFederatedReact', () => {
       await moduleInstance.update()
 
       expect(
-        dispatchedEventCount[
-          'federated-core:module:test:app-module:unmount:error'
-        ]
+        dispatchedEventCount['federated-core:module:app-module:unmount:error']
       ).toBe(1)
     })
 
@@ -542,9 +511,7 @@ describe('createFederatedReact', () => {
       await moduleInstance.update()
 
       expect(
-        dispatchedEventCount[
-          'federated-core:module:test:app-module:mount:error'
-        ]
+        dispatchedEventCount['federated-core:module:app-module:mount:error']
       ).toBe(1)
     })
 
@@ -559,9 +526,7 @@ describe('createFederatedReact', () => {
       await moduleInstance.update()
 
       expect(
-        dispatchedEventCount[
-          'federated-core:module:test:app-module:update:error'
-        ]
+        dispatchedEventCount['federated-core:module:app-module:update:error']
       ).toBe(1)
     })
   })

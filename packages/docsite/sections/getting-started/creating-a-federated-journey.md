@@ -16,8 +16,7 @@ const AcquisitionsMainFederated = createFederatedReact({
   federatedRuntime: initFederatedRuntime(),
   enableSystemJs: true,
   config: {
-    scope: 'broadband',
-    name: 'acquisitionsMain',
+    name: 'vfuk-acquisitionsMain',
     type: 'journey-module',
     activeWhenPaths: ['/broadband', '/broadband*'],
     exceptWhenPaths: ['/broadband/services/*'],
@@ -28,7 +27,6 @@ const AcquisitionsMainFederated = createFederatedReact({
 
 export const {
   name,
-  scope,
   bootstrap,
   mount,
   unmount,

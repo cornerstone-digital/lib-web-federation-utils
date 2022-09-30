@@ -17,7 +17,7 @@ const mountLifecycle = <PropsType>(
   opts: CreateFederatedVueOptions<PropsType>,
   defaultProps: PropsType
 ) => {
-  const defaultMountId = `${module.scope}-${module.name}`
+  const defaultMountId = `${module.name}`
   return async (
     props: PropsType = defaultProps as PropsType,
     mountId?: string
@@ -25,7 +25,7 @@ const mountLifecycle = <PropsType>(
     try {
       const {
         Vue,
-        config: { scope, name, domElementId },
+        config: { name, domElementId },
       } = opts
 
       let { rootComponent } = opts.config
@@ -34,7 +34,7 @@ const mountLifecycle = <PropsType>(
       const propsToUse = module || defaultProps
       federatedRuntime.validateProps(module, propsToUse)
 
-      const moduleKey = getModuleKey(scope, name)
+      const moduleKey = getModuleKey(name)
       const savedModule = federatedRuntime.modules.get(moduleKey)
       const elementId = mountId || domElementId || defaultMountId
       const domContainer: HTMLElement | null =

@@ -37,7 +37,7 @@ const register = <EventKeys extends string>(
 }
 
 const replaceModuleKey = (type: string, module: FederatedModuleParams) => {
-  return type.replace(`%moduleKey%`, getModuleKey(module.scope, module.name))
+  return type.replace(`%moduleKey%`, getModuleKey(module.name))
 }
 
 const emit = <CustomEvents extends EventData<string, unknown>>(

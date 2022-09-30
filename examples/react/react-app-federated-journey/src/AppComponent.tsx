@@ -8,8 +8,7 @@ const AppComponent = () => {
         Consuming Federated Component
       </h3>
       <FederatedModuleLoader
-        scope="vfuk-federated-component-example"
-        name="FederatedStandardBanner"
+        name="vfuk-federated-component-example"
         props={{
           bannerData,
         }}

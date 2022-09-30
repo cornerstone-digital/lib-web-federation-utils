@@ -206,7 +206,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     const importMapPath = `${
       module.basePath || this.cdnUrl
     }/entries-import-map.json`
-    const importMapId = `${module.scope}-${module.name}-imports`
+    const importMapId = `${module.name}-imports`
 
     if (!document.getElementById(importMapId)) {
       await this.ensureImportMapHtmlElement(importMapId, importMapPath)
@@ -218,8 +218,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     module: FederatedModuleParams,
     state: FederatedModuleStatuses
   ) {
-    const { scope, name } = module
-    const moduleKey = getModuleKey(scope, name)
+    const moduleKey = getModuleKey(module.name)
     const moduleInstance: FederatedModule = {
       ...this.modules.get(moduleKey),
       status: state as FederatedModuleStatuses,
@@ -245,8 +244,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     module: FederatedModuleParams,
     component: RootComponentType<ModuleComponentType, PropsType>
   ): void {
-    const { scope, name } = module
-    const moduleKey = getModuleKey(scope, name)
+    const moduleKey = getModuleKey(module.name)
     const savedModule = this.modules.get(moduleKey)
 
     if (savedModule) {
@@ -264,8 +262,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   >(
     module: FederatedModuleParams
   ): RootComponentType<ModuleComponentType, PropsType> | undefined | void {
-    const { scope, name } = module
-    const moduleKey = getModuleKey(scope, name)
+    const moduleKey = getModuleKey(module.name)
     const savedModule = this.modules.get(moduleKey)
 
     if (savedModule) {
@@ -277,8 +274,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   }
 
   async registerModule(module: FederatedModule): Promise<this> {
-    const { scope, name } = module
-    const moduleKey = getModuleKey(scope, name)
+    const moduleKey = getModuleKey(module.name)
 
     if (
       this.modules.has(moduleKey) &&
@@ -318,7 +314,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
       )
 
       this.setModuleState(
-        { scope: module.scope, name: module.name },
+        { name: module.name },
         FederatedModuleStatuses.NOT_LOADED
       )
       this.modules.set(moduleKey, module)
@@ -350,11 +346,9 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   async loadModule(
     module: FederatedModuleParams
   ): Promise<FederatedModule | undefined> {
-    const { scope, name } = module
-
     try {
       await this.ensureImportImapExists(module)
-      const moduleKey = getModuleKey(scope, name)
+      const moduleKey = getModuleKey(module.name)
 
       if (this.modules.has(moduleKey)) {
         const storeModule = this.modules.get(moduleKey)
@@ -425,7 +419,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
         return System.import(/* @vite-ignore */ name)
       }
 
-      const resolvedModule: FederatedModule = await importModule(name)
+      const resolvedModule: FederatedModule = await importModule(module.name)
 
       this.services.event.emit<EventMap>(
         {
@@ -447,7 +441,10 @@ class FederatedRuntime implements AbstractFederatedRuntime {
         !resolvedModule.status ||
         resolvedModule.status === FederatedModuleStatuses.NOT_LOADED
       ) {
-        this.setModuleState({ scope, name }, FederatedModuleStatuses.LOADED)
+        this.setModuleState(
+          { name: module.name },
+          FederatedModuleStatuses.LOADED
+        )
       }
 
       return resolvedModule
@@ -472,8 +469,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     props: unknown,
     mountId: string
   ): Promise<void> {
-    const { scope, name } = module
-    const loadedModule = await this.loadModule({ scope, name })
+    const loadedModule = await this.loadModule({ name: module.name })
 
     if (loadedModule?.mount) {
       await loadedModule.mount(props, mountId)
@@ -481,8 +477,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   }
 
   async unmountModule(module: FederatedModuleParams): Promise<void> {
-    const { scope, name } = module
-    const loadedModule = await this.modules.get(getModuleKey(scope, name))
+    const loadedModule = await this.modules.get(getModuleKey(module.name))
 
     if (loadedModule?.unmount) {
       await loadedModule.unmount()
@@ -490,8 +485,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   }
 
   validateProps(module: FederatedModuleParams, props: unknown): boolean {
-    const { scope, name } = module
-    const moduleKey = getModuleKey(scope, name)
+    const moduleKey = getModuleKey(module.name)
     this.services.event.emit<EventMap>(
       {
         type: FederatedEvents.MODULE_VALIDATE_PROPS,
@@ -520,8 +514,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     })
 
     for (const module of modules) {
-      const { name, scope } = module
-      const moduleKey = getModuleKey(scope, name)
+      const moduleKey = getModuleKey(module.name)
       if (!this.modules.has(moduleKey)) {
         this.services.event.emit<EventMap>({
           type: FederatedEvents.RUNTIME_BEFORE_MODULE_PREFETCH,
@@ -529,7 +522,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
             module,
           },
         })
-        await this.loadModule({ scope, name })
+        await this.loadModule({ name: module.name })
 
         this.services.event.emit<EventMap>({
           type: FederatedEvents.RUNTIME_MODULE_PREFETCHED,
@@ -563,7 +556,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     })
 
     for (const module of modulesToUnmount) {
-      const moduleKey = getModuleKey(module.scope, module.name)
+      const moduleKey = getModuleKey(module.name)
       const moduleInstance = this.modules.get(moduleKey)
 
       if (moduleInstance?.unmount) {
@@ -592,7 +585,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
         moduleInstance?.type === 'component'
       ) {
         this.setModuleState(
-          { scope: module.scope, name: module.name },
+          { name: module.name },
           FederatedModuleStatuses.NOT_LOADED
         )
       }
@@ -600,8 +593,8 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
     for (const module of modulesToMount) {
       try {
-        const { scope, name, props } = module
-        const loadedModule = await this.loadModule({ scope, name })
+        const { name, props } = module
+        const loadedModule = await this.loadModule({ name })
 
         if (loadedModule?.mount) {
           this.services.event.emit<EventMap>(
@@ -697,9 +690,8 @@ class FederatedRuntime implements AbstractFederatedRuntime {
         const modules = this.getModulesByPath(path)
 
         for (const module of modules) {
-          const { name, scope } = module
           if (module?.status !== FederatedModuleStatuses.LOADED) {
-            await this.loadModule({ scope, name })
+            await this.loadModule({ name: module.name })
           }
         }
 

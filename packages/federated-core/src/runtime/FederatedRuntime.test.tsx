@@ -39,7 +39,6 @@ const updateHandler = async () => {
 }
 
 const resolvedModule = {
-  scope: 'scope',
   name: 'module-1',
   status: FederatedModuleStatuses.LOADED,
   bootstrap: bootstrapHandler,
@@ -167,10 +166,7 @@ describe('FederatedRuntime', () => {
         it('should set modules to new module map', () => {
           expect(federatedRuntime.modules).toEqual(new Map())
           const newMap: Map<string, FederatedModule> = new Map([
-            [
-              'scope/name',
-              { scope: 'scope', name: 'name', type: 'journey-module' },
-            ],
+            ['name', { name: 'name', type: 'journey-module' }],
           ])
           federatedRuntime.modules = newMap
           expect(federatedRuntime.modules).toEqual(newMap)
@@ -242,10 +238,7 @@ describe('FederatedRuntime', () => {
         it('should return modules', () => {
           expect(federatedRuntime.modules).toEqual(new Map())
           const newMap: Map<string, FederatedModule> = new Map([
-            [
-              'scope/name',
-              { scope: 'scope', name: 'name', type: 'journey-module' },
-            ],
+            ['name', { name: 'name', type: 'journey-module' }],
           ])
           federatedRuntime.modules = newMap
           expect(federatedRuntime.modules).toEqual(newMap)
@@ -355,7 +348,6 @@ describe('FederatedRuntime', () => {
       describe('setModuleState', () => {
         it('should set module state', () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'name',
             type: 'journey-module',
           }
@@ -365,7 +357,7 @@ describe('FederatedRuntime', () => {
             module,
             FederatedModuleStatuses.LOADED
           )
-          const moduleKey = getModuleKey(module.scope, module.name)
+          const moduleKey = getModuleKey(module.name)
           expect(federatedRuntime.modules.get(moduleKey)?.status).toEqual(
             FederatedModuleStatuses.LOADED
           )
@@ -373,7 +365,6 @@ describe('FederatedRuntime', () => {
 
         it('should dispatch MODULE_STATE_CHANGED event', () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             bootstrap: jest.fn(),
@@ -385,14 +376,14 @@ describe('FederatedRuntime', () => {
             FederatedModuleStatuses.LOADED
           )
 
-          const moduleKey = getModuleKey(module.scope, module.name)
+          const moduleKey = getModuleKey(module.name)
           expect(federatedRuntime.modules.get(moduleKey)?.status).toEqual(
             FederatedModuleStatuses.LOADED
           )
           expect(dispatchedEventCount).toEqual({
-            'federated-core:module:scope:module-1:before-register': 1,
-            'federated-core:module:scope:module-1:registered': 1,
-            'federated-core:module:scope:module-1:state-changed': 2,
+            'federated-core:module:module-1:before-register': 1,
+            'federated-core:module:module-1:registered': 1,
+            'federated-core:module:module-1:state-changed': 2,
           })
         })
       })
@@ -400,7 +391,6 @@ describe('FederatedRuntime', () => {
       describe('setModuleRootComponent', () => {
         it('should set module root component', () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'name',
             type: 'journey-module',
           }
@@ -411,7 +401,7 @@ describe('FederatedRuntime', () => {
 
           federatedRuntime.setModuleRootComponent(module, RootComponent)
 
-          const moduleKey = getModuleKey(module.scope, module.name)
+          const moduleKey = getModuleKey(module.name)
           expect(
             federatedRuntime.modules.get(moduleKey)?.rootComponent
           ).toEqual(RootComponent)
@@ -422,7 +412,6 @@ describe('FederatedRuntime', () => {
         it('should get module root component', () => {
           const RootComponent = () => <div>Root Component</div>
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'name',
             type: 'journey-module',
             rootComponent: RootComponent,
@@ -439,14 +428,13 @@ describe('FederatedRuntime', () => {
       describe('registerModule', () => {
         it('should register module', () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'name',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
           }
 
           federatedRuntime.registerModule(module)
-          const moduleKey = getModuleKey(module.scope, module.name)
+          const moduleKey = getModuleKey(module.name)
           expect(federatedRuntime.modules.get(moduleKey)?.status).toEqual(
             FederatedModuleStatuses.NOT_LOADED
           )
@@ -454,22 +442,20 @@ describe('FederatedRuntime', () => {
 
         it('should dispatch correct events when adding a new module', () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
           }
 
           federatedRuntime.registerModule(module)
           expect(dispatchedEventCount).toEqual({
-            'federated-core:module:scope:module-1:before-register': 1,
-            'federated-core:module:scope:module-1:registered': 1,
-            'federated-core:module:scope:module-1:state-changed': 1,
+            'federated-core:module:module-1:before-register': 1,
+            'federated-core:module:module-1:registered': 1,
+            'federated-core:module:module-1:state-changed': 1,
           })
         })
 
         it('should display MODULE_ALREADY_REGISTERED error if module already registered', () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
           }
@@ -482,13 +468,12 @@ describe('FederatedRuntime', () => {
           federatedRuntime.registerModule(module)
 
           expect(dispatchedEventCount).toHaveProperty(
-            'federated-core:module:scope:module-1:already-registered'
+            'federated-core:module:module-1:already-registered'
           )
         })
 
         it('should display MODULE_ALREADY_MOUNTED error if module already mounted', () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
           }
@@ -501,7 +486,7 @@ describe('FederatedRuntime', () => {
           federatedRuntime.registerModule(module)
 
           expect(dispatchedEventCount).toHaveProperty(
-            'federated-core:module:scope:module-1:already-mounted'
+            'federated-core:module:module-1:already-mounted'
           )
         })
       })
@@ -509,7 +494,6 @@ describe('FederatedRuntime', () => {
       describe('getModulesByPath', () => {
         it('should return modules by path', () => {
           const module1: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -517,7 +501,6 @@ describe('FederatedRuntime', () => {
           }
 
           const module2: FederatedModule = {
-            scope: 'scope',
             name: 'module-2',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -535,7 +518,6 @@ describe('FederatedRuntime', () => {
       describe('loadModule', () => {
         it('should load module', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -543,8 +525,7 @@ describe('FederatedRuntime', () => {
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -559,7 +540,7 @@ describe('FederatedRuntime', () => {
 
           expect(loadedModule).toEqual(resolvedModule)
           expect(dispatchedEventCount).toEqual({
-            'federated-core:module:scope:module-1:before-load': 1,
+            'federated-core:module:module-1:before-load': 1,
             'federated-core:systemjs:loaded': 1,
             'federated-core:systemjs:module:loaded': 1,
             'federated-core:systemjs:module:loading': 1,
@@ -568,7 +549,6 @@ describe('FederatedRuntime', () => {
 
         it('should emit MODULE_ALREADY_LOADED error if module already loaded', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.LOADED,
@@ -576,8 +556,7 @@ describe('FederatedRuntime', () => {
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -592,17 +571,16 @@ describe('FederatedRuntime', () => {
           await federatedRuntime.loadModule(module)
 
           expect(dispatchedEventCount).toEqual({
-            'federated-core:module:scope:module-1:already-loaded': 1,
-            'federated-core:module:scope:module-1:before-register': 1,
-            'federated-core:module:scope:module-1:registered': 1,
-            'federated-core:module:scope:module-1:state-changed': 1,
+            'federated-core:module:module-1:already-loaded': 1,
+            'federated-core:module:module-1:before-register': 1,
+            'federated-core:module:module-1:registered': 1,
+            'federated-core:module:module-1:state-changed': 1,
             [FederatedEvents.SYSTEMJS_LOADED]: 1,
           })
         })
 
         it('should emit MODULE_ALREADY_MOUNTED error if module already mounted', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.MOUNTED,
@@ -614,17 +592,16 @@ describe('FederatedRuntime', () => {
           await federatedRuntime.loadModule(module)
 
           expect(dispatchedEventCount).toEqual({
-            'federated-core:module:scope:module-1:already-mounted': 1,
-            'federated-core:module:scope:module-1:before-register': 1,
-            'federated-core:module:scope:module-1:registered': 1,
-            'federated-core:module:scope:module-1:state-changed': 1,
+            'federated-core:module:module-1:already-mounted': 1,
+            'federated-core:module:module-1:before-register': 1,
+            'federated-core:module:module-1:registered': 1,
+            'federated-core:module:module-1:state-changed': 1,
             [FederatedEvents.SYSTEMJS_LOADED]: 1,
           })
         })
 
         it('should use native modules if useNativeModules is true', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -645,7 +622,7 @@ describe('FederatedRuntime', () => {
 
           federatedRuntime.useNativeModules = true
           await federatedRuntime.ensureImportMapHtmlElement(
-            'scope-module-1-import-map',
+            'module-1-import-map',
             undefined,
             JSON.stringify(importMapContent, null, 2)
           )
@@ -659,15 +636,13 @@ describe('FederatedRuntime', () => {
 
         it('should call registerModule if module is not registered or module status is not set', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
           }
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -693,7 +668,6 @@ describe('FederatedRuntime', () => {
 
         it('should emit MODULE_LOAD_ERROR if module load fails', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -701,8 +675,7 @@ describe('FederatedRuntime', () => {
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -722,8 +695,8 @@ describe('FederatedRuntime', () => {
           await federatedRuntime.loadModule(module)
 
           expect(dispatchedEventCount).toEqual({
-            'federated-core:module:scope:module-1:before-load': 1,
-            'federated-core:module:scope:module-1:load:error': 1,
+            'federated-core:module:module-1:before-load': 1,
+            'federated-core:module:module-1:load:error': 1,
             [FederatedEvents.SYSTEMJS_LOADED]: 1,
             [FederatedEvents.SYSTEMJS_MODULE_LOADING]: 1,
           })
@@ -733,7 +706,6 @@ describe('FederatedRuntime', () => {
       describe('mountModule', () => {
         it('should call mount function of module if it exists', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.LOADED,
@@ -742,8 +714,7 @@ describe('FederatedRuntime', () => {
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -771,7 +742,6 @@ describe('FederatedRuntime', () => {
       describe('unmountModule', () => {
         it('should call unmount function of module if it exists', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -781,8 +751,7 @@ describe('FederatedRuntime', () => {
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -818,7 +787,6 @@ describe('FederatedRuntime', () => {
           }
 
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -840,7 +808,6 @@ describe('FederatedRuntime', () => {
           }
 
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -862,7 +829,6 @@ describe('FederatedRuntime', () => {
           }
 
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -879,7 +845,6 @@ describe('FederatedRuntime', () => {
       describe('preFetchModules', () => {
         it('should call loadModule for each module in the preFetchModules array', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -887,7 +852,6 @@ describe('FederatedRuntime', () => {
           }
 
           const module2: FederatedModule = {
-            scope: 'scope',
             name: 'module-2',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -896,8 +860,7 @@ describe('FederatedRuntime', () => {
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -913,8 +876,8 @@ describe('FederatedRuntime', () => {
           expect(dispatchedEventCount).toEqual({
             [FederatedEvents.RUNTIME_MODULES_PREFETCH_START]: 1,
             [FederatedEvents.RUNTIME_BEFORE_MODULE_PREFETCH]: 2,
-            'federated-core:module:scope:module-1:before-load': 1,
-            'federated-core:module:scope:module-2:before-load': 1,
+            'federated-core:module:module-1:before-load': 1,
+            'federated-core:module:module-2:before-load': 1,
             [FederatedEvents.RUNTIME_MODULE_PREFETCHED]: 2,
             [FederatedEvents.RUNTIME_MODULES_PREFETCHED]: 1,
             [FederatedEvents.SYSTEMJS_LOADED]: 1,
@@ -954,7 +917,6 @@ describe('FederatedRuntime', () => {
       describe('reroute', () => {
         it('should call mount of module when activeWhenPaths matches the pathname', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.LOADED,
@@ -965,8 +927,7 @@ describe('FederatedRuntime', () => {
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -982,13 +943,13 @@ describe('FederatedRuntime', () => {
           await federatedRuntime.reroute()
 
           expect(dispatchedEventCount).toEqual({
-            'federated-core:module:scope:module-1:before-register': 1,
-            'federated-core:module:scope:module-1:registered': 1,
+            'federated-core:module:module-1:before-register': 1,
+            'federated-core:module:module-1:registered': 1,
             'federated-core:route:changed': 1,
-            'federated-core:module:scope:module-1:already-loaded': 1,
-            'federated-core:module:scope:module-1:before-mount': 1,
-            'federated-core:module:scope:module-1:mounted': 1,
-            'federated-core:module:scope:module-1:state-changed': 1,
+            'federated-core:module:module-1:already-loaded': 1,
+            'federated-core:module:module-1:before-mount': 1,
+            'federated-core:module:module-1:mounted': 1,
+            'federated-core:module:module-1:state-changed': 1,
           })
 
           expect(lifecycleMethodCallCount).toEqual({
@@ -1001,7 +962,6 @@ describe('FederatedRuntime', () => {
 
         it('should call unmount of module when activeWhenPaths does not match the pathname', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.LOADED,
@@ -1012,8 +972,7 @@ describe('FederatedRuntime', () => {
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -1031,12 +990,12 @@ describe('FederatedRuntime', () => {
           await federatedRuntime.reroute()
 
           expect(dispatchedEventCount).toEqual({
-            'federated-core:module:scope:module-1:before-register': 1,
-            'federated-core:module:scope:module-1:registered': 1,
+            'federated-core:module:module-1:before-register': 1,
+            'federated-core:module:module-1:registered': 1,
             [FederatedEvents.ROUTE_CHANGED]: 1,
-            'federated-core:module:scope:module-1:before-unmount': 1,
-            'federated-core:module:scope:module-1:unmounted': 1,
-            'federated-core:module:scope:module-1:state-changed': 1,
+            'federated-core:module:module-1:before-unmount': 1,
+            'federated-core:module:module-1:unmounted': 1,
+            'federated-core:module:module-1:state-changed': 1,
           })
 
           expect(lifecycleMethodCallCount).toEqual({
@@ -1049,7 +1008,6 @@ describe('FederatedRuntime', () => {
 
         it('should set module state to NOT_LOADED when activeWhenPaths does not match the pathname but no unmount function defined', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.LOADED,
@@ -1059,8 +1017,7 @@ describe('FederatedRuntime', () => {
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -1078,10 +1035,10 @@ describe('FederatedRuntime', () => {
           await federatedRuntime.reroute()
 
           expect(dispatchedEventCount).toEqual({
-            'federated-core:module:scope:module-1:before-register': 1,
-            'federated-core:module:scope:module-1:registered': 1,
+            'federated-core:module:module-1:before-register': 1,
+            'federated-core:module:module-1:registered': 1,
             [FederatedEvents.ROUTE_CHANGED]: 1,
-            'federated-core:module:scope:module-1:state-changed': 2,
+            'federated-core:module:module-1:state-changed': 2,
           })
 
           expect(lifecycleMethodCallCount).toEqual({
@@ -1091,14 +1048,13 @@ describe('FederatedRuntime', () => {
             update: 0,
           })
 
-          expect(
-            federatedRuntime.modules.get('scope:module-1')?.status
-          ).toEqual(FederatedModuleStatuses.NOT_LOADED)
+          expect(federatedRuntime.modules.get('module-1')?.status).toEqual(
+            FederatedModuleStatuses.NOT_LOADED
+          )
         })
 
         it('should emit MODULE_MOUNT_ERROR when module mount fails', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.LOADED,
@@ -1109,8 +1065,7 @@ describe('FederatedRuntime', () => {
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -1128,13 +1083,13 @@ describe('FederatedRuntime', () => {
           await federatedRuntime.reroute()
 
           expect(dispatchedEventCount).toEqual({
-            'federated-core:module:scope:module-1:before-register': 1,
-            'federated-core:module:scope:module-1:registered': 1,
-            'federated-core:module:scope:module-1:already-loaded': 1,
+            'federated-core:module:module-1:before-register': 1,
+            'federated-core:module:module-1:registered': 1,
+            'federated-core:module:module-1:already-loaded': 1,
             [FederatedEvents.ROUTE_CHANGED]: 1,
-            'federated-core:module:scope:module-1:before-mount': 1,
-            'federated-core:module:scope:module-1:mount:error': 1,
-            'federated-core:module:scope:module-1:state-changed': 1,
+            'federated-core:module:module-1:before-mount': 1,
+            'federated-core:module:module-1:mount:error': 1,
+            'federated-core:module:module-1:state-changed': 1,
           })
         })
       })
@@ -1142,7 +1097,6 @@ describe('FederatedRuntime', () => {
       describe('preFetchRoutes', () => {
         it('should pre-fetch routes', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -1153,8 +1107,7 @@ describe('FederatedRuntime', () => {
 
           const importMapContent = {
             imports: {
-              'scope:module-1':
-                'https://cdn.vodafone.co.uk/federated/scope/name.js',
+              'module-1': 'https://cdn.vodafone.co.uk/federated/scope/name.js',
             },
           }
           const fetchPromise = Promise.resolve({
@@ -1170,12 +1123,12 @@ describe('FederatedRuntime', () => {
           await federatedRuntime.preFetchRoutes(['/path'])
 
           expect(dispatchedEventCount).toEqual({
-            'federated-core:module:scope:module-1:before-register': 1,
-            'federated-core:module:scope:module-1:state-changed': 2,
-            'federated-core:module:scope:module-1:registered': 1,
+            'federated-core:module:module-1:before-register': 1,
+            'federated-core:module:module-1:state-changed': 2,
+            'federated-core:module:module-1:registered': 1,
             'federated-core:runtime:routes:pre-fetch:start': 1,
             'federated-core:runtime:route:before-prefetch': 1,
-            'federated-core:module:scope:module-1:before-load': 1,
+            'federated-core:module:module-1:before-load': 1,
             'federated-core:runtime:route:prefetched': 1,
             'federated-core:runtime:routes:pre-fetched': 1,
             'federated-core:systemjs:module:loading': 1,
@@ -1185,7 +1138,6 @@ describe('FederatedRuntime', () => {
 
         it('should emit RUNTIME_ROUTES_PREFETCH_ERROR when pre-fetch fails', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'module-1',
             type: 'journey-module',
             status: FederatedModuleStatuses.NOT_LOADED,
@@ -1204,9 +1156,9 @@ describe('FederatedRuntime', () => {
             FederatedEvents.RUNTIME_ROUTES_PREFETCH_ERROR,
             () => {
               expect(dispatchedEventCount).toEqual({
-                'federated-core:module:scope:module-1:before-register': 1,
-                'federated-core:module:scope:module-1:state-changed': 1,
-                'federated-core:module:scope:module-1:registered': 1,
+                'federated-core:module:module-1:before-register': 1,
+                'federated-core:module:module-1:state-changed': 1,
+                'federated-core:module:module-1:registered': 1,
                 'federated-core:runtime:routes:pre-fetch:start': 1,
                 'federated-core:runtime:route:before-prefetch': 1,
                 'federated-core:runtime:routes:prefetch:error': 1,
@@ -1231,22 +1183,20 @@ describe('FederatedRuntime', () => {
 
         it('should call bootstrap on each module', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'name',
             type: 'journey-module',
             bootstrap: bootstrapHandler,
           }
 
           const module2: FederatedModule = {
-            scope: 'scope',
             name: 'name',
             type: 'journey-module',
             bootstrap: bootstrapHandler,
           }
 
           federatedRuntime.modules = new Map([
-            ['scope/name', module],
-            ['scope/name2', module2],
+            ['name', module],
+            ['name2', module2],
           ])
           await federatedRuntime.bootstrap()
           expect(lifecycleMethodCallCount.bootstrap).toEqual(2)
@@ -1271,6 +1221,7 @@ describe('FederatedRuntime', () => {
             [FederatedEvents.RUNTIME_BOOTSTRAPPED]: 1,
             [FederatedEvents.POPSTATE_EVENT_FIRED]: 3,
             [FederatedEvents.ROUTE_CHANGED]: 3,
+            'federated-core:module:name:state-changed': 2,
           })
         })
 
@@ -1320,14 +1271,12 @@ describe('FederatedRuntime', () => {
 
         it('should emit correct events for all modules when bootstrapping', async () => {
           const module1: FederatedModule = {
-            scope: 'test-scope',
             name: 'test-module-1',
             type: 'journey-module',
             bootstrap: bootstrapHandler,
           }
 
           const module2: FederatedModule = {
-            scope: 'test-scope',
             name: 'test-module-2',
             type: 'journey-module',
             bootstrap: bootstrapHandler,
@@ -1341,16 +1290,16 @@ describe('FederatedRuntime', () => {
             [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: 1,
             [FederatedEvents.RUNTIME_BOOTSTRAPPED]: 1,
             [FederatedEvents.SYSTEMJS_LOADED]: 1,
-            'federated-core:module:test-scope:test-module-1:before-bootstrap': 1,
-            'federated-core:module:test-scope:test-module-1:before-register': 1,
-            'federated-core:module:test-scope:test-module-1:bootstrapped': 1,
-            'federated-core:module:test-scope:test-module-1:registered': 1,
-            'federated-core:module:test-scope:test-module-1:state-changed': 1,
-            'federated-core:module:test-scope:test-module-2:before-bootstrap': 1,
-            'federated-core:module:test-scope:test-module-2:before-register': 1,
-            'federated-core:module:test-scope:test-module-2:bootstrapped': 1,
-            'federated-core:module:test-scope:test-module-2:registered': 1,
-            'federated-core:module:test-scope:test-module-2:state-changed': 1,
+            'federated-core:module:test-module-1:before-bootstrap': 1,
+            'federated-core:module:test-module-1:before-register': 1,
+            'federated-core:module:test-module-1:bootstrapped': 1,
+            'federated-core:module:test-module-1:registered': 1,
+            'federated-core:module:test-module-1:state-changed': 1,
+            'federated-core:module:test-module-2:before-bootstrap': 1,
+            'federated-core:module:test-module-2:before-register': 1,
+            'federated-core:module:test-module-2:bootstrapped': 1,
+            'federated-core:module:test-module-2:registered': 1,
+            'federated-core:module:test-module-2:state-changed': 1,
           })
 
           expect(lifecycleMethodCallCount.bootstrap).toEqual(2)
@@ -1358,14 +1307,12 @@ describe('FederatedRuntime', () => {
 
         it('should throw error if any module bootstrap fails', async () => {
           const module: FederatedModule = {
-            scope: 'scope',
             name: 'test-module-1',
             type: 'journey-module',
             bootstrap: bootstrapHandler,
           }
 
           const module2: FederatedModule = {
-            scope: 'scope',
             name: 'test-module-2',
             type: 'journey-module',
             bootstrap: () => {
@@ -1374,8 +1321,8 @@ describe('FederatedRuntime', () => {
           }
 
           federatedRuntime.modules = new Map([
-            ['scope/name', module],
-            ['scope/name2', module2],
+            ['name', module],
+            ['name2', module2],
           ])
 
           await federatedRuntime.bootstrap()
@@ -1383,10 +1330,10 @@ describe('FederatedRuntime', () => {
           expect(dispatchedEventCount).toEqual({
             [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: 1,
             [FederatedEvents.SYSTEMJS_LOADED]: 1,
-            'federated-core:module:scope:test-module-1:before-bootstrap': 1,
-            'federated-core:module:scope:test-module-1:bootstrapped': 1,
-            'federated-core:module:scope:test-module-2:before-bootstrap': 1,
-            'federated-core:module:scope:test-module-2:bootstrap:error': 1,
+            'federated-core:module:test-module-1:before-bootstrap': 1,
+            'federated-core:module:test-module-1:bootstrapped': 1,
+            'federated-core:module:test-module-2:before-bootstrap': 1,
+            'federated-core:module:test-module-2:bootstrap:error': 1,
             [FederatedEvents.RUNTIME_BOOTSTRAPPED]: 1,
           })
         })

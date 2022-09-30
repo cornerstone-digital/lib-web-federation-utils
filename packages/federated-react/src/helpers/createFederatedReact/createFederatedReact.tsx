@@ -32,10 +32,6 @@ function validateModuleOptions<PropsType>(
     throw new Error('Missing name')
   }
 
-  if (!options.config.scope) {
-    throw new Error('Missing scope')
-  }
-
   if (!options.config.rootComponent) {
     throw new Error('Missing rootComponent')
   }
@@ -49,18 +45,17 @@ function createFederatedReact<PropsType>(
   const { federatedRuntime, config } = options
   const { rootComponent } = config
   const {
-    domElementId = `${config.scope}-${config.name}`,
+    domElementId = `${config.name}`,
     defaultProps,
     name,
-    scope,
+
     type,
     description,
     propValidationFunction,
     activeWhenPaths,
     exceptWhenPaths,
   } = config
-
-  const moduleData = { scope, name }
+  const moduleData = { name }
   const lifecycles: FederatedModuleLifecycles<PropsType> = {
     bootstrap: () => bootstrapLifecycle(moduleData, federatedRuntime),
     mount: (props, mountId) =>
@@ -84,7 +79,6 @@ function createFederatedReact<PropsType>(
     status: FederatedModuleStatuses.NOT_LOADED,
     description,
     name,
-    scope,
     type,
     validateProps: (props: PropsType) => {
       if (propValidationFunction) {

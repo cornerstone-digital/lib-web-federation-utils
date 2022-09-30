@@ -56,11 +56,10 @@ describe('eventService', () => {
       jest.spyOn(window, 'addEventListener')
 
       eventService.register(FederatedEvents.MODULE_BEFORE_LOAD, fn, {
-        scope: 'test-scope',
         name: 'test-module',
       })
       expect(window.addEventListener).toHaveBeenCalledWith(
-        'federated-core:module:test-scope:test-module:before-load',
+        'federated-core:module:test-module:before-load',
         fn
       )
     })
@@ -117,7 +116,7 @@ describe('eventService', () => {
 
     it('should replace ${moduleKey} in eventKey when passed module params', () => {
       jest.spyOn(window, 'addEventListener')
-      const module = { scope: 'test-scope', name: 'test-module' }
+      const module = { name: 'test-module' }
 
       eventService.emit<EventMap>(
         {
@@ -127,7 +126,7 @@ describe('eventService', () => {
         module
       )
       expect(dispatchedEventCount).toEqual({
-        'federated-core:module:test-scope:test-module:before-load': 1,
+        'federated-core:module:test-module:before-load': 1,
       })
     })
   })

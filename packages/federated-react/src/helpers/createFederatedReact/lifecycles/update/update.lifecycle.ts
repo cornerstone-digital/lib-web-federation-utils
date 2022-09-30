@@ -18,7 +18,7 @@ const updateLifecycle = <PropsType>(
     try {
       federatedRuntime?.setModuleState(module, FederatedModuleStatuses.UPDATING)
       const propsToUse = props || opts.config.defaultProps
-      const moduleKey = getModuleKey(module.scope, module.name)
+      const moduleKey = getModuleKey(module.name)
       const loadedModule = federatedRuntime.modules.get(moduleKey)
 
       eventService.emit<EventMap>(

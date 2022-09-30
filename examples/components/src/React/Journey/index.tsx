@@ -6,7 +6,6 @@ import App from './App'
 
 const {
   name,
-  scope,
   mount,
   unmount,
   bootstrap,
@@ -22,8 +21,7 @@ const {
   ReactDOM,
   federatedRuntime: initFederatedRuntime(),
   config: {
-    scope: 'vfuk-federated-component-example',
-    name: 'FederatedJourney',
+    name: 'vfuk-federated-component-example',
     type: 'journey-module',
     activeWhenPaths: ['/', '/mixed'],
     exceptWhenPaths: [],
@@ -34,7 +32,6 @@ const {
 
 export {
   name,
-  scope,
   bootstrap,
   mount,
   unmount,

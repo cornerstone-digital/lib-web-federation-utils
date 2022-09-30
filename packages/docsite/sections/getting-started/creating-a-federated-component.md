@@ -16,22 +16,19 @@ import { createFederatedReact } from '@vf/federated-react'
 import { initFederatedRuntime } from '@vf/federated-core'
 import FederatedInteractiveFiftyFiftyBanner from './InteractiveFiftyFiftyBanner'
 
-const { name, scope, mount, unmount, bootstrap, update } = createFederatedReact(
-  {
-    React,
-    ReactDOM,
-    federatedRuntime: initFederatedRuntime(),
-    config: {
-      name: 'FederatedInteractiveFiftyFiftyBannerBanner',
-      scope: 'vfuk-federated-component-example',
-      basePath: '/example/federated',
-      rootComponent: FederatedInteractiveFiftyFiftyBanner,
-      type: 'component',
-    },
-  }
-)
+const { name, mount, unmount, bootstrap, update } = createFederatedReact({
+  React,
+  ReactDOM,
+  federatedRuntime: initFederatedRuntime(),
+  config: {
+    name: 'vfuk-FederatedInteractiveFiftyFiftyBannerBanner',
+    basePath: '/example/federated',
+    rootComponent: FederatedInteractiveFiftyFiftyBanner,
+    type: 'component',
+  },
+})
 
-export { name, scope, mount, unmount, bootstrap, update }
+export { name, mount, unmount, bootstrap, update }
 ```
 
 #### Lazy Loading the Component
@@ -46,21 +43,18 @@ import { createFederatedReact } from '@vf/federated-react'
 import { initFederatedRuntime } from '@vf/federated-core'
 import FederatedInteractiveFiftyFiftyBanner from './InteractiveFiftyFiftyBanner'
 
-const { name, scope, mount, unmount, bootstrap, update } = createFederatedReact(
-  {
-    React,
-    ReactDOM,
-    federatedRuntime: initFederatedRuntime(),
-    config: {
-      name: 'FederatedInteractiveFiftyFiftyBannerBanner',
-      scope: 'vfuk-federated-component-example',
-      rootComponent: FederatedInteractiveFiftyFiftyBanner,
-      type: 'component',
-    },
-  }
-)
+const { name, mount, unmount, bootstrap, update } = createFederatedReact({
+  React,
+  ReactDOM,
+  federatedRuntime: initFederatedRuntime(),
+  config: {
+    name: 'vfuk-FederatedInteractiveFiftyFiftyBannerBanner',
+    rootComponent: FederatedInteractiveFiftyFiftyBanner,
+    type: 'component',
+  },
+})
 
-export { name, scope, mount, unmount, bootstrap, update }
+export { name, mount, unmount, bootstrap, update }
 ```
 
 ### The Component

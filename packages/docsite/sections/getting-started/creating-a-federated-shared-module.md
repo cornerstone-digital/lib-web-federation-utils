@@ -8,13 +8,11 @@ const someMethod = async (arg1: string, arg2): Promise<void> => {
 }
 
 const SampleService = createSharedModule({
-  name: 'sampleService',
-  scope: 'broadband',
+  name: 'vfuk-sampleService',
   methods: {
     someMethod,
   },
 })
 
-export const {name, scope, methods} = SampleService
+export const { name, methods } = SampleService
 ```
-  

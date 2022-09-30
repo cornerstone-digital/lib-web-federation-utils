@@ -28,7 +28,6 @@ describe('createErrorBoundary', () => {
       ReactDOM,
       config: {
         type: 'journey-module',
-        scope: 'test-scope',
         name: 'test',
       },
       enableSystemJs: true,
@@ -44,7 +43,6 @@ describe('createErrorBoundary', () => {
       ReactDOM,
       config: {
         type: 'journey-module',
-        scope: 'test-scope',
         name: 'test',
       },
       enableSystemJs: true,
@@ -76,7 +74,6 @@ describe('createErrorBoundary', () => {
       ReactDOM,
       config: {
         type: 'journey-module',
-        scope: 'test-scope',
         name: 'test',
         errorBoundary: (error) => {
           return (

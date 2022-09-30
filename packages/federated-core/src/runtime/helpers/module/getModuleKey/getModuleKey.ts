@@ -1,5 +1,5 @@
-const getModuleKey = (scope: string, moduleName: string): string => {
-  return `${scope}:${moduleName}`
+const getModuleKey = (moduleName: string): string => {
+  return `${moduleName}`
 }
 
 export default getModuleKey

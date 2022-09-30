@@ -25,7 +25,6 @@ const handleModuleUnmount = jest.fn(() => {
 })
 
 const testModule: FederatedModule = {
-  scope: 'test',
   name: 'module-1',
   type: 'component',
   mount: async (_props, _mountId) => handleModuleMount(),
@@ -54,12 +53,7 @@ describe('FederatedModuleLoader', () => {
 
   it('should mount without crashing', () => {
     const { container } = render(
-      <FederatedModuleLoader
-        scope="test"
-        name="module-1"
-        props={{}}
-        mountId={elementId}
-      />
+      <FederatedModuleLoader name="module-1" props={{}} mountId={elementId} />
     )
 
     expect(container).toBeDefined()
@@ -67,12 +61,7 @@ describe('FederatedModuleLoader', () => {
 
   it('should unmount without crashing', () => {
     const { container } = render(
-      <FederatedModuleLoader
-        scope="test"
-        name="module-1"
-        props={{}}
-        mountId={elementId}
-      />
+      <FederatedModuleLoader name="module-1" props={{}} mountId={elementId} />
     )
 
     expect(container).toBeDefined()
@@ -82,12 +71,7 @@ describe('FederatedModuleLoader', () => {
 
   it('should mount a div with id matching passed mountId', () => {
     const { container } = render(
-      <FederatedModuleLoader
-        scope="test"
-        name="module-1"
-        props={{}}
-        mountId={elementId}
-      />
+      <FederatedModuleLoader name="module-1" props={{}} mountId={elementId} />
     )
 
     expect(container.querySelector(`div[id^="${elementId}"]`)).not.toBeNull()
@@ -95,10 +79,10 @@ describe('FederatedModuleLoader', () => {
 
   it('should set a default mountId if none is passed', () => {
     const { container } = render(
-      <FederatedModuleLoader scope="test" name="module-1" props={{}} />
+      <FederatedModuleLoader name="module-1" props={{}} />
     )
 
-    expect(container.querySelector(`div[id^="test-module-1-"]`)).not.toBeNull()
+    expect(container.querySelector(`div[id^="module-1-"]`)).not.toBeNull()
   })
 
   it('should call mount on module', () => {
@@ -106,12 +90,7 @@ describe('FederatedModuleLoader', () => {
     const mountSpy = jest.spyOn(testModule, 'mount')
 
     render(
-      <FederatedModuleLoader
-        scope="test"
-        name="module-1"
-        props={{}}
-        mountId={elementId}
-      />
+      <FederatedModuleLoader name="module-1" props={{}} mountId={elementId} />
     )
 
     waitFor(() => {
@@ -124,12 +103,7 @@ describe('FederatedModuleLoader', () => {
     const federatedRuntime = initFederatedRuntime()
     const reactUnmountSpy = jest.spyOn(ReactDOM, 'unmountComponentAtNode')
     const { unmount } = render(
-      <FederatedModuleLoader
-        scope="test"
-        name="module-1"
-        props={{}}
-        mountId={elementId}
-      />
+      <FederatedModuleLoader name="module-1" props={{}} mountId={elementId} />
     )
 
     federatedRuntime?.services.event.register(
@@ -139,7 +113,7 @@ describe('FederatedModuleLoader', () => {
         expect(handleModuleUnmount).toHaveBeenCalled()
         expect(reactUnmountSpy).toHaveBeenCalled()
       },
-      { scope: 'test', name: 'module-1' }
+      { name: 'module-1' }
     )
   })
 })

@@ -16,8 +16,7 @@ describe('getFederatedModule', () => {
 
   it('should resolve the module', async () => {
     const LazyModule: FederatedModule = {
-      scope: 'broadband',
-      name: 'test-module',
+      name: 'vfuk-test-module',
       type: 'journey-module',
       mount: jest.fn(),
       unmount: jest.fn(),
@@ -33,8 +32,7 @@ describe('getFederatedModule', () => {
       })
 
     const module = await getFederatedModule({
-      scope: 'broadband',
-      name: 'test-module',
+      name: 'vfuk-test-module',
     })
 
     expect(module).toBe(LazyModule)
@@ -44,8 +42,7 @@ describe('getFederatedModule', () => {
     const consoleErrorSpy = jest.spyOn(console, 'error')
     const error = new Error('Module failed to load')
     const moduleParams = {
-      scope: 'broadband',
-      name: 'test-module',
+      name: 'vfuk-test-module',
       basePath: '/test-path',
     }
 
@@ -60,7 +57,6 @@ describe('getFederatedModule', () => {
     expect(module).toBe(undefined)
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       moduleParams.name,
-      moduleParams.scope,
       moduleParams.basePath,
       error
     )

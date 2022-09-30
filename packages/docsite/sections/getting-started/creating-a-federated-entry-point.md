@@ -23,14 +23,11 @@ if (enableImportMapsOverrides) {
 }
 
 // Set your shared dependency base URL (this is the URL configured for your shared modules in your express)
-federatedRuntime.sharedDependencyBaseUrl = '/broadband/deals/assets/federated/shared-modules'
+federatedRuntime.sharedDependencyBaseUrl =
+  '/broadband/deals/assets/federated/shared-modules'
 
 // Whether to enable debug mode or not (should be an enviroment variable)
 federatedRuntime.debugEnabled = true
-
-// Add your base URL (this is the URL for a particular federated scope's hosting components you wish to consume)
-federatedRuntime.addBaseUrl('broadband', '/broadband/deals/assets')
-federatedRuntime.addBaseUrl('basket', '/basket')
 
 if (isDataDogEnabled) {
   datadogRum.init({
@@ -47,13 +44,13 @@ if (isDataDogEnabled) {
 ;(async () => {
   await authService.session()
   if (isAnalyticsEnabled) {
-    await Analytics.initialize(config)   
+    await Analytics.initialize(config)
   }
-  
+
   // Register Your Journey's
   await federatedRuntime.registerModule(AcquisitionsMainFederated)
   await federatedRuntime.registerModule(UpgradesMainFederated)
-  
+
   // Start
   await federatedRuntime.start()
 })()

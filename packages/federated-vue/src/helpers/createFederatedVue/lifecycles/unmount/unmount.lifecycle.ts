@@ -16,8 +16,7 @@ const unmountLifecycle = <PropsType>(
 ) => {
   try {
     const { Vue } = opts
-    const domElementId =
-      opts.config.domElementId || `${module.scope}-${module.name}`
+    const domElementId = opts.config.domElementId || `${module.name}`
     const domContainer: HTMLElement | null =
       document.getElementById(domElementId)
 

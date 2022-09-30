@@ -4,7 +4,6 @@ import shouldModuleBeMounted from './shouldModuleBeMounted'
 describe('shouldModuleBeMounted', () => {
   it('should return true if the path matches the activeWhenPaths', () => {
     const module: FederatedModule = {
-      scope: 'scope',
       name: 'name',
       type: 'journey-module',
       activeWhenPaths: ['/active-path'],
@@ -16,7 +15,6 @@ describe('shouldModuleBeMounted', () => {
 
   it('should return false if the path matches the exceptWhenPaths', () => {
     const module: FederatedModule = {
-      scope: 'scope',
       name: 'name',
       type: 'journey-module',
       activeWhenPaths: ['/active-path*'],
@@ -28,7 +26,6 @@ describe('shouldModuleBeMounted', () => {
 
   it('should return false if the path does not match the activeWhenPaths', () => {
     const module: FederatedModule = {
-      scope: 'scope',
       name: 'name',
       type: 'journey-module',
       activeWhenPaths: ['/active-path'],

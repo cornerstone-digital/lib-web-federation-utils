@@ -3,8 +3,7 @@ import createFederatedService from './createSharedModule'
 describe('createSharedModule', () => {
   it('should create a shared module', () => {
     const data = {
-      name: 'test-module',
-      scope: 'test-scope',
+      name: 'vfuk-test-module',
       basePath: '/test-base-path',
       methods: {
         testMethod: () => {

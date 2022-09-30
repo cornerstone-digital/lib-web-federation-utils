@@ -38,14 +38,13 @@ const someMethod = () => {
 }
 
 const SampleService = createSharedModule({
-  name: 'sampleService',
-  scope: 'broadband',
+  name: 'vfuk-sampleService',
   methods: {
     someMethod,
   },
 })
 
-export const { name, scope, methods } = SampleService
+export const { name, methods } = SampleService
 ```
 
 ### Event Service

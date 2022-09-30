@@ -18,7 +18,6 @@ export type RenderTypes =
 
 export type CreateFederatedReactOptions<RootComponentProps> = {
   config: {
-    scope: string
     name: string
     type: FederatedModuleTypes
     description?: string

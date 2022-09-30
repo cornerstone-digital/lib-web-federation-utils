@@ -4,18 +4,15 @@ import { createFederatedReact } from '@vf/federated-react'
 import { initFederatedRuntime } from '@vf/federated-core'
 import StandardBanner from './StandardBanner'
 
-const { name, scope, mount, unmount, bootstrap, update } = createFederatedReact(
-  {
-    React,
-    ReactDOM,
-    federatedRuntime: initFederatedRuntime(),
-    config: {
-      name: 'FederatedStandardBanner',
-      scope: 'vfuk-federated-component-example',
-      rootComponent: StandardBanner,
-      type: 'component',
-    },
-  }
-)
+const { name, mount, unmount, bootstrap, update } = createFederatedReact({
+  React,
+  ReactDOM,
+  federatedRuntime: initFederatedRuntime(),
+  config: {
+    name: 'vfuk-federated-component-example',
+    rootComponent: StandardBanner,
+    type: 'component',
+  },
+})
 
-export { name, scope, mount, unmount, bootstrap, update }
+export { name, mount, unmount, bootstrap, update }
