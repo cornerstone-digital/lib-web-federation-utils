@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.7](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-app-creating-components@0.2.6...@vf/federated-app-creating-components@0.2.7) (2022-09-30)
+
+**Note:** Version bump only for package @vf/federated-app-creating-components
+
+
+
+
+
 ## [0.2.6](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-app-creating-components@0.2.5...@vf/federated-app-creating-components@0.2.6) (2022-09-28)
 
 **Note:** Version bump only for package @vf/federated-app-creating-components

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react@0.7.1...@vf/federated-react@0.8.0) (2022-09-30)
+
+
+### Features
+
+* update to support passing loading component ([2f1f817](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/2f1f81707b0e93eed820f844c4f8bf8c3bbcbf03))
+
+
+
+
+
 ## [0.7.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react@0.7.0...@vf/federated-react@0.7.1) (2022-09-28)
 
 **Note:** Version bump only for package @vf/federated-react
