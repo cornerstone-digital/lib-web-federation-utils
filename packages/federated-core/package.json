@@ -1,6 +1,6 @@
 {
     "name": "@vf/federated-core",
-    "version": "0.13.0",
+    "version": "0.13.1",
     "type": "commonjs",
     "main": "./dist/federated-core.cjs.js",
     "module": "./dist/federated-core.es.js",
