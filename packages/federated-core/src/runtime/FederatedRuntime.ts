@@ -142,27 +142,29 @@ class FederatedRuntime implements AbstractFederatedRuntime {
       addMetaTag('importmap-type', 'importmap-type', 'systemjs-importmap')
       addScriptTag(
         'systemjs',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/system.min.js`
-      )
-      addScriptTag(
-        'systemjs-named-exports',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/named-exports.min.js`
-      )
-      addScriptTag(
-        'systemjs-amd',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/amd.min.js`
-      )
-      addScriptTag(
-        'systemjs-dynamic-import-maps',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/dynamic-import-maps.min.js`
-      )
+        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/system.min.js`,
+        () => {
+          addScriptTag(
+            'systemjs-named-exports',
+            `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/named-exports.min.js`
+          )
+          addScriptTag(
+            'systemjs-amd',
+            `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/amd.min.js`
+          )
+          addScriptTag(
+            'systemjs-dynamic-import-maps',
+            `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/dynamic-import-maps.min.js`
+          )
 
-      this.services.event.emit<EventMap>({
-        type: FederatedEvents.SYSTEMJS_LOADED,
-        payload: {
-          loadedTime: Date.now(),
-        },
-      })
+          this.services.event.emit<EventMap>({
+            type: FederatedEvents.SYSTEMJS_LOADED,
+            payload: {
+              loadedTime: Date.now(),
+            },
+          })
+        }
+      )
     }
   }
 
