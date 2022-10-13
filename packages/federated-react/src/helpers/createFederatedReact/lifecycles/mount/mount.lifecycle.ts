@@ -4,13 +4,13 @@ import {
   FederatedEvents,
   FederatedModuleParams,
   FederatedModuleStatuses,
-  getModuleKey,
+  moduleHelpers,
   EventMap,
 } from '@vf/federated-core'
 import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
 import createdErrorBoundary from '../../helpers/createErrorBoundary/createErrorBoundary'
 import reactDomRender from '../../helpers/reactDomRender'
-import { ComponentType, ReactElement, Suspense } from 'react'
+import { ComponentType, ReactElement } from 'react'
 
 const mountLifecycle = <PropsType>(
   module: FederatedModuleParams,
@@ -28,7 +28,7 @@ const mountLifecycle = <PropsType>(
       config: { name, domElementId },
     } = opts
     let { rootComponent } = opts.config
-    const moduleKey = getModuleKey(name)
+    const moduleKey = moduleHelpers.getModuleKey(name)
     const savedModule = federatedRuntime.modules.get(moduleKey)
     const elementId = mountId || domElementId || defaultMountId
     const domContainer: HTMLElement | null = document.getElementById(elementId)

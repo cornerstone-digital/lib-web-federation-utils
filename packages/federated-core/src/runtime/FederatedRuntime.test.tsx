@@ -12,7 +12,7 @@ import {
   FederatedLifecycleMethods,
 } from '../types'
 import { FederatedEvents } from './FederatedRuntime.types'
-import { getModuleKey } from './helpers'
+import { moduleHelpers } from './helpers'
 
 let federatedRuntime: FederatedRuntime
 let dispatchedEventCount: Record<string, number> = {}
@@ -48,9 +48,14 @@ const resolvedModule = {
 }
 
 describe('FederatedRuntime', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
+
   describe('In Browser', () => {
     beforeEach(() => {
       jest.resetAllMocks()
+
       federatedRuntime = new FederatedRuntime()
 
       const originalWindow = window
@@ -58,6 +63,10 @@ describe('FederatedRuntime', () => {
       window.__FEDERATED_CORE__ = {
         federatedRuntime,
       }
+
+      window.__FEDERATED_CORE__.federatedRuntime.waitForSystemJs = jest
+        .fn()
+        .mockResolvedValue(true)
 
       window.dispatchEvent = jest.fn().mockImplementation((event: Event) => {
         dispatchedEventCount[event.type] = dispatchedEventCount[event.type]
@@ -294,50 +303,50 @@ describe('FederatedRuntime', () => {
       })
 
       describe('ensureSystemJs', () => {
-        it('should ensure systemjs is loaded', () => {
-          federatedRuntime.ensureSystemJs()
+        it('should ensure systemjs is loaded', async () => {
+          await federatedRuntime.ensureSystemJs()
           const systemJs = window.System
           expect(systemJs).toBeTruthy()
         })
 
-        it('should add importmap-type meta tag to head', () => {
-          federatedRuntime.ensureSystemJs()
+        it('should add importmap-type meta tag to head', async () => {
+          await federatedRuntime.ensureSystemJs()
           const importMapTypeMeta = document.querySelector(
             'meta[name="importmap-type"]'
           )
           expect(importMapTypeMeta).toBeTruthy()
         })
 
-        it('should add script with id of systemjs to head', () => {
-          federatedRuntime.ensureSystemJs()
+        it('should add script with id of systemjs to head', async () => {
+          await federatedRuntime.ensureSystemJs()
           const systemJsScript = document.getElementById('systemjs')
           expect(systemJsScript).toBeTruthy()
         })
 
-        it('should add script with id of systemjs-named-exports to head', () => {
-          federatedRuntime.ensureSystemJs()
+        it('should add script with id of systemjs-named-exports to head', async () => {
+          await federatedRuntime.ensureSystemJs()
           const systemJsNamedExportsScript = document.getElementById(
             'systemjs-named-exports'
           )
           expect(systemJsNamedExportsScript).toBeTruthy()
         })
 
-        it('should add script with systemjs-amd to head', () => {
-          federatedRuntime.ensureSystemJs()
+        it('should add script with systemjs-amd to head', async () => {
+          await federatedRuntime.ensureSystemJs()
           const systemJsAmdScript = document.getElementById('systemjs-amd')
           expect(systemJsAmdScript).toBeTruthy()
         })
 
-        it('should add script with systemjs-dynamic-import-maps to head', () => {
-          federatedRuntime.ensureSystemJs()
+        it('should add script with systemjs-dynamic-import-maps to head', async () => {
+          await federatedRuntime.ensureSystemJs()
           const systemJsDynamicImportMapsScript = document.getElementById(
             'systemjs-dynamic-import-maps'
           )
           expect(systemJsDynamicImportMapsScript).toBeTruthy()
         })
 
-        it('should fire systemjs-loaded event', () => {
-          federatedRuntime.ensureSystemJs()
+        it('should fire systemjs-loaded event', async () => {
+          await federatedRuntime.ensureSystemJs()
 
           expect(dispatchedEventCount).toEqual({
             [FederatedEvents.SYSTEMJS_LOADED]: 1,
@@ -357,7 +366,7 @@ describe('FederatedRuntime', () => {
             module,
             FederatedModuleStatuses.LOADED
           )
-          const moduleKey = getModuleKey(module.name)
+          const moduleKey = moduleHelpers.getModuleKey(module.name)
           expect(federatedRuntime.modules.get(moduleKey)?.status).toEqual(
             FederatedModuleStatuses.LOADED
           )
@@ -376,7 +385,7 @@ describe('FederatedRuntime', () => {
             FederatedModuleStatuses.LOADED
           )
 
-          const moduleKey = getModuleKey(module.name)
+          const moduleKey = moduleHelpers.getModuleKey(module.name)
           expect(federatedRuntime.modules.get(moduleKey)?.status).toEqual(
             FederatedModuleStatuses.LOADED
           )
@@ -401,7 +410,7 @@ describe('FederatedRuntime', () => {
 
           federatedRuntime.setModuleRootComponent(module, RootComponent)
 
-          const moduleKey = getModuleKey(module.name)
+          const moduleKey = moduleHelpers.getModuleKey(module.name)
           expect(
             federatedRuntime.modules.get(moduleKey)?.rootComponent
           ).toEqual(RootComponent)
@@ -434,7 +443,7 @@ describe('FederatedRuntime', () => {
           }
 
           federatedRuntime.registerModule(module)
-          const moduleKey = getModuleKey(module.name)
+          const moduleKey = moduleHelpers.getModuleKey(module.name)
           expect(federatedRuntime.modules.get(moduleKey)?.status).toEqual(
             FederatedModuleStatuses.NOT_LOADED
           )

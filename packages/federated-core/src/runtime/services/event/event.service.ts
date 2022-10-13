@@ -1,4 +1,4 @@
-import { getModuleKey } from '../../helpers'
+import { moduleHelpers } from '../../helpers'
 import { FederatedModule, FederatedModuleParams } from '../../../types'
 import { EventServiceType, EventStoreMap } from './event.service.types'
 import {
@@ -37,7 +37,7 @@ const register = <EventKeys extends string>(
 }
 
 const replaceModuleKey = (type: string, module: FederatedModuleParams) => {
-  return type.replace(`%moduleKey%`, getModuleKey(module.name))
+  return type.replace(`%moduleKey%`, moduleHelpers.getModuleKey(module.name))
 }
 
 const emit = <CustomEvents extends EventData<string, unknown>>(

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import type { FederatedModule, FederatedModuleParams } from '@vf/federated-core'
 import { getFederatedModule } from '@vf/federated-core'
 import { v4 } from 'uuid'

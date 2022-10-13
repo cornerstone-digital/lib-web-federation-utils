@@ -4,7 +4,7 @@ import {
   FederatedModuleParams,
   FederatedModuleStatuses,
   AbstractFederatedRuntime,
-  getModuleKey,
+  moduleHelpers,
   EventMap,
 } from '@vf/federated-core'
 import { CreateFederatedReactOptions } from '../../createFederatedReact.types'
@@ -18,7 +18,7 @@ const updateLifecycle = <PropsType>(
     try {
       federatedRuntime?.setModuleState(module, FederatedModuleStatuses.UPDATING)
       const propsToUse = props || opts.config.defaultProps
-      const moduleKey = getModuleKey(module.name)
+      const moduleKey = moduleHelpers.getModuleKey(module.name)
       const loadedModule = federatedRuntime.modules.get(moduleKey)
 
       eventService.emit<EventMap>(

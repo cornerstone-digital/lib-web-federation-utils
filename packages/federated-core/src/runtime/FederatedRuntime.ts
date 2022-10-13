@@ -14,13 +14,7 @@ import {
 } from './FederatedRuntime.types'
 import { environmentUtils } from '../utils'
 import { eventService, loggerService } from './services'
-import {
-  addHtmlElementWithAttrs,
-  addMetaTag,
-  addScriptTag,
-  getModuleKey,
-  shouldModuleBeMounted,
-} from './helpers'
+import { htmlHelpers, moduleHelpers } from './helpers'
 
 const ExposedServices: ExposedServicesType = {
   event: eventService,
@@ -111,12 +105,12 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   addImportMapOverridesUi(): void {
     const importMapOverridesKey = 'import-map-overrides'
     if (this.importMapOverridesEnabled) {
-      addScriptTag(
+      htmlHelpers.addScriptTag(
         importMapOverridesKey,
         `${this.sharedDependencyBaseUrl}/import-map-overrides/3.0.0/import-map-overrides.min.js`
       )
 
-      addHtmlElementWithAttrs(
+      htmlHelpers.addHtmlElementWithAttrs(
         'import-map-overrides-ui',
         'import-map-overrides-full',
         {
@@ -135,42 +129,64 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     }
   }
 
-  ensureSystemJs(): void {
+  async waitForSystemJs(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Wait for SystemJS to be available and timeout after 10 seconds
+      const interval = setInterval(() => {
+        if (window.System) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 100)
+
+      setTimeout(() => {
+        clearInterval(interval)
+        reject('SystemJS did not load within 10 seconds')
+      }, 10000)
+    })
+  }
+
+  async ensureSystemJs(): Promise<void> {
     this.addImportMapOverridesUi()
 
     if (!this.useNativeModules) {
-      addMetaTag('importmap-type', 'importmap-type', 'systemjs-importmap')
-      addScriptTag(
-        'systemjs',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/system.min.js`,
-        () => {
-          addScriptTag(
-            'systemjs-named-exports',
-            `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/named-exports.min.js`
-          )
-          addScriptTag(
-            'systemjs-amd',
-            `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/amd.min.js`
-          )
-          addScriptTag(
-            'systemjs-dynamic-import-maps',
-            `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/dynamic-import-maps.min.js`
-          )
-
-          this.services.event.emit<EventMap>({
-            type: FederatedEvents.SYSTEMJS_LOADED,
-            payload: {
-              loadedTime: Date.now(),
-            },
-          })
-        }
+      htmlHelpers.addMetaTag(
+        'importmap-type',
+        'importmap-type',
+        'systemjs-importmap'
       )
+      htmlHelpers.addScriptTag(
+        'systemjs',
+        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/system.min.js`
+      )
+
+      await this.waitForSystemJs()
+
+      htmlHelpers.addScriptTag(
+        'systemjs-named-exports',
+        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/named-exports.min.js`
+      )
+      htmlHelpers.addScriptTag(
+        'systemjs-amd',
+        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/amd.min.js`
+      )
+      htmlHelpers.addScriptTag(
+        'systemjs-dynamic-import-maps',
+        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/dynamic-import-maps.min.js`
+      )
+
+      this.services.event.emit<EventMap>({
+        type: FederatedEvents.SYSTEMJS_LOADED,
+        payload: {
+          loadedTime: Date.now(),
+        },
+      })
     }
   }
 
   async ensureImportMapHtmlElement(
     id: string,
-    url?: string,
+    url = '',
     content?: string
   ): Promise<void> {
     if (document.getElementById(id)) {
@@ -179,16 +195,15 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
     const importMapHtmlElement = document.createElement('script')
     importMapHtmlElement.id = id
-
-    if (url && !content) {
-      importMapHtmlElement.src = url
-    } else if (content) {
-      importMapHtmlElement.innerHTML = content
-    }
+    importMapHtmlElement.src = url
     importMapHtmlElement.crossOrigin = 'anonymous'
     importMapHtmlElement.type = this._useNativeModules
       ? 'importmap'
       : 'systemjs-importmap'
+
+    if (content) {
+      importMapHtmlElement.innerHTML = content
+    }
 
     document.head.appendChild(importMapHtmlElement)
   }
@@ -197,7 +212,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     const esModuleShimsId = 'es-module-shims'
     if (this._useNativeModules && !document.getElementById(esModuleShimsId)) {
       // Add es-module-shims to the page
-      addScriptTag(
+      htmlHelpers.addScriptTag(
         esModuleShimsId,
         `${this.sharedDependencyBaseUrl}/es-module-shims/1.5.18/es-module-shims.js`
       )
@@ -220,7 +235,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     module: FederatedModuleParams,
     state: FederatedModuleStatuses
   ) {
-    const moduleKey = getModuleKey(module.name)
+    const moduleKey = moduleHelpers.getModuleKey(module.name)
     const moduleInstance: FederatedModule = {
       ...this.modules.get(moduleKey),
       status: state as FederatedModuleStatuses,
@@ -246,7 +261,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     module: FederatedModuleParams,
     component: RootComponentType<ModuleComponentType, PropsType>
   ): void {
-    const moduleKey = getModuleKey(module.name)
+    const moduleKey = moduleHelpers.getModuleKey(module.name)
     const savedModule = this.modules.get(moduleKey)
 
     if (savedModule) {
@@ -264,7 +279,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   >(
     module: FederatedModuleParams
   ): RootComponentType<ModuleComponentType, PropsType> | undefined | void {
-    const moduleKey = getModuleKey(module.name)
+    const moduleKey = moduleHelpers.getModuleKey(module.name)
     const savedModule = this.modules.get(moduleKey)
 
     if (savedModule) {
@@ -276,7 +291,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   }
 
   async registerModule(module: FederatedModule): Promise<this> {
-    const moduleKey = getModuleKey(module.name)
+    const moduleKey = moduleHelpers.getModuleKey(module.name)
 
     if (
       this.modules.has(moduleKey) &&
@@ -337,7 +352,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   getModulesByPath(path: string): FederatedModule[] {
     const modules: FederatedModule[] = []
     this.modules.forEach((module) => {
-      if (shouldModuleBeMounted(path, module)) {
+      if (moduleHelpers.shouldModuleBeMounted(path, module)) {
         modules.push(module)
       }
     })
@@ -350,7 +365,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   ): Promise<FederatedModule | undefined> {
     try {
       await this.ensureImportImapExists(module)
-      const moduleKey = getModuleKey(module.name)
+      const moduleKey = moduleHelpers.getModuleKey(module.name)
 
       if (this.modules.has(moduleKey)) {
         const storeModule = this.modules.get(moduleKey)
@@ -479,7 +494,9 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   }
 
   async unmountModule(module: FederatedModuleParams): Promise<void> {
-    const loadedModule = await this.modules.get(getModuleKey(module.name))
+    const loadedModule = await this.modules.get(
+      moduleHelpers.getModuleKey(module.name)
+    )
 
     if (loadedModule?.unmount) {
       await loadedModule.unmount()
@@ -487,7 +504,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   }
 
   validateProps(module: FederatedModuleParams, props: unknown): boolean {
-    const moduleKey = getModuleKey(module.name)
+    const moduleKey = moduleHelpers.getModuleKey(module.name)
     this.services.event.emit<EventMap>(
       {
         type: FederatedEvents.MODULE_VALIDATE_PROPS,
@@ -516,7 +533,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     })
 
     for (const module of modules) {
-      const moduleKey = getModuleKey(module.name)
+      const moduleKey = moduleHelpers.getModuleKey(module.name)
       if (!this.modules.has(moduleKey)) {
         this.services.event.emit<EventMap>({
           type: FederatedEvents.RUNTIME_BEFORE_MODULE_PREFETCH,
@@ -550,7 +567,9 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     const modulesToUnmount: FederatedModule[] = []
 
     this.modules.forEach((module) => {
-      if (shouldModuleBeMounted(window.location.pathname, module)) {
+      if (
+        moduleHelpers.shouldModuleBeMounted(window.location.pathname, module)
+      ) {
         modulesToMount.push(module)
       } else {
         modulesToUnmount.push(module)
@@ -558,7 +577,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     })
 
     for (const module of modulesToUnmount) {
-      const moduleKey = getModuleKey(module.name)
+      const moduleKey = moduleHelpers.getModuleKey(module.name)
       const moduleInstance = this.modules.get(moduleKey)
 
       if (moduleInstance?.unmount) {
@@ -750,7 +769,7 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     })
 
     this.ensureEsModuleShims()
-    this.ensureSystemJs()
+    await this.ensureSystemJs()
 
     for (const entry of this.modules) {
       const moduleData = entry[1]

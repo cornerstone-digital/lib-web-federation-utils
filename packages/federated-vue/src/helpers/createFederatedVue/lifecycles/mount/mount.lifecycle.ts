@@ -5,7 +5,7 @@ import {
   FederatedEvents,
   FederatedModuleParams,
   FederatedModuleStatuses,
-  getModuleKey,
+  moduleHelpers,
 } from '@vf/federated-core'
 
 import { CreateFederatedVueOptions } from '../../createFederatedVue.types'
@@ -34,7 +34,7 @@ const mountLifecycle = <PropsType>(
       const propsToUse = module || defaultProps
       federatedRuntime.validateProps(module, propsToUse)
 
-      const moduleKey = getModuleKey(name)
+      const moduleKey = moduleHelpers.getModuleKey(name)
       const savedModule = federatedRuntime.modules.get(moduleKey)
       const elementId = mountId || domElementId || defaultMountId
       const domContainer: HTMLElement | null =
