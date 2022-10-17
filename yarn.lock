@@ -5262,6 +5262,11 @@ convert-source-map@^1.4.0, convert-source-map@^1.6.0, convert-source-map@^1.7.0:
   dependencies:
     safe-buffer "~5.1.1"
 
+cookie@^0.4.1:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.4.2.tgz#0e41f24de5ecf317947c82fc789e06a884824432"
+  integrity sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==
+
 core-js@^3.6.5:
   version "3.22.7"
   resolved "https://registry.npmjs.org/core-js/-/core-js-3.22.7.tgz#8d6c37f630f6139b8732d10f2c114c3f1d00024f"
@@ -7243,6 +7248,13 @@ import-local@^3.0.2:
   dependencies:
     pkg-dir "^4.2.0"
     resolve-cwd "^3.0.0"
+
+import-map-overrides@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/import-map-overrides/-/import-map-overrides-3.0.0.tgz#c1d51da620d3ee5cfd496219d58b41071986a1f7"
+  integrity sha512-IVyTks4+S1JlWt/c9APPEHfNeEz7z7qBuzjbg6m9HdxDCpdqvu89kz6rrbhIgn2X8P807KEh4wOpdMu4nwNvfg==
+  dependencies:
+    cookie "^0.4.1"
 
 imurmurhash@^0.1.4:
   version "0.1.4"

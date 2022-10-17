@@ -1,3 +1,10 @@
+import 'systemjs/dist/system'
+import 'systemjs/dist/extras/amd'
+import 'systemjs/dist/extras/named-exports'
+import 'systemjs/dist/extras/named-register'
+import 'systemjs/dist/extras/dynamic-import-maps'
+import 'systemjs/dist/extras/use-default'
+
 import {
   ExposedServicesType,
   FederatedModule,
@@ -25,7 +32,6 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   _bootstrapped = false
   _started = false
   _useNativeModules = false
-  _importMapOverridesEnabled = false
   _debugEnabled = false
   _sharedDependencyBaseUrl = ''
   _cdnUrl = process.env['SHARED_CDN_DOMAIN'] || ''
@@ -66,19 +72,21 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   }
 
   set useNativeModules(useNativeModules: boolean) {
+    if (this.debugEnabled) {
+      eventService.emit<EventMap>({
+        type: FederatedEvents.RUNTIME_EXPERIMENTAL,
+        payload: {
+          featureName: 'useNativeModules',
+          reason: 'This feature is experimental and may not work as expected',
+        },
+      })
+    }
+
     this._useNativeModules = useNativeModules
   }
 
   get useNativeModules(): boolean {
     return this._useNativeModules
-  }
-
-  set importMapOverridesEnabled(importMapOverridesEnabled: boolean) {
-    this._importMapOverridesEnabled = importMapOverridesEnabled
-  }
-
-  get importMapOverridesEnabled(): boolean {
-    return this._importMapOverridesEnabled
   }
 
   set cdnUrl(cdnUrl: string) {
@@ -104,84 +112,27 @@ class FederatedRuntime implements AbstractFederatedRuntime {
   // Helper Methods
   addImportMapOverridesUi(): void {
     const importMapOverridesKey = 'import-map-overrides'
-    if (this.importMapOverridesEnabled) {
-      htmlHelpers.addScriptTag(
-        importMapOverridesKey,
-        `${this.sharedDependencyBaseUrl}/import-map-overrides/3.0.0/import-map-overrides.min.js`
-      )
+    htmlHelpers.addScriptTag(
+      importMapOverridesKey,
+      `${this.sharedDependencyBaseUrl}/import-map-overrides/3.0.0/import-map-overrides.min.js`
+    )
 
-      htmlHelpers.addHtmlElementWithAttrs(
-        'import-map-overrides-ui',
-        'import-map-overrides-full',
-        {
-          'show-when-local-storage': importMapOverridesKey,
-        }
-      )
+    htmlHelpers.addHtmlElementWithAttrs(
+      'import-map-overrides-ui',
+      'import-map-overrides-full',
+      {
+        'show-when-local-storage': importMapOverridesKey,
+      }
+    )
 
-      localStorage.setItem(importMapOverridesKey, 'true')
+    localStorage.setItem(importMapOverridesKey, 'true')
 
-      this.services.event.emit<EventMap>({
-        type: FederatedEvents.IMPORT_MAP_OVERRIDES_LOADED,
-        payload: {
-          loadedTime: Date.now(),
-        },
-      })
-    }
-  }
-
-  async waitForSystemJs(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      // Wait for SystemJS to be available and timeout after 10 seconds
-      const interval = setInterval(() => {
-        if (window.System) {
-          clearInterval(interval)
-          resolve()
-        }
-      }, 100)
-
-      setTimeout(() => {
-        clearInterval(interval)
-        reject('SystemJS did not load within 10 seconds')
-      }, 10000)
+    this.services.event.emit<EventMap>({
+      type: FederatedEvents.IMPORT_MAP_OVERRIDES_LOADED,
+      payload: {
+        loadedTime: Date.now(),
+      },
     })
-  }
-
-  async ensureSystemJs(): Promise<void> {
-    this.addImportMapOverridesUi()
-
-    if (!this.useNativeModules) {
-      htmlHelpers.addMetaTag(
-        'importmap-type',
-        'importmap-type',
-        'systemjs-importmap'
-      )
-      htmlHelpers.addScriptTag(
-        'systemjs',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/system.min.js`
-      )
-
-      await this.waitForSystemJs()
-
-      htmlHelpers.addScriptTag(
-        'systemjs-named-exports',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/named-exports.min.js`
-      )
-      htmlHelpers.addScriptTag(
-        'systemjs-amd',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/amd.min.js`
-      )
-      htmlHelpers.addScriptTag(
-        'systemjs-dynamic-import-maps',
-        `${this.sharedDependencyBaseUrl}/systemjs/6.12.1/extras/dynamic-import-maps.min.js`
-      )
-
-      this.services.event.emit<EventMap>({
-        type: FederatedEvents.SYSTEMJS_LOADED,
-        payload: {
-          loadedTime: Date.now(),
-        },
-      })
-    }
   }
 
   async ensureImportMapHtmlElement(
@@ -753,7 +704,6 @@ class FederatedRuntime implements AbstractFederatedRuntime {
         bootstrapTime: new Date().toDateString(),
         modules: this.modules,
         useNativeModules: this.useNativeModules,
-        importMapOverridesEnabled: this.importMapOverridesEnabled,
       },
     })
 
@@ -769,7 +719,13 @@ class FederatedRuntime implements AbstractFederatedRuntime {
     })
 
     this.ensureEsModuleShims()
-    await this.ensureSystemJs()
+    if (!this.useNativeModules) {
+      htmlHelpers.addMetaTag(
+        'importmap-type',
+        'importmap-type',
+        'systemjs-importmap'
+      )
+    }
 
     for (const entry of this.modules) {
       const moduleData = entry[1]
@@ -859,8 +815,6 @@ class FederatedRuntime implements AbstractFederatedRuntime {
 
 type RuntimeInitConfig = {
   useNativeModules?: boolean
-  addImportMapOverridesUi?: boolean
-  importMapOverridesEnabled?: boolean
   debugEnabled?: boolean
   sharedDependencyBaseUrl?: string
   cdnUrl?: string
@@ -886,17 +840,6 @@ export const initFederatedRuntime = (initConfig?: RuntimeInitConfig) => {
     runtime.debugEnabled = initConfig?.debugEnabled || false
     runtime.sharedDependencyBaseUrl = initConfig?.sharedDependencyBaseUrl || ''
     runtime.cdnUrl = initConfig?.cdnUrl || runtime.cdnUrl || ''
-
-    if (
-      initConfig?.importMapOverridesEnabled ||
-      runtime.importMapOverridesEnabled
-    ) {
-      runtime.importMapOverridesEnabled =
-        initConfig?.importMapOverridesEnabled ||
-        runtime.importMapOverridesEnabled ||
-        false
-      runtime.addImportMapOverridesUi()
-    }
 
     window.__FEDERATED_CORE__.federatedRuntime = runtime
 

@@ -8,6 +8,8 @@ import {
 } from '../types'
 
 export enum FederatedEvents {
+  RUNTIME_EXPERIMENTAL = 'runtime.experimental',
+
   // Bootstrap Events
   RUNTIME_BEFORE_BOOTSTRAP = 'federated-core:runtime:before-bootstrap',
   RUNTIME_BOOTSTRAPPED = 'federated-core:runtime:bootstrapped',
@@ -93,12 +95,16 @@ export enum FederatedEvents {
 }
 
 export type FederatedPayloadMap = {
+  [FederatedEvents.RUNTIME_EXPERIMENTAL]: {
+    featureName: string
+    reason: string
+  }
+
   // Runtime Bootstrap Events
   [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: {
     bootstrapTime: string
     modules: Map<string, FederatedModuleParams>
     useNativeModules: boolean
-    importMapOverridesEnabled: boolean
   }
   [FederatedEvents.RUNTIME_BOOTSTRAPPED]: {
     bootstrapEndTime: number
@@ -320,6 +326,10 @@ export type EventData<Type extends string, Payload> = {
 export type EventMap<
   CustomEventMap extends EventData<string, unknown> = Record<string, unknown>
 > =
+  | EventData<
+      FederatedEvents.RUNTIME_EXPERIMENTAL,
+      FederatedPayloadMap[FederatedEvents.RUNTIME_EXPERIMENTAL]
+    >
   // Runtime Bootstrap Events
   | EventData<
       FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP,
@@ -572,7 +582,6 @@ export type EventMap<
 export abstract class AbstractFederatedRuntime {
   // Booleans
   abstract _useNativeModules: boolean
-  abstract _importMapOverridesEnabled: boolean
   abstract _debugEnabled: boolean
   abstract _modules: Map<string, FederatedModule>
   abstract _sharedDependencyBaseUrl: string
@@ -581,8 +590,6 @@ export abstract class AbstractFederatedRuntime {
   // Setters and Getters
   abstract set useNativeModules(value: boolean)
   abstract get useNativeModules(): boolean
-  abstract set importMapOverridesEnabled(value: boolean)
-  abstract get importMapOverridesEnabled(): boolean
   abstract set debugEnabled(value: boolean)
   abstract get debugEnabled(): boolean
   abstract set sharedDependencyBaseUrl(value: string)
@@ -595,9 +602,6 @@ export abstract class AbstractFederatedRuntime {
 
   // Helper Methods
   abstract addImportMapOverridesUi(): void
-
-  abstract waitForSystemJs(): Promise<void>
-  abstract ensureSystemJs(): void
   abstract ensureImportMapHtmlElement(id: string, url: string): Promise<void>
   abstract ensureImportImapExists(module: FederatedModuleParams): Promise<void>
 

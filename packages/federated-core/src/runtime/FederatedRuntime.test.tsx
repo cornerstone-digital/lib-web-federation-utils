@@ -64,10 +64,6 @@ describe('FederatedRuntime', () => {
         federatedRuntime,
       }
 
-      window.__FEDERATED_CORE__.federatedRuntime.waitForSystemJs = jest
-        .fn()
-        .mockResolvedValue(true)
-
       window.dispatchEvent = jest.fn().mockImplementation((event: Event) => {
         dispatchedEventCount[event.type] = dispatchedEventCount[event.type]
           ? dispatchedEventCount[event.type] + 1
@@ -115,10 +111,6 @@ describe('FederatedRuntime', () => {
 
       it('should set useNativeModules to false by default', () => {
         expect(federatedRuntime.useNativeModules).toBe(false)
-      })
-
-      it('should set enableImportMapOverrides to false by default', () => {
-        expect(federatedRuntime.importMapOverridesEnabled).toBe(false)
       })
 
       it('should set sharedDependencyBaseUrl to empty string by default', () => {
@@ -190,14 +182,6 @@ describe('FederatedRuntime', () => {
         })
       })
 
-      describe('set importMapOverridesEnabled', () => {
-        it('should set enableImportMapOverrides to true', () => {
-          expect(federatedRuntime.importMapOverridesEnabled).toBe(false)
-          federatedRuntime.importMapOverridesEnabled = true
-          expect(federatedRuntime.importMapOverridesEnabled).toBe(true)
-        })
-      })
-
       describe('set sharedDependencyBaseUrl', () => {
         it('should set sharedDependencyBaseUrl to a string', () => {
           expect(federatedRuntime.sharedDependencyBaseUrl).toBe('')
@@ -262,14 +246,6 @@ describe('FederatedRuntime', () => {
         })
       })
 
-      describe('get importMapOverridesEnabled', () => {
-        it('should return enableImportMapOverrides', () => {
-          expect(federatedRuntime.importMapOverridesEnabled).toBe(false)
-          federatedRuntime.importMapOverridesEnabled = true
-          expect(federatedRuntime.importMapOverridesEnabled).toBe(true)
-        })
-      })
-
       describe('get sharedDependencyBaseUrl', () => {
         it('should return sharedDependencyBaseUrl', () => {
           expect(federatedRuntime.sharedDependencyBaseUrl).toBe('')
@@ -292,65 +268,12 @@ describe('FederatedRuntime', () => {
 
     describe('methods', () => {
       describe('addImportMapOverridesUi', () => {
-        it('should add import map overrides ui when importMapOverrides is enabled', () => {
-          federatedRuntime.importMapOverridesEnabled = true
+        it('should add import map overrides ui', () => {
           federatedRuntime.addImportMapOverridesUi()
           const importMapOverridesUi = document.getElementById(
             'import-map-overrides-ui'
           )
           expect(importMapOverridesUi).toBeTruthy()
-        })
-      })
-
-      describe('ensureSystemJs', () => {
-        it('should ensure systemjs is loaded', async () => {
-          await federatedRuntime.ensureSystemJs()
-          const systemJs = window.System
-          expect(systemJs).toBeTruthy()
-        })
-
-        it('should add importmap-type meta tag to head', async () => {
-          await federatedRuntime.ensureSystemJs()
-          const importMapTypeMeta = document.querySelector(
-            'meta[name="importmap-type"]'
-          )
-          expect(importMapTypeMeta).toBeTruthy()
-        })
-
-        it('should add script with id of systemjs to head', async () => {
-          await federatedRuntime.ensureSystemJs()
-          const systemJsScript = document.getElementById('systemjs')
-          expect(systemJsScript).toBeTruthy()
-        })
-
-        it('should add script with id of systemjs-named-exports to head', async () => {
-          await federatedRuntime.ensureSystemJs()
-          const systemJsNamedExportsScript = document.getElementById(
-            'systemjs-named-exports'
-          )
-          expect(systemJsNamedExportsScript).toBeTruthy()
-        })
-
-        it('should add script with systemjs-amd to head', async () => {
-          await federatedRuntime.ensureSystemJs()
-          const systemJsAmdScript = document.getElementById('systemjs-amd')
-          expect(systemJsAmdScript).toBeTruthy()
-        })
-
-        it('should add script with systemjs-dynamic-import-maps to head', async () => {
-          await federatedRuntime.ensureSystemJs()
-          const systemJsDynamicImportMapsScript = document.getElementById(
-            'systemjs-dynamic-import-maps'
-          )
-          expect(systemJsDynamicImportMapsScript).toBeTruthy()
-        })
-
-        it('should fire systemjs-loaded event', async () => {
-          await federatedRuntime.ensureSystemJs()
-
-          expect(dispatchedEventCount).toEqual({
-            [FederatedEvents.SYSTEMJS_LOADED]: 1,
-          })
         })
       })
 
@@ -543,14 +466,11 @@ describe('FederatedRuntime', () => {
           // @ts-ignore
           global.fetch = jest.fn(() => fetchPromise)
 
-          federatedRuntime.ensureSystemJs()
-
           const loadedModule = await federatedRuntime.loadModule(module)
 
           expect(loadedModule).toEqual(resolvedModule)
           expect(dispatchedEventCount).toEqual({
             'federated-core:module:module-1:before-load': 1,
-            'federated-core:systemjs:loaded': 1,
             'federated-core:systemjs:module:loaded': 1,
             'federated-core:systemjs:module:loading': 1,
           })
@@ -574,8 +494,6 @@ describe('FederatedRuntime', () => {
           // @ts-ignore
           global.fetch = jest.fn(() => fetchPromise)
 
-          federatedRuntime.ensureSystemJs()
-
           await federatedRuntime.registerModule(module)
           await federatedRuntime.loadModule(module)
 
@@ -584,7 +502,6 @@ describe('FederatedRuntime', () => {
             'federated-core:module:module-1:before-register': 1,
             'federated-core:module:module-1:registered': 1,
             'federated-core:module:module-1:state-changed': 1,
-            [FederatedEvents.SYSTEMJS_LOADED]: 1,
           })
         })
 
@@ -595,8 +512,6 @@ describe('FederatedRuntime', () => {
             status: FederatedModuleStatuses.MOUNTED,
           }
 
-          federatedRuntime.ensureSystemJs()
-
           await federatedRuntime.registerModule(module)
           await federatedRuntime.loadModule(module)
 
@@ -605,7 +520,6 @@ describe('FederatedRuntime', () => {
             'federated-core:module:module-1:before-register': 1,
             'federated-core:module:module-1:registered': 1,
             'federated-core:module:module-1:state-changed': 1,
-            [FederatedEvents.SYSTEMJS_LOADED]: 1,
           })
         })
 
@@ -660,8 +574,6 @@ describe('FederatedRuntime', () => {
           // @ts-ignore
           global.fetch = jest.fn(() => fetchPromise)
 
-          federatedRuntime.ensureSystemJs()
-
           // @ts-ignore
           global.System.import = jest.fn(() => Promise.resolve(module))
 
@@ -693,8 +605,6 @@ describe('FederatedRuntime', () => {
           // @ts-ignore
           global.fetch = jest.fn(() => fetchPromise)
 
-          federatedRuntime.ensureSystemJs()
-
           jest.spyOn(console, 'error').mockImplementation(jest.fn())
           // @ts-ignore
           global.System.import = jest
@@ -706,7 +616,6 @@ describe('FederatedRuntime', () => {
           expect(dispatchedEventCount).toEqual({
             'federated-core:module:module-1:before-load': 1,
             'federated-core:module:module-1:load:error': 1,
-            [FederatedEvents.SYSTEMJS_LOADED]: 1,
             [FederatedEvents.SYSTEMJS_MODULE_LOADING]: 1,
           })
         })
@@ -731,8 +640,6 @@ describe('FederatedRuntime', () => {
           })
           // @ts-ignore
           global.fetch = jest.fn(() => fetchPromise)
-
-          federatedRuntime.ensureSystemJs()
 
           // @ts-ignore
           global.System.import = jest.fn(() => Promise.resolve(module))
@@ -768,8 +675,6 @@ describe('FederatedRuntime', () => {
           })
           // @ts-ignore
           global.fetch = jest.fn(() => fetchPromise)
-
-          federatedRuntime.ensureSystemJs()
 
           // @ts-ignore
           global.System.import = jest.fn(() => Promise.resolve(module))
@@ -878,8 +783,6 @@ describe('FederatedRuntime', () => {
           // @ts-ignore
           global.fetch = jest.fn(() => fetchPromise)
 
-          federatedRuntime.ensureSystemJs()
-
           await federatedRuntime.preFetchModules([module, module2])
 
           expect(dispatchedEventCount).toEqual({
@@ -889,7 +792,6 @@ describe('FederatedRuntime', () => {
             'federated-core:module:module-2:before-load': 1,
             [FederatedEvents.RUNTIME_MODULE_PREFETCHED]: 2,
             [FederatedEvents.RUNTIME_MODULES_PREFETCHED]: 1,
-            [FederatedEvents.SYSTEMJS_LOADED]: 1,
             [FederatedEvents.SYSTEMJS_MODULE_LOADED]: 2,
             [FederatedEvents.SYSTEMJS_MODULE_LOADING]: 2,
           })
@@ -1226,7 +1128,6 @@ describe('FederatedRuntime', () => {
           originalDispatchEvent(event)
           expect(dispatchedEventCount).toEqual({
             [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: 1,
-            [FederatedEvents.SYSTEMJS_LOADED]: 1,
             [FederatedEvents.RUNTIME_BOOTSTRAPPED]: 1,
             [FederatedEvents.POPSTATE_EVENT_FIRED]: 3,
             [FederatedEvents.ROUTE_CHANGED]: 3,
@@ -1234,25 +1135,10 @@ describe('FederatedRuntime', () => {
           })
         })
 
-        it('should call ensureSystemJs method', async () => {
-          const mockEnsureSystemJs = jest.fn()
-          federatedRuntime.ensureSystemJs = mockEnsureSystemJs
-          await federatedRuntime.bootstrap()
-          expect(mockEnsureSystemJs).toHaveBeenCalled()
-        })
-
-        it('should call addImportMapOverridesUi method', async () => {
-          const mockAddImportMapOverridesUi = jest.fn()
-          federatedRuntime.addImportMapOverridesUi = mockAddImportMapOverridesUi
-          await federatedRuntime.bootstrap()
-          expect(mockAddImportMapOverridesUi).toHaveBeenCalled()
-        })
-
         it('should emit correct default events', async () => {
           await federatedRuntime.bootstrap()
           expect(dispatchedEventCount).toEqual({
             [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: 1,
-            [FederatedEvents.SYSTEMJS_LOADED]: 1,
             [FederatedEvents.RUNTIME_BOOTSTRAPPED]: 1,
           })
         })
@@ -1262,18 +1148,6 @@ describe('FederatedRuntime', () => {
           await federatedRuntime.bootstrap()
           expect(dispatchedEventCount).toEqual({
             [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: 1,
-            [FederatedEvents.RUNTIME_BOOTSTRAPPED]: 1,
-          })
-        })
-
-        it('should emit correct events when using import map overrides', async () => {
-          federatedRuntime.importMapOverridesEnabled = true
-          await federatedRuntime.bootstrap()
-
-          expect(dispatchedEventCount).toEqual({
-            [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: 1,
-            [FederatedEvents.SYSTEMJS_LOADED]: 1,
-            [FederatedEvents.IMPORT_MAP_OVERRIDES_LOADED]: 1,
             [FederatedEvents.RUNTIME_BOOTSTRAPPED]: 1,
           })
         })
@@ -1298,7 +1172,6 @@ describe('FederatedRuntime', () => {
           expect(dispatchedEventCount).toEqual({
             [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: 1,
             [FederatedEvents.RUNTIME_BOOTSTRAPPED]: 1,
-            [FederatedEvents.SYSTEMJS_LOADED]: 1,
             'federated-core:module:test-module-1:before-bootstrap': 1,
             'federated-core:module:test-module-1:before-register': 1,
             'federated-core:module:test-module-1:bootstrapped': 1,
@@ -1338,7 +1211,6 @@ describe('FederatedRuntime', () => {
 
           expect(dispatchedEventCount).toEqual({
             [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: 1,
-            [FederatedEvents.SYSTEMJS_LOADED]: 1,
             'federated-core:module:test-module-1:before-bootstrap': 1,
             'federated-core:module:test-module-1:bootstrapped': 1,
             'federated-core:module:test-module-2:before-bootstrap': 1,
@@ -1372,7 +1244,6 @@ describe('FederatedRuntime', () => {
           expect(dispatchedEventCount).toEqual({
             [FederatedEvents.RUNTIME_BEFORE_START]: 1,
             [FederatedEvents.RUNTIME_BEFORE_BOOTSTRAP]: 1,
-            [FederatedEvents.SYSTEMJS_LOADED]: 1,
             [FederatedEvents.RUNTIME_BOOTSTRAPPED]: 1,
             [FederatedEvents.ROUTE_CHANGED]: 1,
             [FederatedEvents.RUNTIME_STARTED]: 1,
@@ -1396,16 +1267,6 @@ describe('FederatedRuntime', () => {
 
     describe('initFederatedRuntime', () => {
       it('should return the same instance', () => {
-        expect(initFederatedRuntime()).toBe(federatedRuntime)
-      })
-
-      it('should return the instance with importmapoverrides enabled', () => {
-        expect(
-          initFederatedRuntime({
-            importMapOverridesEnabled: true,
-          })
-        ).toBe(federatedRuntime)
-        federatedRuntime.importMapOverridesEnabled = true
         expect(initFederatedRuntime()).toBe(federatedRuntime)
       })
 
