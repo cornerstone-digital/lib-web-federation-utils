@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.2](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react-app-journey@0.4.1...@vf/federated-react-app-journey@0.4.2) (2022-10-17)
+
+**Note:** Version bump only for package @vf/federated-react-app-journey
+
+
+
+
+
 ## [0.4.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-react-app-journey@0.4.0...@vf/federated-react-app-journey@0.4.1) (2022-10-11)
 
 **Note:** Version bump only for package @vf/federated-react-app-journey

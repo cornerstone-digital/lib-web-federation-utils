@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.2](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.13.1...@vf/federated-core@0.13.2) (2022-10-17)
+
+
+### Bug Fixes
+
+* ensure systemjs loads first - [#176206](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/176206) ([fa2a2c7](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/fa2a2c7bac44c7e9fac553d98650ff31239618c5))
+* ensure systemjs loads first - [#176206](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/issues/176206) ([91975ed](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/91975ed092c4dbdc975879777b7ce42d710f91cf))
+
+
+
+
+
 ## [0.13.1](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.13.0...@vf/federated-core@0.13.1) (2022-10-11)
 
 **Note:** Version bump only for package @vf/federated-core
