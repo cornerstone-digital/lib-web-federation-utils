@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.14.0](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.13.2...@vf/federated-core@0.14.0) (2022-10-27)
+
+
+### Features
+
+* internalise systemjs to runtime ([0a5aa0d](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/commits/0a5aa0da9aa0a96346d4f8cf608d99641fa23134))
+
+
+
+
+
 ## [0.13.2](https://vfuk-digital.visualstudio.com/Digital/_git/lib-web-federation-utils/compare/@vf/federated-core@0.13.1...@vf/federated-core@0.13.2) (2022-10-17)
 
 
